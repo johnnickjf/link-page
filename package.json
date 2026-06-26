@@ -1,0 +1,37 @@
+{
+  "name": "linkland-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "engines": {
+    "node": ">=20.0.0"
+  },
+  "scripts": {
+    "build": "nuxt build",
+    "dev": "nuxt dev",
+    "generate": "nuxt generate",
+    "preview": "nuxt preview",
+    "start": "node .output/server/index.mjs",
+    "postinstall": "nuxt prepare",
+    "typecheck": "nuxt typecheck"
+  },
+  "dependencies": {
+    "@nuxt/ui": "^3.3.7",
+    "@pinia/nuxt": "^0.11.3",
+    "@vueuse/core": "^14.3.0",
+    "@vueuse/integrations": "^14.3.0",
+    "@vueuse/nuxt": "^14.3.0",
+    "nuxt": "^3.21.8",
+    "pinia": "^3.0.4",
+    "sortablejs": "^1.15.7",
+    "vue": "^3.5.39"
+  },
+  "devDependencies": {
+    "@iconify-json/lucide": "^1.2.114",
+    "@iconify-json/simple-icons": "^1.2.87",
+    "@types/node": "^20.19.43",
+    "@types/sortablejs": "^1.15.9",
+    "typescript": "~5.6.3",
+    "vue-tsc": "^2.2.12"
+  }
+}
