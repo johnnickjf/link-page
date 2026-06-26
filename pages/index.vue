@@ -39,14 +39,6 @@ const features = [
     text: 'Rápido, leve e otimizado para abrir direto da bio do Instagram e TikTok.',
   },
 ]
-
-const sampleLinks = ['Meu portfólio', 'Loja / Shop', 'Newsletter semanal']
-const sampleSocials = [
-  'i-lucide-instagram',
-  'i-lucide-youtube',
-  'i-lucide-twitter',
-  'i-lucide-linkedin',
-]
 </script>
 
 <template>
@@ -105,42 +97,13 @@ const sampleSocials = [
           <p class="mt-4 text-sm text-gray-500">Grátis para começar.</p>
         </div>
 
-        <!-- Mockup de página pública -->
+        <!-- Imagem da homepage -->
         <div class="flex justify-center">
-          <div
-            class="w-[280px] rounded-[2.2rem] border border-gray-200/70 bg-white p-3 shadow-2xl dark:border-gray-800 dark:bg-gray-900"
-          >
-            <div
-              class="rounded-[1.7rem] bg-gradient-to-b from-indigo-500 via-purple-500 to-fuchsia-500 px-5 pb-6 pt-8 text-center"
-            >
-              <div
-                class="mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-white/90 text-2xl font-bold text-primary-600 shadow-lg"
-              >
-                JC
-              </div>
-              <h2 class="mt-3 text-lg font-semibold text-white">@joana.cria</h2>
-              <p class="text-sm text-white/80">Designer & criadora de conteúdo ✨</p>
-
-              <div class="mt-5 space-y-2.5">
-                <div
-                  v-for="link in sampleLinks"
-                  :key="link"
-                  class="rounded-xl bg-white/95 py-3 text-sm font-medium text-gray-800 shadow-sm transition hover:scale-[1.02]"
-                >
-                  {{ link }}
-                </div>
-              </div>
-
-              <div class="mt-5 flex justify-center gap-4 text-white/90">
-                <UIcon
-                  v-for="social in sampleSocials"
-                  :key="social"
-                  :name="social"
-                  class="size-5"
-                />
-              </div>
-            </div>
-          </div>
+          <img
+            src="/image-iphone.png"
+            alt="Exemplo de página LinkLand no celular"
+            class="w-full max-w-[330px] drop-shadow-2xl"
+          />
         </div>
       </div>
     </section>
