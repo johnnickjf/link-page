@@ -47,7 +47,6 @@ async function load(): Promise<void> {
     published.value = page.is_published
     theme.value = { ...(page.theme ?? {}) }
     blocks.value = [...blks].sort((a, b) => a.position - b.position)
-    generateQr()
   } catch (e) {
     error.value = getApiErrorMessage(e)
   } finally {
@@ -233,11 +232,6 @@ async function generateQr(): Promise<void> {
   }
 }
 
-watch([isPremium, published], ([prem, pub]) => {
-  if (prem && pub) generateQr()
-  else qrDataUrl.value = ''
-})
-
 async function copyPublicUrl(): Promise<void> {
   await copy(publicUrl.value)
   toast.add({ title: 'Link copiado!', color: 'success' })
@@ -346,7 +340,7 @@ async function copyPublicUrl(): Promise<void> {
       <div class="mt-4 grid gap-6 lg:grid-cols-2">
         <!-- Edição -->
         <div
-          class="space-y-6"
+          class="min-w-0 space-y-6"
           :class="mobileTab !== 'edit' ? 'hidden lg:block' : ''"
         >
           <PageHeaderForm
@@ -391,19 +385,32 @@ async function copyPublicUrl(): Promise<void> {
             </template>
             <div class="space-y-3">
               <template v-if="published">
-                <div v-if="qrLoading" class="flex justify-center py-4">
+                <div v-if="qrLoading" class="flex justify-center py-6">
                   <USkeleton class="size-[220px] rounded-lg" />
                 </div>
                 <div v-else-if="qrDataUrl" class="flex flex-col items-center gap-3">
-                  <img :src="qrDataUrl" alt="QR Code" class="size-[220px] rounded-lg" />
-                  <a :href="qrDataUrl" :download="`qr-${slug}.png`">
-                    <UButton icon="i-lucide-download" size="sm" variant="subtle" color="neutral">
-                      Baixar QR
+                  <img :src="qrDataUrl" alt="QR Code" class="size-[220px] rounded-lg border border-gray-200 dark:border-gray-700" />
+                  <div class="flex gap-2">
+                    <a :href="qrDataUrl" :download="`qr-${slug}.png`">
+                      <UButton icon="i-lucide-download" size="sm" variant="subtle" color="neutral">
+                        Baixar
+                      </UButton>
+                    </a>
+                    <UButton icon="i-lucide-refresh-cw" size="sm" variant="ghost" color="neutral" @click="generateQr">
+                      Atualizar
                     </UButton>
-                  </a>
+                  </div>
+                </div>
+                <div v-else class="flex flex-col items-center gap-3 py-4 text-center">
+                  <p class="text-sm text-gray-500 dark:text-gray-400">
+                    Gere o QR Code desta página para compartilhar offline.
+                  </p>
+                  <UButton icon="i-lucide-qr-code" :loading="qrLoading" @click="generateQr">
+                    Gerar QR Code
+                  </UButton>
                 </div>
               </template>
-              <p v-else class="text-center text-sm text-gray-500 dark:text-gray-400">
+              <p v-else class="py-2 text-center text-sm text-gray-500 dark:text-gray-400">
                 Publique a página para gerar o QR Code.
               </p>
             </div>
@@ -422,7 +429,7 @@ async function copyPublicUrl(): Promise<void> {
         </div>
 
         <!-- Preview -->
-        <div :class="mobileTab !== 'preview' ? 'hidden lg:block' : ''">
+        <div class="min-w-0" :class="mobileTab !== 'preview' ? 'hidden lg:block' : ''">
           <div class="lg:sticky lg:top-6">
             <p class="mb-2 text-center text-xs text-gray-500">Pré-visualização</p>
             <div

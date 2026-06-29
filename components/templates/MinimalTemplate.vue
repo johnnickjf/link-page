@@ -66,9 +66,22 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, initials, showBranding, ro
         <BlockRenderer v-for="(b, i) in inlineBlocks" :key="`b-${i}`" :block="b" />
       </div>
 
-      <div v-if="showBranding" class="mt-12 flex justify-center opacity-60 transition hover:opacity-100">
-        <Logo sm to="/" />
-      </div>
+      <a
+        v-if="showBranding"
+        href="/"
+        class="mt-12 flex items-center justify-center gap-1.5 text-xs opacity-60 transition hover:opacity-100"
+        :style="{ color: 'var(--lp-muted)' }"
+      >
+        <span>Criado por</span>
+        <svg class="size-3.5 shrink-0" viewBox="0 0 32 32" aria-hidden="true">
+          <rect width="32" height="32" rx="8" fill="currentColor" opacity="0.25" />
+          <g transform="translate(6 6) scale(0.835)" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" />
+            <path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" />
+          </g>
+        </svg>
+        <span class="font-semibold">LinkLand</span>
+      </a>
     </div>
 
     <WhatsappButton v-if="whatsapp" :config="whatsapp.config" :fixed="!preview" />

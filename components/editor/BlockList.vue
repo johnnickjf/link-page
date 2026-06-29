@@ -72,7 +72,7 @@ function subtitle(b: Block): string {
       Nenhum bloco ainda. Adicione o primeiro abaixo.
     </div>
 
-    <div ref="listEl" class="space-y-2">
+    <div ref="listEl" class="space-y-2 overflow-hidden">
       <div
         v-for="block in blocks"
         :key="block.id"

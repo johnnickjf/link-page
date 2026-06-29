@@ -29,9 +29,27 @@ const directions = [
   { value: '45deg', label: '↗' },
 ]
 
+// Pré-carrega todas as fontes para o preview dos botões
+useHead({
+  link: [
+    {
+      rel: 'stylesheet',
+      href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600&family=Playfair+Display:wght@400;500;600&family=Raleway:wght@400;500;600&family=Oswald:wght@400;500;600&family=Lora:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&family=Josefin+Sans:wght@400;500;600&family=Caveat:wght@400;500;600;700&family=Pacifico&display=swap',
+    },
+  ],
+})
+
 const FONTS = [
-  'Inter', 'Poppins', 'Montserrat', 'Roboto', 'Nunito',
-  'Outfit', 'DM Sans', 'Manrope', 'Raleway', 'Open Sans',
+  { value: 'Inter', label: 'Inter', hint: 'moderno' },
+  { value: 'Poppins', label: 'Poppins', hint: 'arredondada' },
+  { value: 'Playfair Display', label: 'Playfair', hint: 'editorial' },
+  { value: 'Raleway', label: 'Raleway', hint: 'elegante' },
+  { value: 'Oswald', label: 'Oswald', hint: 'compacta' },
+  { value: 'Lora', label: 'Lora', hint: 'literária' },
+  { value: 'Space Grotesk', label: 'Space Grotesk', hint: 'técnica' },
+  { value: 'Josefin Sans', label: 'Josefin', hint: 'geométrica' },
+  { value: 'Caveat', label: 'Caveat', hint: 'manuscrita' },
+  { value: 'Pacifico', label: 'Pacifico', hint: 'casual' },
 ]
 </script>
 
@@ -132,25 +150,26 @@ const FONTS = [
           <UBadge v-if="isFree" color="primary" variant="subtle" size="sm">Premium</UBadge>
         </div>
         <template v-if="!isFree">
-          <div class="grid grid-cols-2 gap-2 sm:grid-cols-3">
+          <div class="grid grid-cols-2 gap-2">
             <button
               v-for="f in FONTS"
-              :key="f"
+              :key="f.value"
               type="button"
-              class="rounded-lg border px-3 py-2 text-sm transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              class="flex flex-col rounded-lg border px-3 py-2.5 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
               :class="
-                theme.font === f
-                  ? 'border-primary-500 ring-2 ring-primary-500/30'
+                theme.font === f.value
+                  ? 'border-primary-500 bg-primary-50 ring-2 ring-primary-500/30 dark:bg-primary-950/30'
                   : 'border-gray-200 hover:border-gray-300 dark:border-gray-700'
               "
-              :style="{ fontFamily: `'${f}', sans-serif` }"
-              @click="theme.font = theme.font === f ? undefined : f"
+              :style="{ fontFamily: `'${f.value}', sans-serif` }"
+              @click="theme.font = theme.font === f.value ? undefined : f.value"
             >
-              {{ f }}
+              <span class="text-sm font-medium leading-tight">{{ f.label }}</span>
+              <span class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">{{ f.hint }}</span>
             </button>
           </div>
           <p v-if="theme.font" class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-            Fonte ativa: <strong>{{ theme.font }}</strong>. Clique novamente para remover.
+            Ativa: <strong>{{ theme.font }}</strong>. Clique novamente para remover.
           </p>
         </template>
         <p v-else class="text-xs text-gray-400 dark:text-gray-500">
