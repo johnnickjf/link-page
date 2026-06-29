@@ -24,8 +24,9 @@ export function getApiErrorMessage(
   return message || fallback
 }
 
-// Dedup de refresh concorrente: só uma tentativa de refresh por vez.
-let refreshing: Promise<boolean> | null = null
+// Dedup de refresh: uma tentativa por vez, isolada por requisição (chaveada pelo
+// nuxtApp — no SSR cada request tem o seu, sem vazar token entre usuários).
+const refreshInflight = new WeakMap<object, Promise<boolean>>()
 
 /**
  * Wrapper sobre `$fetch` (seção 4):
@@ -37,6 +38,7 @@ let refreshing: Promise<boolean> | null = null
 export function useApi() {
   const config = useRuntimeConfig()
   const auth = useAuthStore()
+  const nuxtApp = useNuxtApp()
 
   function withAuthHeaders(init?: HeadersInit): Headers {
     const headers = new Headers(init)
@@ -61,10 +63,12 @@ export function useApi() {
   }
 
   function refresh(): Promise<boolean> {
-    refreshing ??= tryRefresh().finally(() => {
-      refreshing = null
-    })
-    return refreshing
+    let inflight = refreshInflight.get(nuxtApp)
+    if (!inflight) {
+      inflight = tryRefresh().finally(() => refreshInflight.delete(nuxtApp))
+      refreshInflight.set(nuxtApp, inflight)
+    }
+    return inflight
   }
 
   async function request<T>(

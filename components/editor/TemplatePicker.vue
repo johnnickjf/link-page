@@ -34,7 +34,7 @@ function select(id: string): void {
 <template>
   <UCard>
     <template #header>
-      <h2 class="font-semibold">Template</h2>
+      <h2 class="font-display font-semibold">Template</h2>
     </template>
 
     <div v-if="loading" class="grid grid-cols-2 gap-3">
@@ -60,7 +60,7 @@ function select(id: string): void {
         v-for="t in templates"
         :key="t.id"
         type="button"
-        class="rounded-lg border p-3 text-left transition"
+        class="rounded-lg border p-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
         :class="
           model === t.id
             ? 'border-primary-500 ring-2 ring-primary-500/30'

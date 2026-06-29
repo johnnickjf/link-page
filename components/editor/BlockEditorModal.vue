@@ -21,6 +21,7 @@ const emit = defineEmits<{ saved: [block: Block] }>()
 
 const store = usePagesStore()
 const toast = useToast()
+const { uploadImage } = useImageUpload()
 const isEdit = computed(() => Boolean(props.block))
 
 const TYPES: { value: BlockType; label: string; icon: string }[] = [
@@ -33,6 +34,17 @@ const TYPES: { value: BlockType; label: string; icon: string }[] = [
 const NETWORKS = [
   'instagram', 'tiktok', 'youtube', 'x', 'facebook', 'linkedin',
   'github', 'twitch', 'telegram', 'spotify', 'threads', 'pinterest',
+]
+
+// Ícones populares para o botão de link (Lucide + algumas marcas).
+const LINK_ICONS = [
+  'i-lucide-link', 'i-lucide-globe', 'i-lucide-shopping-bag', 'i-lucide-music',
+  'i-lucide-play', 'i-lucide-video', 'i-lucide-mail', 'i-lucide-phone',
+  'i-lucide-calendar', 'i-lucide-map-pin', 'i-lucide-star', 'i-lucide-heart',
+  'i-lucide-book-open', 'i-lucide-briefcase', 'i-lucide-camera', 'i-lucide-file-text',
+  'i-lucide-download', 'i-lucide-gift', 'i-lucide-newspaper', 'i-lucide-graduation-cap',
+  'i-simple-icons-spotify', 'i-simple-icons-youtube', 'i-simple-icons-instagram',
+  'i-simple-icons-tiktok',
 ]
 
 function blankForm() {
@@ -167,7 +179,7 @@ async function submit(): Promise<void> {
             v-for="t in TYPES"
             :key="t.value"
             type="button"
-            class="flex flex-col items-center gap-1.5 rounded-lg border p-3 text-xs transition"
+            class="flex flex-col items-center gap-1.5 rounded-lg border p-3 text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
             :class="
               form.type === t.value
                 ? 'border-primary-500 ring-2 ring-primary-500/30'
@@ -188,8 +200,44 @@ async function submit(): Promise<void> {
           <UFormField label="URL">
             <UInput v-model="form.link.url" placeholder="https://…" class="w-full" />
           </UFormField>
-          <UFormField label="Ícone (opcional)" hint="ex.: i-lucide-globe">
-            <UInput v-model="form.link.icon" placeholder="i-lucide-globe" class="w-full" />
+          <UFormField label="Ícone (opcional)">
+            <div class="space-y-2">
+              <div class="grid grid-cols-6 gap-1.5 sm:grid-cols-8">
+                <button
+                  v-for="ic in LINK_ICONS"
+                  :key="ic"
+                  type="button"
+                  :aria-label="ic"
+                  class="flex aspect-square items-center justify-center rounded-md border transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+                  :class="
+                    form.link.icon === ic
+                      ? 'border-primary-500 text-primary-600 ring-2 ring-primary-500/30'
+                      : 'border-gray-200 text-gray-600 hover:border-gray-300 dark:border-gray-700 dark:text-gray-300'
+                  "
+                  @click="form.link.icon = form.link.icon === ic ? '' : ic"
+                >
+                  <UIcon :name="ic" class="size-5" />
+                </button>
+              </div>
+              <UInput v-model="form.link.icon" placeholder="i-lucide-globe" class="w-full" />
+              <p class="text-xs text-gray-500 dark:text-gray-400">
+                Escolha acima ou cole um código. Qualquer ícone do
+                <a
+                  href="https://lucide.dev/icons"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-primary-500 hover:underline"
+                >Lucide</a>
+                (<code>i-lucide-nome</code>) ou marca do
+                <a
+                  href="https://simpleicons.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="text-primary-500 hover:underline"
+                >Simple Icons</a>
+                (<code>i-simple-icons-nome</code>).
+              </p>
+            </div>
           </UFormField>
         </template>
 
@@ -239,9 +287,12 @@ async function submit(): Promise<void> {
         </template>
 
         <template v-else-if="form.type === 'image'">
-          <UFormField label="URL da imagem">
-            <UInput v-model="form.image.url" placeholder="https://…/img.jpg" class="w-full" />
-          </UFormField>
+          <ImageUploadField
+            v-model="form.image.url"
+            :uploader="uploadImage"
+            rounded="lg"
+            label="Imagem"
+          />
           <UFormField label="Texto alternativo (opcional)">
             <UInput v-model="form.image.alt" placeholder="Descrição da imagem" class="w-full" />
           </UFormField>

@@ -9,9 +9,11 @@ if (auth.isAuthenticated) {
   await navigateTo('/dashboard')
 }
 
-const { register, login } = useAuth()
+const { register } = useAuth()
 const toast = useToast()
 const loading = ref(false)
+const registered = ref(false)
+const registeredEmail = ref('')
 const state = reactive({ name: '', email: '', password: '' })
 
 // Validação client-side básica; a regra final de senha é do backend.
@@ -36,9 +38,9 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
   loading.value = true
   try {
     await register(event.data)
-    await login(event.data.email, event.data.password)
-    toast.add({ title: 'Conta criada!', color: 'success' })
-    await navigateTo('/dashboard')
+    // Não loga direto: o usuário precisa confirmar o e-mail antes.
+    registeredEmail.value = event.data.email
+    registered.value = true
   } catch (err) {
     toast.add({
       title: 'Não foi possível criar a conta',
@@ -52,8 +54,26 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
 </script>
 
 <template>
-  <AuthShell title="Criar conta" subtitle="Comece a montar sua página de links.">
-    <UForm :state="state" :validate="validate" class="space-y-4" @submit="onSubmit">
+  <AuthShell
+    :title="registered ? 'Quase lá!' : 'Criar conta'"
+    :subtitle="registered ? undefined : 'Comece a montar sua página de links.'"
+  >
+    <UAlert
+      v-if="registered"
+      icon="i-lucide-mail-check"
+      color="success"
+      variant="soft"
+      title="Confirme seu e-mail"
+      :description="`Enviamos um link de confirmação para ${registeredEmail}. Acesse seu e-mail e clique no link para ativar sua conta.`"
+    />
+
+    <UForm
+      v-else
+      :state="state"
+      :validate="validate"
+      class="space-y-4"
+      @submit="onSubmit"
+    >
       <UFormField label="Nome" name="name">
         <UInput
           v-model="state.name"
@@ -91,7 +111,18 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
     </UForm>
 
     <template #footer>
-      <p class="text-sm text-center text-gray-500 dark:text-gray-400">
+      <p
+        v-if="registered"
+        class="text-sm text-center text-gray-500 dark:text-gray-400"
+      >
+        <NuxtLink
+          to="/resend-verification"
+          class="text-primary-500 hover:underline"
+        >
+          Não recebi o e-mail
+        </NuxtLink>
+      </p>
+      <p v-else class="text-sm text-center text-gray-500 dark:text-gray-400">
         Já tem conta?
         <NuxtLink to="/login" class="text-primary-500 hover:underline">Entrar</NuxtLink>
       </p>

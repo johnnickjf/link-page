@@ -28,7 +28,7 @@ const iconName = computed(
 
 <template>
   <a
-    :href="config.url"
+    :href="safeUrl(config.url)"
     target="_blank"
     rel="noopener noreferrer"
     :aria-label="config.network"

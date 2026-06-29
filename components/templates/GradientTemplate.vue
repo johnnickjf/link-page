@@ -10,16 +10,15 @@ const props = defineProps<{
   preview?: boolean
 }>()
 
-const { inlineBlocks, socialBlocks, whatsapp, initials } = useTemplateLayout(
-  props,
-  '#ffffff',
-)
+const { inlineBlocks, socialBlocks, whatsapp, initials, showBranding, rootStyle } =
+  useTemplateLayout(props, '#ffffff')
 </script>
 
 <template>
   <div
     class="gradient-root px-5 py-14"
     :class="preview ? 'relative min-h-full' : 'min-h-screen'"
+    :style="rootStyle"
   >
     <div class="mx-auto flex w-full max-w-[480px] flex-col">
       <header class="flex flex-col items-center text-center">
@@ -59,7 +58,7 @@ const { inlineBlocks, socialBlocks, whatsapp, initials } = useTemplateLayout(
         <BlockRenderer v-for="(b, i) in inlineBlocks" :key="`b-${i}`" :block="b" />
       </div>
 
-      <p class="mt-12 text-center text-xs text-white/70">
+      <p v-if="showBranding" class="mt-12 text-center text-xs text-white/70">
         feito com <a href="/" class="font-semibold hover:underline">LinkLand</a>
       </p>
     </div>

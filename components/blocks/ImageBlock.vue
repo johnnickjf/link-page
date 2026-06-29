@@ -1,15 +1,18 @@
 <script setup lang="ts">
 import type { ImageConfig } from '~/types/api'
 
-defineProps<{ config: ImageConfig }>()
+const props = defineProps<{ config: ImageConfig }>()
+
+// Só vira link se a URL for segura (http/https/...); senão, fica só imagem.
+const href = computed(() => safeUrl(props.config.link))
 </script>
 
 <template>
   <component
-    :is="config.link ? 'a' : 'div'"
-    :href="config.link || undefined"
-    :target="config.link ? '_blank' : undefined"
-    :rel="config.link ? 'noopener noreferrer' : undefined"
+    :is="href ? 'a' : 'div'"
+    :href="href"
+    :target="href ? '_blank' : undefined"
+    :rel="href ? 'noopener noreferrer' : undefined"
     class="block overflow-hidden"
     :style="{ borderRadius: 'var(--lp-link-radius, 0.9rem)' }"
   >

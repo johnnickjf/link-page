@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Block, PublicBlock } from '~/types/api'
+import type { Block, PublicBlock, Theme } from '~/types/api'
 
 definePageMeta({ middleware: 'auth' })
 
@@ -17,11 +17,13 @@ const template = ref('minimal')
 const slug = ref('')
 const published = ref(false)
 const blocks = ref<Block[]>([])
+const theme = ref<Theme>({})
 
 const loading = ref(true)
 const error = ref<string | null>(null)
 const savingHeader = ref(false)
 const savingPublish = ref(false)
+const savingAppearance = ref(false)
 
 useHead(() => ({ title: `${title.value || 'Editor'} · LinkLand` }))
 
@@ -39,6 +41,7 @@ async function load(): Promise<void> {
     template.value = page.template || 'minimal'
     slug.value = page.slug
     published.value = page.is_published
+    theme.value = { ...(page.theme ?? {}) }
     blocks.value = [...blks].sort((a, b) => a.position - b.position)
   } catch (e) {
     error.value = getApiErrorMessage(e)
@@ -86,6 +89,23 @@ async function saveTemplate(id: string): Promise<void> {
       color: 'error',
     })
     await load()
+  }
+}
+
+// ---- Aparência (theme) ----
+async function saveAppearance(): Promise<void> {
+  savingAppearance.value = true
+  try {
+    await store.updatePage(pageId.value, { theme: theme.value })
+    toast.add({ title: 'Aparência salva', color: 'success' })
+  } catch (e) {
+    toast.add({
+      title: 'Erro ao salvar aparência',
+      description: getApiErrorMessage(e),
+      color: 'error',
+    })
+  } finally {
+    savingAppearance.value = false
   }
 }
 
@@ -286,16 +306,23 @@ const mobileTab = ref<'edit' | 'preview'>('edit')
             v-model:title="title"
             v-model:bio="bio"
             v-model:avatar-url="avatarUrl"
+            :page-id="pageId"
             :saving="savingHeader"
             @save="saveHeader"
           />
 
           <TemplatePicker v-model="template" @change="saveTemplate" />
 
+          <AppearanceForm
+            v-model="theme"
+            :saving="savingAppearance"
+            @save="saveAppearance"
+          />
+
           <UCard>
             <template #header>
               <div class="flex items-center justify-between">
-                <h2 class="font-semibold">Blocos</h2>
+                <h2 class="font-display font-semibold">Blocos</h2>
                 <UButton icon="i-lucide-plus" size="sm" @click="addBlock">
                   Adicionar
                 </UButton>
@@ -323,6 +350,7 @@ const mobileTab = ref<'edit' | 'preview'>('edit')
                 :title="title || 'Sua página'"
                 :bio="bio"
                 :avatar-url="avatarUrl"
+                :theme="theme"
                 :blocks="previewBlocks"
                 preview
               />

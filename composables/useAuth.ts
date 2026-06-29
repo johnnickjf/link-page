@@ -2,8 +2,10 @@ import type {
   AuthToken,
   ForgotPasswordPayload,
   RegisterPayload,
+  ResendVerificationPayload,
   ResetPasswordPayload,
   User,
+  VerifyEmailPayload,
 } from '~/types/api'
 
 /**
@@ -39,6 +41,16 @@ export function useAuth() {
     await navigateTo('/login')
   }
 
+  function verifyEmail(payload: VerifyEmailPayload): Promise<unknown> {
+    return request('/auth/verify-email', { method: 'POST', body: payload })
+  }
+
+  function resendVerification(
+    payload: ResendVerificationPayload,
+  ): Promise<unknown> {
+    return request('/auth/resend-verification', { method: 'POST', body: payload })
+  }
+
   function forgotPassword(payload: ForgotPasswordPayload): Promise<unknown> {
     return request('/auth/forgot-password', { method: 'POST', body: payload })
   }
@@ -54,6 +66,8 @@ export function useAuth() {
     register,
     fetchMe,
     logout,
+    verifyEmail,
+    resendVerification,
     forgotPassword,
     resetPassword,
   }

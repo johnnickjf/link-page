@@ -10,6 +10,21 @@ export function isValidSlugFormat(slug: string): boolean {
   return /^[a-z0-9-]{3,40}$/.test(slug)
 }
 
+/**
+ * Sanitiza URL de conteúdo do usuário antes de virar `href` (a página pública
+ * renderiza dados de terceiros). Permite http(s)/mailto/tel e caminhos relativos;
+ * sem esquema, assume https; bloqueia `javascript:`, `data:`, etc. (→ undefined).
+ */
+export function safeUrl(url?: string | null): string | undefined {
+  if (!url) return undefined
+  const u = url.trim()
+  if (/^(https?:|mailto:|tel:)/i.test(u)) return u
+  if (/^[/#]/.test(u)) return u
+  // Sem esquema → trata como https; com esquema não permitido → bloqueia.
+  if (!/^[a-z][a-z0-9+.-]*:/i.test(u)) return `https://${u}`
+  return undefined
+}
+
 /** Gera um slug sugerido a partir de um texto (acentos -> ascii, espaços -> -). */
 export function slugify(text: string): string {
   return text

@@ -6,13 +6,18 @@ useHead({ title: 'Definir nova senha · LinkLand' })
 
 const route = useRoute()
 const { resetPassword } = useAuth()
-const toast = useToast()
 const loading = ref(false)
+const expired = ref(false)
 
 // Token vem da URL: /reset-password?token=...
 const token = computed(() =>
   typeof route.query.token === 'string' ? route.query.token : '',
 )
+
+// Sem token → volta pro forgot-password.
+if (!token.value) {
+  await navigateTo('/forgot-password')
+}
 
 const state = reactive({ password: '', confirm: '' })
 
@@ -32,16 +37,12 @@ function validate(s: typeof state): FormError[] {
 
 async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
   loading.value = true
+  expired.value = false
   try {
     await resetPassword({ token: token.value, new_password: event.data.password })
-    toast.add({ title: 'Senha redefinida!', color: 'success' })
-    await navigateTo('/login')
-  } catch (err) {
-    toast.add({
-      title: 'Não foi possível redefinir',
-      description: getApiErrorMessage(err),
-      color: 'error',
-    })
+    await navigateTo('/login?reset=true')
+  } catch {
+    expired.value = true
   } finally {
     loading.value = false
   }
@@ -50,14 +51,15 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
 
 <template>
   <AuthShell title="Definir nova senha" subtitle="Escolha uma nova senha de acesso.">
-    <UAlert
-      v-if="!token"
-      icon="i-lucide-triangle-alert"
-      color="warning"
-      variant="soft"
-      title="Link inválido"
-      description="Este link de redefinição é inválido ou expirou. Solicite um novo."
-    />
+    <div v-if="expired" class="space-y-4">
+      <UAlert
+        color="error"
+        variant="soft"
+        icon="i-lucide-triangle-alert"
+        description="Este link é inválido ou já expirou."
+      />
+      <UButton block to="/forgot-password">Solicitar novo link</UButton>
+    </div>
 
     <UForm
       v-else
@@ -80,7 +82,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
         />
       </UFormField>
 
-      <UFormField label="Confirmar senha" name="confirm">
+      <UFormField label="Confirmar nova senha" name="confirm">
         <UInput
           v-model="state.confirm"
           type="password"
@@ -95,8 +97,8 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
 
     <template #footer>
       <p class="text-sm text-center text-gray-500 dark:text-gray-400">
-        <NuxtLink to="/forgot-password" class="text-primary-500 hover:underline">
-          Solicitar novo link
+        <NuxtLink to="/login" class="text-primary-500 hover:underline">
+          Voltar para o login
         </NuxtLink>
       </p>
     </template>

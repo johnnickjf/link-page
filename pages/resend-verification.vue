@@ -2,10 +2,9 @@
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
 
 definePageMeta({ layout: false })
-useHead({ title: 'Recuperar senha · LinkLand' })
+useHead({ title: 'Reenviar confirmação · LinkLand' })
 
-const { forgotPassword } = useAuth()
-const toast = useToast()
+const { resendVerification } = useAuth()
 const loading = ref(false)
 const sent = ref(false)
 const state = reactive({ email: '' })
@@ -23,34 +22,29 @@ function validate(s: typeof state): FormError[] {
 async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
   loading.value = true
   try {
-    await forgotPassword({ email: event.data.email })
-    sent.value = true
-  } catch (err) {
-    toast.add({
-      title: 'Não foi possível enviar',
-      description: getApiErrorMessage(err),
-      color: 'error',
-    })
+    await resendVerification({ email: event.data.email })
+  } catch {
+    // Resposta neutra independente do resultado (não revela se a conta existe).
   } finally {
     loading.value = false
+    sent.value = true
   }
 }
 </script>
 
 <template>
   <AuthShell
-    title="Recuperar senha"
-    subtitle="Enviaremos um link para redefinir sua senha."
+    title="Reenviar confirmação"
+    subtitle="Enviaremos um novo link para confirmar seu e-mail."
   >
-    <div v-if="sent" class="space-y-4">
-      <UAlert
-        icon="i-lucide-mail-check"
-        color="success"
-        variant="soft"
-        title="Verifique seu e-mail"
-        description="Se o e-mail existir, enviaremos as instruções de redefinição."
-      />
-    </div>
+    <UAlert
+      v-if="sent"
+      icon="i-lucide-mail-check"
+      color="success"
+      variant="soft"
+      title="Pronto"
+      description="Se houver uma conta pendente, reenviaremos o link."
+    />
 
     <UForm
       v-else
@@ -69,7 +63,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
         />
       </UFormField>
 
-      <UButton type="submit" block :loading="loading">Enviar instruções</UButton>
+      <UButton type="submit" block :loading="loading">Reenviar link</UButton>
     </UForm>
 
     <template #footer>

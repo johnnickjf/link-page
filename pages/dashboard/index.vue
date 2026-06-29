@@ -41,12 +41,13 @@ const planLabel = computed(() => {
       return '—'
   }
 })
-const maxPages = computed(() => auth.user?.max_pages ?? null)
+const maxPages = computed(() => auth.user?.limits?.max_pages ?? null)
 const usedPages = computed(() => pagesStore.pages.length)
+const pluralPages = (n: number) => (n === 1 ? 'página' : 'páginas')
 const usageText = computed(() =>
   maxPages.value === null
-    ? `${usedPages.value} página(s) · sem limite`
-    : `${usedPages.value} de ${maxPages.value} página(s) usada(s)`,
+    ? `${usedPages.value} ${pluralPages(usedPages.value)} · sem limite`
+    : `${usedPages.value} de ${maxPages.value} ${pluralPages(maxPages.value)}`,
 )
 
 // ---- Link público / copiar ----
@@ -144,7 +145,7 @@ async function confirmDelete(): Promise<void> {
 <template>
   <div>
     <div class="flex items-center justify-between gap-4">
-      <h1 class="text-2xl font-bold tracking-tight">Minhas páginas</h1>
+      <h1 class="font-display text-2xl font-bold tracking-tight">Minhas páginas</h1>
       <UButton icon="i-lucide-plus" @click="createOpen = true">Nova página</UButton>
     </div>
 
@@ -224,7 +225,7 @@ async function confirmDelete(): Promise<void> {
             <h3 class="truncate font-semibold">{{ page.title }}</h3>
             <button
               type="button"
-              class="mt-0.5 flex max-w-full items-center gap-1 text-sm text-gray-500 transition hover:text-primary-500"
+              class="mt-0.5 flex max-w-full items-center gap-1 rounded text-sm text-gray-500 transition hover:text-primary-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
               @click="copyLink(page.slug)"
             >
               <span class="truncate">/{{ page.slug }}</span>

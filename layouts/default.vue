@@ -29,20 +29,31 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
       <div
         class="mx-auto flex max-w-5xl items-center justify-between px-5 py-3"
       >
-        <NuxtLink to="/dashboard" class="font-semibold tracking-tight">
-          Link<span class="text-primary-500">Land</span>
-        </NuxtLink>
+        <Logo to="/dashboard" />
 
-        <UDropdownMenu :items="menuItems">
+        <div class="flex items-center gap-2">
           <UButton
-            color="neutral"
+            v-if="auth.isSuperadmin"
+            to="/admin"
+            icon="i-lucide-shield"
+            size="sm"
             variant="ghost"
-            trailing-icon="i-lucide-chevron-down"
+            color="neutral"
           >
-            <UAvatar icon="i-lucide-user" size="2xs" />
-            <span class="hidden sm:inline">{{ auth.user?.name || 'Conta' }}</span>
+            <span class="hidden sm:inline">Admin</span>
           </UButton>
-        </UDropdownMenu>
+
+          <UDropdownMenu :items="menuItems">
+            <UButton
+              color="neutral"
+              variant="ghost"
+              trailing-icon="i-lucide-chevron-down"
+            >
+              <UAvatar icon="i-lucide-user" size="2xs" />
+              <span class="hidden sm:inline">{{ auth.user?.name || 'Conta' }}</span>
+            </UButton>
+          </UDropdownMenu>
+        </div>
       </div>
     </header>
 

@@ -6,7 +6,7 @@ defineProps<{ config: LinkConfig }>()
 
 <template>
   <a
-    :href="config.url"
+    :href="safeUrl(config.url)"
     target="_blank"
     rel="noopener noreferrer"
     class="lp-link"

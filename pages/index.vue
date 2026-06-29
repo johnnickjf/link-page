@@ -45,9 +45,7 @@ const features = [
   <div class="min-h-screen bg-white text-gray-900 dark:bg-gray-950 dark:text-gray-100">
     <!-- Nav -->
     <header class="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
-      <span class="text-lg font-semibold tracking-tight">
-        Link<span class="text-primary-500">Land</span>
-      </span>
+      <Logo to="/" />
       <nav class="flex items-center gap-2">
         <UButton to="/login" variant="ghost" color="neutral">Entrar</UButton>
         <UButton to="/register">Criar conta</UButton>
@@ -73,7 +71,7 @@ const features = [
             class="mt-5 font-display text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl"
           >
             Um link para
-            <span class="text-primary-500">tudo</span> que você faz.
+            <span class="text-brand-gradient">tudo</span> o que você faz.
           </h1>
 
           <p
@@ -110,8 +108,8 @@ const features = [
 
     <!-- Features -->
     <section class="mx-auto max-w-6xl px-5 py-16 sm:py-20">
-      <h2 class="text-center text-3xl font-bold tracking-tight sm:text-4xl">
-        Tudo que você precisa numa página
+      <h2 class="text-center font-display text-3xl font-bold tracking-tight sm:text-4xl">
+        Tudo o que você precisa numa página
       </h2>
       <p class="mx-auto mt-3 max-w-2xl text-center text-gray-600 dark:text-gray-400">
         Simples de montar, bonito de mostrar.
@@ -139,9 +137,9 @@ const features = [
     <!-- CTA final -->
     <section class="px-5 pb-20">
       <div
-        class="mx-auto max-w-5xl rounded-3xl bg-gradient-to-br from-primary-600 to-purple-600 px-6 py-14 text-center text-white shadow-xl"
+        class="bg-brand-gradient mx-auto max-w-5xl rounded-3xl px-6 py-14 text-center text-white shadow-xl"
       >
-        <h2 class="text-3xl font-bold tracking-tight sm:text-4xl">
+        <h2 class="font-display text-3xl font-bold tracking-tight sm:text-4xl">
           Crie a sua em minutos
         </h2>
         <p class="mx-auto mt-3 max-w-xl text-white/85">
@@ -165,9 +163,7 @@ const features = [
       <div
         class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-8 text-sm text-gray-500 sm:flex-row"
       >
-        <span class="font-semibold text-gray-700 dark:text-gray-300">
-          Link<span class="text-primary-500">Land</span>
-        </span>
+        <Logo to="/" sm />
         <span>© {{ new Date().getFullYear() }} LinkLand. Feito para criadores.</span>
       </div>
     </footer>

@@ -4,7 +4,7 @@ import type { FormError, FormSubmitEvent } from '@nuxt/ui'
 definePageMeta({ layout: false })
 useHead({ title: 'Entrar · LinkLand' })
 
-// Guarda de convidado: já logado vai pro dashboard.
+const route = useRoute()
 const auth = useAuthStore()
 if (auth.isAuthenticated) {
   await navigateTo('/dashboard')
@@ -13,7 +13,12 @@ if (auth.isAuthenticated) {
 const { login } = useAuth()
 const toast = useToast()
 const loading = ref(false)
+const notVerified = ref(false)
 const state = reactive({ email: '', password: '' })
+
+// Banners vindos de redirecionamentos (verify-email / reset-password).
+const verifiedBanner = computed(() => route.query.verified === 'true')
+const resetBanner = computed(() => route.query.reset === 'true')
 
 function validate(s: typeof state): FormError[] {
   const errors: FormError[] = []
@@ -28,15 +33,22 @@ function validate(s: typeof state): FormError[] {
 
 async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
   loading.value = true
+  notVerified.value = false
   try {
     await login(event.data.email, event.data.password)
     await navigateTo('/dashboard')
   } catch (err) {
-    toast.add({
-      title: 'Não foi possível entrar',
-      description: getApiErrorMessage(err),
-      color: 'error',
-    })
+    const message = getApiErrorMessage(err)
+    // 400 "E-mail nao verificado" → oferece reenviar a confirmação.
+    if (/verific/i.test(message)) {
+      notVerified.value = true
+    } else {
+      toast.add({
+        title: 'Não foi possível entrar',
+        description: message,
+        color: 'error',
+      })
+    }
   } finally {
     loading.value = false
   }
@@ -44,39 +56,68 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
 </script>
 
 <template>
-  <AuthShell title="Entrar" subtitle="Acesse para gerenciar suas páginas.">
-    <UForm :state="state" :validate="validate" class="space-y-4" @submit="onSubmit">
-      <UFormField label="E-mail" name="email">
-        <UInput
-          v-model="state.email"
-          type="email"
-          autocomplete="email"
-          placeholder="voce@email.com"
-          class="w-full"
-        />
-      </UFormField>
+  <AuthShell title="Entrar" subtitle="Acesse sua conta para gerenciar suas páginas.">
+    <div class="space-y-4">
+      <UAlert
+        v-if="verifiedBanner"
+        color="success"
+        variant="soft"
+        icon="i-lucide-circle-check"
+        description="E-mail confirmado! Faça login para acessar."
+      />
+      <UAlert
+        v-else-if="resetBanner"
+        color="success"
+        variant="soft"
+        icon="i-lucide-circle-check"
+        description="Senha redefinida! Faça login com a nova senha."
+      />
 
-      <UFormField label="Senha" name="password">
-        <UInput
-          v-model="state.password"
-          type="password"
-          autocomplete="current-password"
-          placeholder="••••••••"
-          class="w-full"
+      <div v-if="notVerified" class="space-y-2">
+        <UAlert
+          color="warning"
+          variant="soft"
+          icon="i-lucide-triangle-alert"
+          title="Seu e-mail ainda não foi confirmado."
         />
-      </UFormField>
-
-      <div class="flex justify-end">
-        <NuxtLink
-          to="/forgot-password"
-          class="text-sm text-primary-500 hover:underline"
-        >
-          Esqueci minha senha
-        </NuxtLink>
+        <UButton block variant="subtle" color="neutral" to="/resend-verification">
+          Reenviar e-mail de confirmação
+        </UButton>
       </div>
 
-      <UButton type="submit" block :loading="loading">Entrar</UButton>
-    </UForm>
+      <UForm :state="state" :validate="validate" class="space-y-4" @submit="onSubmit">
+        <UFormField label="E-mail" name="email">
+          <UInput
+            v-model="state.email"
+            type="email"
+            autocomplete="email"
+            placeholder="voce@email.com"
+            class="w-full"
+          />
+        </UFormField>
+
+        <UFormField label="Senha" name="password">
+          <UInput
+            v-model="state.password"
+            type="password"
+            autocomplete="current-password"
+            placeholder="••••••••"
+            class="w-full"
+          />
+        </UFormField>
+
+        <div class="flex justify-end">
+          <NuxtLink
+            to="/forgot-password"
+            class="text-sm text-primary-500 hover:underline"
+          >
+            Esqueci minha senha
+          </NuxtLink>
+        </div>
+
+        <UButton type="submit" block :loading="loading">Entrar</UButton>
+      </UForm>
+    </div>
 
     <template #footer>
       <p class="text-sm text-center text-gray-500 dark:text-gray-400">

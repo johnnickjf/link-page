@@ -77,6 +77,18 @@ export const usePagesStore = defineStore('pages', () => {
     pages.value = pages.value.filter((p) => p.id !== id)
   }
 
+  /** Upload do avatar (multipart). O back converte/valida e devolve a URL final. */
+  async function uploadAvatar(pageId: ID, file: File): Promise<string> {
+    const { request } = useApi()
+    const form = new FormData()
+    form.append('file', file)
+    const res = await request<{ avatar_url: string }>(
+      `/page/${pageId}/avatar`,
+      { method: 'POST', body: form },
+    )
+    return res.avatar_url
+  }
+
   // -------- Blocos --------
   async function fetchBlocks(pageId: ID): Promise<Block[]> {
     const { request } = useApi()
@@ -126,6 +138,7 @@ export const usePagesStore = defineStore('pages', () => {
     updatePage,
     publishPage,
     deletePage,
+    uploadAvatar,
     fetchBlocks,
     createBlock,
     updateBlock,

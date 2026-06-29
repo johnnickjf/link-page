@@ -20,18 +20,23 @@ export interface AuthToken {
   expires_in?: number
 }
 
-/** GET /user/me — inclui `plan` e os limites efetivos já resolvidos. */
+/** Limites efetivos do plano (null = ilimitado). */
+export interface PlanLimits {
+  max_pages: number | null
+  max_blocks_per_page: number | null
+}
+
+/** GET /user/me — inclui `plan`, `email_verified` e os limites (aninhados). */
 export interface User {
   id: ID
   email: string
   name: string
   plan: Plan
-  /** Limite efetivo de páginas (null = ilimitado). */
-  max_pages: number | null
-  /** Limite efetivo de blocos por página (null = ilimitado). */
-  max_blocks_per_page: number | null
   is_superadmin: boolean
   is_active: boolean
+  email_verified: boolean
+  /** Limites efetivos resolvidos pelo back. */
+  limits: PlanLimits
   created_at?: string
   updated_at?: string
 }
@@ -40,6 +45,14 @@ export interface RegisterPayload {
   email: string
   password: string
   name: string
+}
+
+export interface VerifyEmailPayload {
+  token: string
+}
+
+export interface ResendVerificationPayload {
+  email: string
 }
 
 export interface ForgotPasswordPayload {
@@ -141,10 +154,32 @@ export interface ReorderBlocksPayload {
 // Páginas / templates
 // ---------------------------------------------------------------------------
 
+/**
+ * Personalização da página (campo `theme`, JSON no back). Todos opcionais —
+ * o template fornece os defaults e o theme sobrescreve só o que vier preenchido.
+ * O índice livre tolera chaves futuras sem quebrar.
+ */
 export interface Theme {
-  primary?: string
-  background?: string
-  text?: string
+  /** Formato do botão de link → muda o border-radius. */
+  button_style?: 'rounded' | 'square' | 'pill'
+  /** Cor de fundo do botão (hex). Também vira a cor de destaque. */
+  button_color?: string
+  /** Cor do texto do botão (hex). */
+  button_text_color?: string
+  /** Cor do texto (título/bio) (hex). */
+  text_color?: string
+  /** Tipo de fundo da página. */
+  background_type?: 'color' | 'gradient' | 'image'
+  /** Cor (color) ou URL (image). */
+  background_value?: string
+  /** Gradiente. */
+  background_from?: string
+  background_to?: string
+  background_direction?: string
+  /** Fonte (allowlist) — Tier 2. */
+  font?: string
+  /** Premium: oculta a assinatura "feito com LinkLand". */
+  hide_branding?: boolean
   [key: string]: unknown
 }
 
@@ -207,4 +242,56 @@ export interface ApiErrorBody {
   error?: string
   message?: string
   detail?: string | Array<{ msg: string; loc?: Array<string | number> }>
+}
+
+// ---------------------------------------------------------------------------
+// Painel superadmin (/system)
+// ---------------------------------------------------------------------------
+
+/** AdminUserResponse — usuário no painel. Limites no nível raiz (≠ /user/me). */
+export interface AdminUser {
+  id: ID
+  email: string
+  name: string
+  plan: Plan
+  max_pages: number | null
+  max_blocks_per_page: number | null
+  is_superadmin: boolean
+  is_active: boolean
+  email_verified: boolean
+  created_at?: string
+  updated_at?: string
+}
+
+export interface AdminDashboard {
+  total_users: number
+  active_users: number
+  users_by_plan: Partial<Record<Plan, number>>
+  total_pages: number
+  total_blocks: number
+}
+
+export interface Paginated<T> {
+  items: T[]
+  total: number
+  page: number
+  page_size: number
+}
+
+export interface AdminUserListParams {
+  page?: number
+  page_size?: number
+  plan?: Plan
+  q?: string
+}
+
+/** PATCH /system/users/{id}/plan — custom exige max_pages e max_blocks_per_page. */
+export interface UpdatePlanPayload {
+  plan: Plan
+  max_pages?: number
+  max_blocks_per_page?: number
+}
+
+export interface MessageResponse {
+  message: string
 }
