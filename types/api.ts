@@ -73,7 +73,7 @@ export interface ChangePasswordPayload {
 // Blocos
 // ---------------------------------------------------------------------------
 
-export type BlockType = 'link' | 'social' | 'whatsapp' | 'text' | 'image'
+export type BlockType = 'link' | 'social' | 'whatsapp' | 'email' | 'text' | 'image'
 
 export interface LinkConfig {
   label: string
@@ -94,6 +94,12 @@ export interface WhatsappConfig {
   label?: string
 }
 
+export interface EmailConfig {
+  email: string
+  label?: string
+  subject?: string
+}
+
 export interface TextConfig {
   content: string
 }
@@ -109,6 +115,7 @@ export interface BlockConfigByType {
   link: LinkConfig
   social: SocialConfig
   whatsapp: WhatsappConfig
+  email: EmailConfig
   text: TextConfig
   image: ImageConfig
 }

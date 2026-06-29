@@ -8,6 +8,7 @@ defineProps<{ block: PublicBlock }>()
 
 <template>
   <LinkBlock v-if="block.type === 'link'" :config="block.config" />
+  <EmailBlock v-else-if="block.type === 'email'" :config="block.config" />
   <TextBlock v-else-if="block.type === 'text'" :config="block.config" />
   <ImageBlock v-else-if="block.type === 'image'" :config="block.config" />
 </template>

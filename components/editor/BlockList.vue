@@ -28,6 +28,7 @@ const ICONS: Record<Block['type'], string> = {
   link: 'i-lucide-link',
   social: 'i-lucide-at-sign',
   whatsapp: 'i-simple-icons-whatsapp',
+  email: 'i-lucide-mail',
   text: 'i-lucide-type',
   image: 'i-lucide-image',
 }
@@ -40,6 +41,8 @@ function title(b: Block): string {
       return b.config.network || 'Rede social'
     case 'whatsapp':
       return b.config.label || 'WhatsApp'
+    case 'email':
+      return b.config.label || 'E-mail'
     case 'text':
       return b.config.content || 'Texto'
     case 'image':
@@ -55,6 +58,8 @@ function subtitle(b: Block): string {
       return b.config.url
     case 'whatsapp':
       return b.config.phone
+    case 'email':
+      return b.config.email
     case 'text':
       return 'Texto'
     case 'image':

@@ -3,6 +3,7 @@ import type {
   Block,
   BlockType,
   CreateBlockPayload,
+  EmailConfig,
   ID,
   ImageConfig,
   LinkConfig,
@@ -32,6 +33,7 @@ const TYPES: { value: BlockType; label: string; icon: string }[] = [
   { value: 'link', label: 'Link', icon: 'i-lucide-link' },
   { value: 'social', label: 'Rede social', icon: 'i-lucide-at-sign' },
   { value: 'whatsapp', label: 'WhatsApp', icon: 'i-simple-icons-whatsapp' },
+  { value: 'email', label: 'E-mail', icon: 'i-lucide-mail' },
   { value: 'text', label: 'Texto', icon: 'i-lucide-type' },
   { value: 'image', label: 'Imagem', icon: 'i-lucide-image' },
 ]
@@ -58,6 +60,7 @@ function blankForm() {
     link: { label: '', url: '', icon: '' } as LinkConfig,
     social: { network: 'instagram', url: '' } as SocialConfig,
     whatsapp: { phone: '', message: '', label: '' } as WhatsappConfig,
+    email: { email: '', label: '', subject: '' } as EmailConfig,
     text: { content: '' } as TextConfig,
     image: { url: '', alt: '', link: '' } as ImageConfig,
   }
@@ -77,6 +80,7 @@ watch(open, (isOpen) => {
   if (b.type === 'link') Object.assign(form.link, b.config)
   else if (b.type === 'social') Object.assign(form.social, b.config)
   else if (b.type === 'whatsapp') Object.assign(form.whatsapp, b.config)
+  else if (b.type === 'email') Object.assign(form.email, b.config)
   else if (b.type === 'text') Object.assign(form.text, b.config)
   else if (b.type === 'image') Object.assign(form.image, b.config)
 })
@@ -97,6 +101,12 @@ function buildConfig() {
       const c: WhatsappConfig = { phone: form.whatsapp.phone.trim() }
       if (form.whatsapp.message?.trim()) c.message = form.whatsapp.message.trim()
       if (form.whatsapp.label?.trim()) c.label = form.whatsapp.label.trim()
+      return c
+    }
+    case 'email': {
+      const c: EmailConfig = { email: form.email.email.trim() }
+      if (form.email.label?.trim()) c.label = form.email.label.trim()
+      if (form.email.subject?.trim()) c.subject = form.email.subject.trim()
       return c
     }
     case 'text':
@@ -121,6 +131,10 @@ function validate(): string | null {
       break
     case 'whatsapp':
       if (!form.whatsapp.phone.trim()) return 'Informe o telefone'
+      break
+    case 'email':
+      if (!form.email.email.trim()) return 'Informe o e-mail'
+      if (!form.email.email.includes('@')) return 'E-mail inválido'
       break
     case 'text':
       if (!form.text.content.trim()) return 'Escreva o texto'
@@ -288,6 +302,31 @@ async function submit(): Promise<void> {
           </UFormField>
           <UFormField label="Texto do botão (opcional)">
             <UInput v-model="form.whatsapp.label" placeholder="Fale comigo" class="w-full" />
+          </UFormField>
+        </template>
+
+        <template v-else-if="form.type === 'email'">
+          <UFormField label="E-mail">
+            <UInput
+              v-model="form.email.email"
+              type="email"
+              placeholder="voce@exemplo.com"
+              class="w-full"
+            />
+          </UFormField>
+          <UFormField label="Texto do botão (opcional)">
+            <UInput
+              v-model="form.email.label"
+              placeholder="Enviar e-mail"
+              class="w-full"
+            />
+          </UFormField>
+          <UFormField label="Assunto pré-preenchido (opcional)">
+            <UInput
+              v-model="form.email.subject"
+              placeholder="Olá! Vim pela sua página"
+              class="w-full"
+            />
           </UFormField>
         </template>
 
