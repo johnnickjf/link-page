@@ -220,6 +220,7 @@ export interface Template {
   id: string
   name: string
   description?: string
+  premium?: boolean
 }
 
 /** Retorno de GET /public/{slug} (somente leitura, SSR). */

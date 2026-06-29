@@ -61,6 +61,16 @@ export function useTemplateLayout(props: TemplateInput, defaultAccent = '#4f46e5
   )
   const showBranding = computed(() => !props.theme?.hide_branding)
 
+  const themeFont = computed(() => props.theme?.font ?? null)
+  useHead(computed(() => ({
+    link: themeFont.value
+      ? [{
+          rel: 'stylesheet',
+          href: `https://fonts.googleapis.com/css2?family=${encodeURIComponent(themeFont.value!)}:ital,wght@0,400;0,500;0,600;0,700;1,400&display=swap`,
+        }]
+      : [],
+  })))
+
   /** Overrides do theme (sobre os defaults do template). */
   const rootStyle = computed<Record<string, string>>(() => {
     const t = props.theme
@@ -74,6 +84,7 @@ export function useTemplateLayout(props: TemplateInput, defaultAccent = '#4f46e5
     if (t.text_color) style['--lp-text'] = t.text_color
     const bg = backgroundCss(t)
     if (bg) style.background = bg
+    if (t.font) style.fontFamily = `"${t.font}", ui-sans-serif, system-ui, sans-serif`
     return style
   })
 

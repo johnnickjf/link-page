@@ -22,7 +22,11 @@ const emit = defineEmits<{ saved: [block: Block] }>()
 const store = usePagesStore()
 const toast = useToast()
 const { uploadImage } = useImageUpload()
+const auth = useAuthStore()
 const isEdit = computed(() => Boolean(props.block))
+const isFree = computed(() => (auth.user?.plan ?? 'free') === 'free')
+
+const _PREMIUM_BLOCK_TYPES = new Set<BlockType>(['text', 'image'])
 
 const TYPES: { value: BlockType; label: string; icon: string }[] = [
   { value: 'link', label: 'Link', icon: 'i-lucide-link' },
@@ -179,16 +183,28 @@ async function submit(): Promise<void> {
             v-for="t in TYPES"
             :key="t.value"
             type="button"
-            class="flex flex-col items-center gap-1.5 rounded-lg border p-3 text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-            :class="
+            class="relative flex flex-col items-center gap-1.5 rounded-lg border p-3 text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+            :class="[
               form.type === t.value
                 ? 'border-primary-500 ring-2 ring-primary-500/30'
-                : 'border-gray-200 hover:border-gray-300 dark:border-gray-700'
-            "
-            @click="form.type = t.value"
+                : 'border-gray-200 hover:border-gray-300 dark:border-gray-700',
+              isFree && _PREMIUM_BLOCK_TYPES.has(t.value)
+                ? 'cursor-not-allowed opacity-50'
+                : '',
+            ]"
+            :disabled="isFree && _PREMIUM_BLOCK_TYPES.has(t.value)"
+            @click="!(isFree && _PREMIUM_BLOCK_TYPES.has(t.value)) && (form.type = t.value)"
           >
             <UIcon :name="t.icon" class="size-5" />
             {{ t.label }}
+            <UBadge
+              v-if="isFree && _PREMIUM_BLOCK_TYPES.has(t.value)"
+              color="primary"
+              variant="subtle"
+              size="sm"
+            >
+              Premium
+            </UBadge>
           </button>
         </div>
 
@@ -306,11 +322,11 @@ async function submit(): Promise<void> {
     </template>
 
     <template #footer>
-      <div class="flex w-full justify-end gap-2">
-        <UButton color="neutral" variant="ghost" @click="open = false">
+      <div class="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <UButton color="neutral" variant="ghost" class="w-full sm:w-auto" @click="open = false">
           Cancelar
         </UButton>
-        <UButton :loading="saving" @click="submit">
+        <UButton :loading="saving" class="w-full sm:w-auto" @click="submit">
           {{ isEdit ? 'Salvar' : 'Adicionar' }}
         </UButton>
       </div>

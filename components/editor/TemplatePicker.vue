@@ -1,12 +1,13 @@
 <script setup lang="ts">
 import type { Template } from '~/types/api'
 
-// Lista os templates de GET /template e deixa escolher. v-model = id do
-// template; emite `change` ao selecionar (o editor persiste via PUT).
 const model = defineModel<string>({ required: true })
 const emit = defineEmits<{ change: [id: string] }>()
 
 const { request } = useApi()
+const auth = useAuthStore()
+const isFree = computed(() => (auth.user?.plan ?? 'free') === 'free')
+
 const templates = ref<Template[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -24,10 +25,11 @@ async function load(): Promise<void> {
 }
 onMounted(load)
 
-function select(id: string): void {
-  if (id === model.value) return
-  model.value = id
-  emit('change', id)
+function select(t: Template): void {
+  if (t.premium && isFree.value) return
+  if (t.id === model.value) return
+  model.value = t.id
+  emit('change', t.id)
 }
 </script>
 
@@ -60,21 +62,27 @@ function select(id: string): void {
         v-for="t in templates"
         :key="t.id"
         type="button"
-        class="rounded-lg border p-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
-        :class="
+        class="relative rounded-lg border p-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+        :class="[
           model === t.id
             ? 'border-primary-500 ring-2 ring-primary-500/30'
-            : 'border-gray-200 hover:border-gray-300 dark:border-gray-700'
-        "
-        @click="select(t.id)"
+            : 'border-gray-200 hover:border-gray-300 dark:border-gray-700',
+          t.premium && isFree ? 'cursor-not-allowed opacity-60' : '',
+        ]"
+        @click="select(t)"
       >
-        <div class="flex items-center justify-between">
+        <div class="flex items-center justify-between gap-1">
           <span class="font-medium">{{ t.name }}</span>
-          <UIcon
-            v-if="model === t.id"
-            name="i-lucide-check-circle-2"
-            class="size-4 text-primary-500"
-          />
+          <div class="flex shrink-0 items-center gap-1">
+            <UBadge v-if="t.premium" color="primary" variant="subtle" size="sm">
+              Premium
+            </UBadge>
+            <UIcon
+              v-else-if="model === t.id"
+              name="i-lucide-check-circle-2"
+              class="size-4 text-primary-500"
+            />
+          </div>
         </div>
         <p
           v-if="t.description"
@@ -82,6 +90,11 @@ function select(id: string): void {
         >
           {{ t.description }}
         </p>
+        <UIcon
+          v-if="t.premium && isFree"
+          name="i-lucide-lock"
+          class="absolute right-2 bottom-2 size-3.5 text-gray-400"
+        />
       </button>
     </div>
   </UCard>

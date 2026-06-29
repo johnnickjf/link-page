@@ -273,14 +273,14 @@ async function confirmDelete(): Promise<void> {
               />
             </div>
 
-            <div class="flex items-center justify-between gap-3 border-t border-gray-100 pt-4 dark:border-gray-800">
+            <div class="flex flex-col gap-3 border-t border-gray-100 pt-4 dark:border-gray-800 sm:flex-row sm:items-center sm:justify-between">
               <div>
                 <p class="font-medium">Verificação de e-mail</p>
                 <p class="text-xs text-gray-500 dark:text-gray-400">
                   {{ user.email_verified ? 'E-mail já verificado.' : 'Liberar acesso manualmente.' }}
                 </p>
               </div>
-              <UBadge v-if="user.email_verified" color="success" variant="subtle">
+              <UBadge v-if="user.email_verified" color="success" variant="subtle" class="self-start sm:self-auto">
                 Verificado
               </UBadge>
               <UButton
@@ -290,6 +290,7 @@ async function confirmDelete(): Promise<void> {
                 color="neutral"
                 :loading="verifying"
                 icon="i-lucide-mail-check"
+                class="self-start sm:self-auto"
                 @click="forceVerify"
               >
                 Forçar verificação
@@ -360,11 +361,11 @@ async function confirmDelete(): Promise<void> {
         </p>
       </template>
       <template #footer>
-        <div class="flex w-full justify-end gap-2">
-          <UButton color="neutral" variant="ghost" @click="deleteOpen = false">
+        <div class="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <UButton color="neutral" variant="ghost" class="w-full sm:w-auto" @click="deleteOpen = false">
             Cancelar
           </UButton>
-          <UButton color="error" :loading="deleting" @click="confirmDelete">
+          <UButton color="error" :loading="deleting" class="w-full sm:w-auto" @click="confirmDelete">
             Excluir
           </UButton>
         </div>

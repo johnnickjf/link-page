@@ -107,7 +107,7 @@ function subtitle(b: Block): string {
         />
         <UButton
           icon="i-lucide-pencil"
-          size="xs"
+          size="sm"
           variant="ghost"
           color="neutral"
           aria-label="Editar bloco"
@@ -115,7 +115,7 @@ function subtitle(b: Block): string {
         />
         <UButton
           icon="i-lucide-trash-2"
-          size="xs"
+          size="sm"
           variant="ghost"
           color="error"
           aria-label="Excluir bloco"

@@ -294,11 +294,11 @@ async function confirmDelete(): Promise<void> {
           >
             <UInput v-model="form.slug" placeholder="seu-slug" class="w-full" />
           </UFormField>
-          <div class="flex justify-end gap-2 pt-2">
-            <UButton color="neutral" variant="ghost" @click="createOpen = false">
+          <div class="flex flex-col-reverse gap-2 pt-2 sm:flex-row sm:justify-end">
+            <UButton color="neutral" variant="ghost" class="w-full sm:w-auto" @click="createOpen = false">
               Cancelar
             </UButton>
-            <UButton type="submit" :loading="creating">Criar página</UButton>
+            <UButton type="submit" :loading="creating" class="w-full sm:w-auto">Criar página</UButton>
           </div>
         </UForm>
       </template>
@@ -318,11 +318,11 @@ async function confirmDelete(): Promise<void> {
         </p>
       </template>
       <template #footer>
-        <div class="flex w-full justify-end gap-2">
-          <UButton color="neutral" variant="ghost" @click="pageToDelete = null">
+        <div class="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <UButton color="neutral" variant="ghost" class="w-full sm:w-auto" @click="pageToDelete = null">
             Cancelar
           </UButton>
-          <UButton color="error" :loading="deleting" @click="confirmDelete">
+          <UButton color="error" :loading="deleting" class="w-full sm:w-auto" @click="confirmDelete">
             Excluir
           </UButton>
         </div>

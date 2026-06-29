@@ -100,7 +100,7 @@ const features = [
           <img
             src="/image-iphone.png"
             alt="Exemplo de página LinkLand no celular"
-            class="w-full max-w-[330px] drop-shadow-2xl"
+            class="w-full max-w-[220px] drop-shadow-2xl sm:max-w-[330px]"
           />
         </div>
       </div>
@@ -137,7 +137,7 @@ const features = [
     <!-- CTA final -->
     <section class="px-5 pb-20">
       <div
-        class="bg-brand-gradient mx-auto max-w-5xl rounded-3xl px-6 py-14 text-center text-white shadow-xl"
+        class="bg-brand-gradient mx-auto max-w-5xl rounded-3xl px-5 py-10 text-center text-white shadow-xl sm:px-8 sm:py-14"
       >
         <h2 class="font-display text-3xl font-bold tracking-tight sm:text-4xl">
           Crie a sua em minutos

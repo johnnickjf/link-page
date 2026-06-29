@@ -6,8 +6,12 @@ definePageMeta({ middleware: 'auth' })
 const route = useRoute()
 const store = usePagesStore()
 const toast = useToast()
+const auth = useAuthStore()
+const { copy } = useClipboard()
+const { request } = useApi()
 const origin = useRequestURL().origin
 const pageId = computed(() => String(route.params.pageId))
+const isPremium = computed(() => (auth.user?.plan ?? 'free') !== 'free')
 
 // Estado editável — alimenta o preview ao vivo.
 const title = ref('')
@@ -43,6 +47,7 @@ async function load(): Promise<void> {
     published.value = page.is_published
     theme.value = { ...(page.theme ?? {}) }
     blocks.value = [...blks].sort((a, b) => a.position - b.position)
+    generateQr()
   } catch (e) {
     error.value = getApiErrorMessage(e)
   } finally {
@@ -205,6 +210,38 @@ async function confirmDeleteBlock(): Promise<void> {
 }
 
 const mobileTab = ref<'edit' | 'preview'>('edit')
+
+// ---- QR Code (premium) ----
+const qrLoading = ref(false)
+const qrDataUrl = ref('')
+
+async function generateQr(): Promise<void> {
+  if (!isPremium.value || !published.value) return
+  qrLoading.value = true
+  try {
+    await request(`/page/${pageId.value}/qr`)
+    const { toDataURL } = await import('qrcode')
+    qrDataUrl.value = await toDataURL(publicUrl.value, {
+      width: 220,
+      margin: 2,
+      color: { dark: '#000000', light: '#ffffff' },
+    })
+  } catch {
+    qrDataUrl.value = ''
+  } finally {
+    qrLoading.value = false
+  }
+}
+
+watch([isPremium, published], ([prem, pub]) => {
+  if (prem && pub) generateQr()
+  else qrDataUrl.value = ''
+})
+
+async function copyPublicUrl(): Promise<void> {
+  await copy(publicUrl.value)
+  toast.add({ title: 'Link copiado!', color: 'success' })
+}
 </script>
 
 <template>
@@ -214,7 +251,7 @@ const mobileTab = ref<'edit' | 'preview'>('edit')
       <USkeleton class="h-9 w-40" />
       <div class="grid gap-6 lg:grid-cols-2">
         <USkeleton class="h-96 w-full rounded-xl" />
-        <USkeleton class="mx-auto h-[640px] w-full max-w-[380px] rounded-[2rem]" />
+        <USkeleton class="mx-auto h-[500px] w-full max-w-[380px] rounded-[2rem] sm:h-[640px]" />
       </div>
     </div>
 
@@ -251,7 +288,7 @@ const mobileTab = ref<'edit' | 'preview'>('edit')
           Voltar
         </UButton>
 
-        <div class="flex items-center gap-3">
+        <div class="flex items-center gap-2">
           <div class="flex items-center gap-2">
             <USwitch
               :model-value="published"
@@ -264,6 +301,16 @@ const mobileTab = ref<'edit' | 'preview'>('edit')
           </div>
           <UButton
             v-if="published"
+            icon="i-lucide-copy"
+            size="sm"
+            variant="subtle"
+            color="neutral"
+            @click="copyPublicUrl"
+          >
+            <span class="hidden sm:inline">Copiar link</span>
+          </UButton>
+          <UButton
+            v-if="published"
             :href="publicUrl"
             target="_blank"
             icon="i-lucide-external-link"
@@ -271,7 +318,7 @@ const mobileTab = ref<'edit' | 'preview'>('edit')
             variant="subtle"
             color="neutral"
           >
-            Ver página
+            <span class="hidden sm:inline">Ver página</span>
           </UButton>
         </div>
       </div>
@@ -313,12 +360,6 @@ const mobileTab = ref<'edit' | 'preview'>('edit')
 
           <TemplatePicker v-model="template" @change="saveTemplate" />
 
-          <AppearanceForm
-            v-model="theme"
-            :saving="savingAppearance"
-            @save="saveAppearance"
-          />
-
           <UCard>
             <template #header>
               <div class="flex items-center justify-between">
@@ -336,6 +377,48 @@ const mobileTab = ref<'edit' | 'preview'>('edit')
               @toggle="toggleBlock"
             />
           </UCard>
+
+          <AppearanceForm
+            v-model="theme"
+            :saving="savingAppearance"
+            @save="saveAppearance"
+          />
+
+          <!-- QR Code -->
+          <UCard v-if="isPremium">
+            <template #header>
+              <h2 class="font-display font-semibold">QR Code</h2>
+            </template>
+            <div class="space-y-3">
+              <template v-if="published">
+                <div v-if="qrLoading" class="flex justify-center py-4">
+                  <USkeleton class="size-[220px] rounded-lg" />
+                </div>
+                <div v-else-if="qrDataUrl" class="flex flex-col items-center gap-3">
+                  <img :src="qrDataUrl" alt="QR Code" class="size-[220px] rounded-lg" />
+                  <a :href="qrDataUrl" :download="`qr-${slug}.png`">
+                    <UButton icon="i-lucide-download" size="sm" variant="subtle" color="neutral">
+                      Baixar QR
+                    </UButton>
+                  </a>
+                </div>
+              </template>
+              <p v-else class="text-center text-sm text-gray-500 dark:text-gray-400">
+                Publique a página para gerar o QR Code.
+              </p>
+            </div>
+          </UCard>
+          <UCard v-else>
+            <template #header>
+              <div class="flex items-center gap-2">
+                <h2 class="font-display font-semibold">QR Code</h2>
+                <UBadge color="primary" variant="subtle" size="sm">Premium</UBadge>
+              </div>
+            </template>
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+              Gere e baixe o QR Code da sua página no plano Premium.
+            </p>
+          </UCard>
         </div>
 
         <!-- Preview -->
@@ -343,7 +426,7 @@ const mobileTab = ref<'edit' | 'preview'>('edit')
           <div class="lg:sticky lg:top-6">
             <p class="mb-2 text-center text-xs text-gray-500">Pré-visualização</p>
             <div
-              class="mx-auto h-[640px] w-full max-w-[380px] overflow-y-auto rounded-[2rem] border-4 border-gray-200 shadow-xl dark:border-gray-800"
+              class="mx-auto h-[500px] w-full max-w-[380px] overflow-y-auto rounded-[2rem] border-4 border-gray-200 shadow-xl dark:border-gray-800 sm:h-[640px]"
             >
               <TemplateRenderer
                 :template="template"
@@ -382,11 +465,11 @@ const mobileTab = ref<'edit' | 'preview'>('edit')
         </p>
       </template>
       <template #footer>
-        <div class="flex w-full justify-end gap-2">
-          <UButton color="neutral" variant="ghost" @click="blockToDelete = null">
+        <div class="flex w-full flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+          <UButton color="neutral" variant="ghost" class="w-full sm:w-auto" @click="blockToDelete = null">
             Cancelar
           </UButton>
-          <UButton color="error" :loading="deletingBlock" @click="confirmDeleteBlock">
+          <UButton color="error" :loading="deletingBlock" class="w-full sm:w-auto" @click="confirmDeleteBlock">
             Excluir
           </UButton>
         </div>

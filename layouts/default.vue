@@ -57,7 +57,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
       </div>
     </header>
 
-    <main class="mx-auto max-w-5xl px-5 py-8">
+    <main class="mx-auto max-w-5xl px-5 py-5 sm:py-8">
       <slot />
     </main>
   </div>

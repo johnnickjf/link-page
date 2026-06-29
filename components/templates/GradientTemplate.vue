@@ -58,9 +58,9 @@ const { inlineBlocks, socialBlocks, whatsapp, initials, showBranding, rootStyle 
         <BlockRenderer v-for="(b, i) in inlineBlocks" :key="`b-${i}`" :block="b" />
       </div>
 
-      <p v-if="showBranding" class="mt-12 text-center text-xs text-white/70">
-        feito com <a href="/" class="font-semibold hover:underline">LinkLand</a>
-      </p>
+      <div v-if="showBranding" class="mt-12 flex justify-center opacity-70 transition hover:opacity-100">
+        <Logo sm to="/" />
+      </div>
     </div>
 
     <WhatsappButton v-if="whatsapp" :config="whatsapp.config" :fixed="!preview" />

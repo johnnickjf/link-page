@@ -165,7 +165,7 @@ const planLabel: Record<Plan, string> = {
             </p>
           </div>
           <div class="flex shrink-0 items-center gap-2">
-            <UBadge color="neutral" variant="subtle">{{ planLabel[u.plan] }}</UBadge>
+            <UBadge color="neutral" variant="subtle" class="hidden sm:inline-flex">{{ planLabel[u.plan] }}</UBadge>
             <UBadge :color="u.is_active ? 'success' : 'error'" variant="subtle">
               {{ u.is_active ? 'Ativo' : 'Inativo' }}
             </UBadge>
