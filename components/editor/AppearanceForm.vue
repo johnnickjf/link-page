@@ -8,7 +8,9 @@ const emit = defineEmits<{ save: [] }>()
 
 const { uploadImage } = useImageUpload()
 const auth = useAuthStore()
-const isFree = computed(() => (auth.user?.plan ?? 'free') === 'free')
+const canBackground = computed(() => auth.canUseFeature('custom_background'))
+const canFont = computed(() => auth.canUseFeature('custom_font'))
+const canHideBranding = computed(() => auth.canUseFeature('hide_branding'))
 
 const buttonStyles = [
   { value: 'rounded', label: 'Arredondado' },
@@ -23,21 +25,23 @@ const backgroundTypes = [
 ] as const
 
 const directions = [
-  { value: '135deg', label: '↘' },
-  { value: '90deg', label: '→' },
-  { value: '180deg', label: '↓' },
-  { value: '45deg', label: '↗' },
+  { value: '135deg', label: '↘', aria: 'Diagonal (baixo-direita)' },
+  { value: '90deg', label: '→', aria: 'Horizontal (direita)' },
+  { value: '180deg', label: '↓', aria: 'Vertical (baixo)' },
+  { value: '45deg', label: '↗', aria: 'Diagonal (cima-direita)' },
 ]
 
-// Pré-carrega todas as fontes para o preview dos botões
-useHead({
-  link: [
-    {
-      rel: 'stylesheet',
-      href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600&family=Playfair+Display:wght@400;500;600&family=Raleway:wght@400;500;600&family=Oswald:wght@400;500;600&family=Lora:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&family=Josefin+Sans:wght@400;500;600&family=Caveat:wght@400;500;600;700&family=Pacifico&display=swap',
-    },
-  ],
-})
+// Pré-carrega as fontes apenas quando o usuário tem acesso (premium)
+useHead(computed(() => ({
+  link: canFont.value
+    ? [
+        {
+          rel: 'stylesheet',
+          href: 'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@400;500;600&family=Playfair+Display:wght@400;500;600&family=Raleway:wght@400;500;600&family=Oswald:wght@400;500;600&family=Lora:wght@400;500;600&family=Space+Grotesk:wght@400;500;600&family=Josefin+Sans:wght@400;500;600&family=Caveat:wght@400;500;600;700&family=Pacifico&display=swap',
+        },
+      ]
+    : [],
+})))
 
 const FONTS = [
   { value: 'Inter', label: 'Inter', hint: 'moderno' },
@@ -68,8 +72,8 @@ const FONTS = [
             v-for="s in buttonStyles"
             :key="s.value"
             size="sm"
-            :variant="theme.button_style === s.value ? 'solid' : 'subtle'"
-            :color="theme.button_style === s.value ? 'primary' : 'neutral'"
+            :variant="(theme.button_style || 'rounded') === s.value ? 'solid' : 'subtle'"
+            :color="(theme.button_style || 'rounded') === s.value ? 'primary' : 'neutral'"
             @click="theme.button_style = s.value"
           >
             {{ s.label }}
@@ -87,9 +91,9 @@ const FONTS = [
       <div>
         <div class="mb-2 flex items-center gap-2">
           <p class="text-sm font-medium">Fundo</p>
-          <UBadge v-if="isFree" color="primary" variant="subtle" size="sm">Premium</UBadge>
+          <UBadge v-if="!canBackground" color="primary" variant="subtle" size="sm">Premium</UBadge>
         </div>
-        <div :class="isFree ? 'pointer-events-none opacity-40' : ''">
+        <div :class="!canBackground ? 'pointer-events-none opacity-40' : ''">
           <div class="flex flex-wrap gap-2">
             <UButton
               v-for="b in backgroundTypes"
@@ -120,6 +124,7 @@ const FONTS = [
                   v-for="d in directions"
                   :key="d.value"
                   size="sm"
+                  :aria-label="d.aria"
                   :variant="theme.background_direction === d.value ? 'solid' : 'subtle'"
                   :color="theme.background_direction === d.value ? 'primary' : 'neutral'"
                   @click="theme.background_direction = d.value"
@@ -138,7 +143,7 @@ const FONTS = [
             />
           </div>
         </div>
-        <p v-if="isFree" class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
+        <p v-if="!canBackground" class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
           Personalize o fundo no plano Premium.
         </p>
       </div>
@@ -147,9 +152,9 @@ const FONTS = [
       <div class="border-t border-gray-100 pt-4 dark:border-gray-800">
         <div class="mb-2 flex items-center gap-2">
           <p class="text-sm font-medium">Fonte</p>
-          <UBadge v-if="isFree" color="primary" variant="subtle" size="sm">Premium</UBadge>
+          <UBadge v-if="!canFont" color="primary" variant="subtle" size="sm">Premium</UBadge>
         </div>
-        <template v-if="!isFree">
+        <template v-if="canFont">
           <div class="grid grid-cols-2 gap-2">
             <button
               v-for="f in FONTS"
@@ -184,7 +189,7 @@ const FONTS = [
         <div>
           <p class="flex items-center gap-2 font-medium">
             Ocultar "feito com LinkLand"
-            <UBadge v-if="isFree" color="primary" variant="subtle" size="sm">
+            <UBadge v-if="!canHideBranding" color="primary" variant="subtle" size="sm">
               Premium
             </UBadge>
           </p>
@@ -192,7 +197,7 @@ const FONTS = [
             Remove a assinatura no rodapé da página.
           </p>
         </div>
-        <USwitch v-model="theme.hide_branding" :disabled="isFree" />
+        <USwitch v-model="theme.hide_branding" :disabled="!canHideBranding" />
       </div>
 
       <div class="flex justify-end">

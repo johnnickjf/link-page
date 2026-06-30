@@ -58,6 +58,12 @@ export function useAdminApi() {
     return request<MessageResponse>(`/system/users/${id}`, { method: 'DELETE' })
   }
 
+  function sendPremiumInvite(id: ID) {
+    return request<MessageResponse>(`/system/users/${id}/invite-premium`, {
+      method: 'POST',
+    })
+  }
+
   return {
     getDashboard,
     listUsers,
@@ -67,5 +73,6 @@ export function useAdminApi() {
     resetPassword,
     verifyEmail,
     deleteUser,
+    sendPremiumInvite,
   }
 }

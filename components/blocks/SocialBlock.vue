@@ -24,6 +24,11 @@ const ICONS: Record<string, string> = {
 const iconName = computed(
   () => ICONS[props.config.network?.toLowerCase()] ?? 'i-lucide-link',
 )
+
+const networkLabel = computed(() => {
+  const n = (props.config.network ?? '').toLowerCase()
+  return n.charAt(0).toUpperCase() + n.slice(1)
+})
 </script>
 
 <template>
@@ -31,7 +36,7 @@ const iconName = computed(
     :href="safeUrl(config.url)"
     target="_blank"
     rel="noopener noreferrer"
-    :aria-label="config.network"
+    :aria-label="`Abrir ${networkLabel}`"
     class="lp-social"
   >
     <UIcon :name="iconName" class="size-6" />

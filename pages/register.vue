@@ -14,7 +14,8 @@ const toast = useToast()
 const loading = ref(false)
 const registered = ref(false)
 const registeredEmail = ref('')
-const state = reactive({ name: '', email: '', password: '' })
+const showReferral = ref(false)
+const state = reactive({ name: '', email: '', password: '', referral_code: '' })
 
 // Validação client-side básica; a regra final de senha é do backend.
 function validate(s: typeof state): FormError[] {
@@ -37,7 +38,9 @@ function validate(s: typeof state): FormError[] {
 async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
   loading.value = true
   try {
-    await register(event.data)
+    const payload = { ...event.data }
+    if (!payload.referral_code?.trim()) delete (payload as Record<string, unknown>).referral_code
+    await register(payload)
     // Não loga direto: o usuário precisa confirmar o e-mail antes.
     registeredEmail.value = event.data.email
     registered.value = true
@@ -106,6 +109,24 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
           class="w-full"
         />
       </UFormField>
+
+      <!-- Código de indicação (opcional, colapsável) -->
+      <div>
+        <button
+          type="button"
+          class="text-xs text-gray-500 hover:text-primary-500 dark:text-gray-400 dark:hover:text-primary-400"
+          @click="showReferral = !showReferral"
+        >
+          {{ showReferral ? '− Remover código de indicação' : '+ Tenho um código de indicação' }}
+        </button>
+        <UFormField v-if="showReferral" name="referral_code" class="mt-2">
+          <UInput
+            v-model="state.referral_code"
+            placeholder="CODIGO123"
+            class="w-full"
+          />
+        </UFormField>
+      </div>
 
       <UButton type="submit" block :loading="loading">Criar conta</UButton>
     </UForm>

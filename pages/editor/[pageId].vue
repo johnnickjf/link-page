@@ -11,7 +11,7 @@ const { copy } = useClipboard()
 const { request } = useApi()
 const origin = useRequestURL().origin
 const pageId = computed(() => String(route.params.pageId))
-const isPremium = computed(() => (auth.user?.plan ?? 'free') !== 'free')
+const canQr = computed(() => auth.canUseFeature('qr_code'))
 
 // Estado editável — alimenta o preview ao vivo.
 const title = ref('')
@@ -215,7 +215,7 @@ const qrLoading = ref(false)
 const qrDataUrl = ref('')
 
 async function generateQr(): Promise<void> {
-  if (!isPremium.value || !published.value) return
+  if (!canQr.value || !published.value) return
   qrLoading.value = true
   try {
     await request(`/page/${pageId.value}/qr`)
@@ -227,6 +227,7 @@ async function generateQr(): Promise<void> {
     })
   } catch {
     qrDataUrl.value = ''
+    toast.add({ title: 'Erro ao gerar QR Code', color: 'error' })
   } finally {
     qrLoading.value = false
   }
@@ -379,7 +380,7 @@ async function copyPublicUrl(): Promise<void> {
           />
 
           <!-- QR Code -->
-          <UCard v-if="isPremium">
+          <UCard v-if="canQr">
             <template #header>
               <h2 class="font-display font-semibold">QR Code</h2>
             </template>

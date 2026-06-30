@@ -26,6 +26,18 @@ export interface PlanLimits {
   max_blocks_per_page: number | null
 }
 
+/** Feature flags do plano custom (espelha CustomFeaturesSchema do backend). */
+export interface CustomFeatures {
+  max_pages?: number | null
+  max_blocks_per_page?: number | null
+  block_types: string[]
+  templates: string[]
+  custom_background: boolean
+  custom_font: boolean
+  hide_branding: boolean
+  qr_code: boolean
+}
+
 /** GET /user/me — inclui `plan`, `email_verified` e os limites (aninhados). */
 export interface User {
   id: ID
@@ -37,6 +49,8 @@ export interface User {
   email_verified: boolean
   /** Limites efetivos resolvidos pelo back. */
   limits: PlanLimits
+  /** Somente preenchido quando plan === 'custom'. */
+  custom_features?: CustomFeatures | null
   created_at?: string
   updated_at?: string
 }
@@ -45,6 +59,7 @@ export interface RegisterPayload {
   email: string
   password: string
   name: string
+  referral_code?: string
 }
 
 export interface VerifyEmailPayload {
@@ -145,6 +160,7 @@ export interface CreateBlockPayload<K extends BlockType = BlockType> {
   type: K
   config: BlockConfigByType[K]
   position?: number
+  is_active?: boolean
 }
 
 export interface UpdateBlockPayload {
@@ -267,6 +283,8 @@ export interface AdminUser {
   is_superadmin: boolean
   is_active: boolean
   email_verified: boolean
+  referral_code: string | null
+  custom_features: CustomFeatures | null
   created_at?: string
   updated_at?: string
 }
@@ -291,13 +309,15 @@ export interface AdminUserListParams {
   page_size?: number
   plan?: Plan
   q?: string
+  has_referral?: boolean
 }
 
-/** PATCH /system/users/{id}/plan — custom exige max_pages e max_blocks_per_page. */
+/** PATCH /system/users/{id}/plan — custom exige custom_features. */
 export interface UpdatePlanPayload {
   plan: Plan
-  max_pages?: number
-  max_blocks_per_page?: number
+  max_pages?: number | null
+  max_blocks_per_page?: number | null
+  custom_features?: CustomFeatures
 }
 
 export interface MessageResponse {

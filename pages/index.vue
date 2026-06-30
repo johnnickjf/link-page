@@ -158,13 +158,64 @@ const features = [
       </div>
     </section>
 
+    <!-- TrackPath -->
+    <section class="border-t border-gray-100 bg-gray-50 px-5 py-10 dark:border-gray-800 dark:bg-gray-900/40">
+      <div
+        class="mx-auto flex max-w-5xl flex-col items-center justify-between gap-5 sm:flex-row"
+      >
+        <div class="flex items-center gap-3">
+          <img
+            src="https://trackpath.com.br/assets/logo/favicon.png"
+            alt="TrackPath"
+            class="size-9 rounded-lg"
+          />
+          <div>
+            <p class="font-semibold text-gray-900 dark:text-gray-100">
+              Precisa de estatísticas avançadas?
+            </p>
+            <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">
+              Acompanhe cliques, origens de tráfego e conversões com o TrackPath.
+            </p>
+          </div>
+        </div>
+        <a
+          href="https://lp.trackpath.com.br"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Conhecer o TrackPath"
+          data-gtm-category="landing"
+          data-gtm-action="click_trackpath_cta"
+          data-gtm-label="TrackPath"
+          class="shrink-0 rounded-lg border border-gray-300 bg-white px-4 py-2 text-sm font-medium text-gray-700 transition hover:border-gray-400 hover:shadow-sm dark:border-gray-700 dark:bg-gray-800 dark:text-gray-200 dark:hover:border-gray-500"
+        >
+          Conhecer o TrackPath →
+        </a>
+      </div>
+    </section>
+
     <!-- Footer -->
     <footer class="border-t border-gray-200 dark:border-gray-800">
       <div
         class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-8 text-sm text-gray-500 sm:flex-row"
       >
         <Logo to="/" sm />
-        <span>© {{ new Date().getFullYear() }} LinkLand. Feito para criadores.</span>
+        <a
+          href="https://trackpath.com.br"
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label="Rastreado por TrackPath"
+          data-gtm-category="rodape"
+          data-gtm-action="click_rodape"
+          data-gtm-label="TrackPath"
+          class="inline-flex items-center gap-1.5 transition hover:text-gray-900 dark:hover:text-gray-100"
+        >
+          <img
+            src="https://trackpath.com.br/assets/logo/favicon.png"
+            alt="TrackPath"
+            class="size-4"
+          />
+          Rastreado por TrackPath
+        </a>
       </div>
     </footer>
   </div>

@@ -34,5 +34,56 @@ export const useAuthStore = defineStore('auth', () => {
     user.value = null
   }
 
-  return { user, token, isAuthenticated, isSuperadmin, setToken, setUser, clear }
+  /** true se o usuário tem acesso premium completo (superadmin ou plano premium). */
+  const isPremium = computed(
+    () => Boolean(user.value?.is_superadmin || user.value?.plan === 'premium'),
+  )
+
+  /**
+   * Verifica se o usuário pode usar uma feature específica.
+   * Superadmin e premium sempre têm acesso; custom verifica custom_features.
+   */
+  function canUseFeature(flag: keyof import('~/types/api').CustomFeatures): boolean {
+    if (!user.value) return false
+    if (user.value.is_superadmin || user.value.plan === 'premium') return true
+    if (user.value.plan === 'custom' && user.value.custom_features) {
+      const val = user.value.custom_features[flag]
+      return Boolean(val)
+    }
+    return false
+  }
+
+  /** Verifica se o usuário pode usar um tipo de bloco premium (ex.: 'text', 'image'). */
+  function canUseBlockType(type: string): boolean {
+    if (!user.value) return false
+    if (user.value.is_superadmin || user.value.plan === 'premium') return true
+    if (user.value.plan === 'custom' && user.value.custom_features) {
+      return user.value.custom_features.block_types.includes(type)
+    }
+    return false
+  }
+
+  /** Verifica se o usuário pode usar um template premium (ex.: 'gradient', 'neon'). */
+  function canUseTemplate(id: string): boolean {
+    if (!user.value) return false
+    if (user.value.is_superadmin || user.value.plan === 'premium') return true
+    if (user.value.plan === 'custom' && user.value.custom_features) {
+      return user.value.custom_features.templates.includes(id)
+    }
+    return false
+  }
+
+  return {
+    user,
+    token,
+    isAuthenticated,
+    isSuperadmin,
+    isPremium,
+    setToken,
+    setUser,
+    clear,
+    canUseFeature,
+    canUseBlockType,
+    canUseTemplate,
+  }
 })

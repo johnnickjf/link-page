@@ -8,6 +8,9 @@ const { logout } = useAuth()
 const menuItems = computed<DropdownMenuItem[][]>(() => [
   [{ label: auth.user?.email || 'Minha conta', type: 'label' }],
   [
+    { label: 'Planos', icon: 'i-lucide-sparkles', to: '/settings' },
+  ],
+  [
     {
       label: 'Sair',
       icon: 'i-lucide-log-out',

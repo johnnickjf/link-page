@@ -4,19 +4,23 @@ import type { Template } from '~/types/api'
 const model = defineModel<string>({ required: true })
 const emit = defineEmits<{ change: [id: string] }>()
 
-const { request } = useApi()
 const auth = useAuthStore()
-const isFree = computed(() => (auth.user?.plan ?? 'free') === 'free')
+const pagesStore = usePagesStore()
 
 const templates = ref<Template[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
 
 async function load(): Promise<void> {
+  if (pagesStore.templatesLoaded) {
+    templates.value = pagesStore.templates
+    loading.value = false
+    return
+  }
   loading.value = true
   error.value = null
   try {
-    templates.value = await request<Template[]>('/template')
+    templates.value = await pagesStore.fetchTemplates()
   } catch (e) {
     error.value = getApiErrorMessage(e)
   } finally {
@@ -26,7 +30,7 @@ async function load(): Promise<void> {
 onMounted(load)
 
 function select(t: Template): void {
-  if (t.premium && isFree.value) return
+  if (t.premium && !auth.canUseTemplate(t.id)) return
   if (t.id === model.value) return
   model.value = t.id
   emit('change', t.id)
@@ -57,24 +61,26 @@ function select(t: Template): void {
       </UButton>
     </div>
 
-    <div v-else class="grid grid-cols-2 gap-3 sm:grid-cols-3">
+    <div v-else role="radiogroup" aria-label="Template da página" class="grid grid-cols-2 gap-3 sm:grid-cols-3">
       <button
         v-for="t in templates"
         :key="t.id"
         type="button"
+        role="radio"
+        :aria-checked="model === t.id"
         class="relative rounded-lg border p-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
         :class="[
           model === t.id
             ? 'border-primary-500 ring-2 ring-primary-500/30'
             : 'border-gray-200 hover:border-gray-300 dark:border-gray-700',
-          t.premium && isFree ? 'cursor-not-allowed opacity-60' : '',
+          t.premium && !auth.canUseTemplate(t.id) ? 'cursor-not-allowed opacity-60' : '',
         ]"
         @click="select(t)"
       >
         <div class="flex items-center justify-between gap-1">
           <span class="font-medium">{{ t.name }}</span>
           <div class="flex shrink-0 items-center gap-1">
-            <UBadge v-if="t.premium" color="primary" variant="subtle" size="sm">
+            <UBadge v-if="t.premium && !auth.canUseTemplate(t.id)" color="primary" variant="subtle" size="sm">
               Premium
             </UBadge>
             <UIcon
@@ -91,7 +97,7 @@ function select(t: Template): void {
           {{ t.description }}
         </p>
         <UIcon
-          v-if="t.premium && isFree"
+          v-if="t.premium && !auth.canUseTemplate(t.id)"
           name="i-lucide-lock"
           class="absolute right-2 bottom-2 size-3.5 text-gray-400"
         />

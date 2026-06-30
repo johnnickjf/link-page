@@ -32,6 +32,10 @@ if (!page.value) {
   })
 }
 
+useHead(() => ({
+  link: [{ rel: 'canonical', href: url.href }],
+}))
+
 // SEO / Open Graph (bonito ao compartilhar em rede social).
 useSeoMeta({
   title: () => page.value?.title,

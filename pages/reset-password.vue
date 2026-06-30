@@ -6,6 +6,7 @@ useHead({ title: 'Definir nova senha · LinkLand' })
 
 const route = useRoute()
 const { resetPassword } = useAuth()
+const toast = useToast()
 const loading = ref(false)
 const expired = ref(false)
 
@@ -41,8 +42,17 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
   try {
     await resetPassword({ token: token.value, new_password: event.data.password })
     await navigateTo('/login?reset=true')
-  } catch {
-    expired.value = true
+  } catch (err) {
+    const status = (err as { statusCode?: number })?.statusCode
+    if (status === 400 || status === 404 || status === 422) {
+      expired.value = true
+    } else {
+      toast.add({
+        title: 'Não foi possível redefinir a senha',
+        description: getApiErrorMessage(err),
+        color: 'error',
+      })
+    }
   } finally {
     loading.value = false
   }

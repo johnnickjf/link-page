@@ -61,6 +61,10 @@ body {
 .lp-link:active {
   transform: translateY(0);
 }
+.lp-link:focus-visible {
+  outline: 2px solid var(--lp-accent, #4f46e5);
+  outline-offset: 2px;
+}
 
 .lp-social {
   color: var(--lp-muted, #6b7280);
@@ -69,4 +73,9 @@ body {
 .lp-social:hover {
   color: var(--lp-accent, #4f46e5);
   transform: scale(1.12);
+}
+.lp-social:focus-visible {
+  outline: 2px solid var(--lp-accent, #4f46e5);
+  outline-offset: 3px;
+  border-radius: 4px;
 }

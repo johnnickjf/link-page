@@ -5,6 +5,7 @@ import type {
   CreatePagePayload,
   ID,
   Page,
+  Template,
   UpdateBlockPayload,
   UpdatePagePayload,
 } from '~/types/api'
@@ -20,9 +21,21 @@ export const usePagesStore = defineStore('pages', () => {
   const error = ref<string | null>(null)
   const loaded = ref(false)
 
+  const templates = ref<Template[]>([])
+  const templatesLoaded = ref(false)
+
   function upsert(page: Page): void {
     const i = pages.value.findIndex((p) => p.id === page.id)
     if (i >= 0) pages.value[i] = page
+  }
+
+  // -------- Templates (cache de sessão) --------
+  async function fetchTemplates(): Promise<Template[]> {
+    if (templatesLoaded.value) return templates.value
+    const { request } = useApi()
+    templates.value = await request<Template[]>('/template')
+    templatesLoaded.value = true
+    return templates.value
   }
 
   // -------- Páginas --------
@@ -132,6 +145,9 @@ export const usePagesStore = defineStore('pages', () => {
     loading,
     error,
     loaded,
+    templates,
+    templatesLoaded,
+    fetchTemplates,
     fetchPages,
     getPage,
     createPage,

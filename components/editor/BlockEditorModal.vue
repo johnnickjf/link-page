@@ -25,9 +25,8 @@ const toast = useToast()
 const { uploadImage } = useImageUpload()
 const auth = useAuthStore()
 const isEdit = computed(() => Boolean(props.block))
-const isFree = computed(() => (auth.user?.plan ?? 'free') === 'free')
 
-const _PREMIUM_BLOCK_TYPES = new Set<BlockType>(['text', 'image'])
+const PREMIUM_BLOCK_TYPES = new Set<BlockType>(['text', 'image'])
 
 const TYPES: { value: BlockType; label: string; icon: string }[] = [
   { value: 'link', label: 'Link', icon: 'i-lucide-link' },
@@ -52,6 +51,17 @@ const LINK_ICONS = [
   'i-simple-icons-spotify', 'i-simple-icons-youtube', 'i-simple-icons-instagram',
   'i-simple-icons-tiktok',
 ]
+
+function iconAriaLabel(ic: string): string {
+  const name = ic.replace(/^i-(?:lucide|simple-icons)-/, '').replace(/-/g, ' ')
+  return `Ícone ${name}`
+}
+
+function selectType(type: BlockType): void {
+  if (PREMIUM_BLOCK_TYPES.has(type) && !auth.canUseBlockType(type)) return
+  form.type = type
+  error.value = null
+}
 
 function blankForm() {
   return {
@@ -134,7 +144,7 @@ function validate(): string | null {
       break
     case 'email':
       if (!form.email.email.trim()) return 'Informe o e-mail'
-      if (!form.email.email.includes('@')) return 'E-mail inválido'
+      if (!isValidEmail(form.email.email.trim())) return 'E-mail inválido'
       break
     case 'text':
       if (!form.text.content.trim()) return 'Escreva o texto'
@@ -164,6 +174,7 @@ async function submit(): Promise<void> {
           type: form.type,
           config: buildConfig(),
           position: props.nextPosition,
+          is_active: form.is_active,
         } as CreateBlockPayload)
     emit('saved', result)
     toast.add({
@@ -192,27 +203,29 @@ async function submit(): Promise<void> {
         />
 
         <!-- Tipo (só na criação) -->
-        <div v-if="!isEdit" class="grid grid-cols-3 gap-2 sm:grid-cols-5">
+        <div v-if="!isEdit" role="radiogroup" aria-label="Tipo de bloco" class="grid grid-cols-3 gap-2 sm:grid-cols-5">
           <button
             v-for="t in TYPES"
             :key="t.value"
             type="button"
+            role="radio"
+            :aria-checked="form.type === t.value"
             class="relative flex flex-col items-center gap-1.5 rounded-lg border p-3 text-xs transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
             :class="[
               form.type === t.value
                 ? 'border-primary-500 ring-2 ring-primary-500/30'
                 : 'border-gray-200 hover:border-gray-300 dark:border-gray-700',
-              isFree && _PREMIUM_BLOCK_TYPES.has(t.value)
+              PREMIUM_BLOCK_TYPES.has(t.value) && !auth.canUseBlockType(t.value)
                 ? 'cursor-not-allowed opacity-50'
                 : '',
             ]"
-            :disabled="isFree && _PREMIUM_BLOCK_TYPES.has(t.value)"
-            @click="!(isFree && _PREMIUM_BLOCK_TYPES.has(t.value)) && (form.type = t.value)"
+            :disabled="PREMIUM_BLOCK_TYPES.has(t.value) && !auth.canUseBlockType(t.value)"
+            @click="selectType(t.value)"
           >
             <UIcon :name="t.icon" class="size-5" />
             {{ t.label }}
             <UBadge
-              v-if="isFree && _PREMIUM_BLOCK_TYPES.has(t.value)"
+              v-if="PREMIUM_BLOCK_TYPES.has(t.value) && !auth.canUseBlockType(t.value)"
               color="primary"
               variant="subtle"
               size="sm"
@@ -237,7 +250,7 @@ async function submit(): Promise<void> {
                   v-for="ic in LINK_ICONS"
                   :key="ic"
                   type="button"
-                  :aria-label="ic"
+                  :aria-label="iconAriaLabel(ic)"
                   class="flex aspect-square items-center justify-center rounded-md border transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
                   :class="
                     form.link.icon === ic

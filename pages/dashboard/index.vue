@@ -28,6 +28,9 @@ onMounted(async () => {
   if (!pagesStore.loaded) await pagesStore.fetchPages()
 })
 
+// ---- Upgrade CTA ----
+const isFree = computed(() => auth.user?.plan === 'free')
+
 // ---- Seu plano (GET /user/me) ----
 const planLabel = computed(() => {
   switch (auth.user?.plan) {
@@ -149,6 +152,21 @@ async function confirmDelete(): Promise<void> {
       <UButton icon="i-lucide-plus" @click="createOpen = true">Nova página</UButton>
     </div>
 
+    <!-- CTA Premium (só para Free) -->
+    <UAlert
+      v-if="isFree && !userLoading"
+      class="mt-6"
+      icon="i-lucide-sparkles"
+      color="primary"
+      variant="soft"
+      title="Desbloqueie o LinkLand Premium"
+      description="Templates exclusivos, fontes personalizadas, QR Code, blocos de texto e imagem — e muito mais por R$19,90/mês."
+    >
+      <template #actions>
+        <UButton size="sm" to="/settings">Ver planos</UButton>
+      </template>
+    </UAlert>
+
     <!-- Seu plano -->
     <UCard class="mt-6">
       <div class="flex flex-wrap items-center justify-between gap-4">
@@ -161,7 +179,11 @@ async function confirmDelete(): Promise<void> {
           </template>
         </div>
         <div v-if="maxPages !== null" class="w-full sm:w-56">
-          <UProgress :model-value="usedPages" :max="maxPages" />
+          <UProgress
+            :model-value="usedPages"
+            :max="maxPages"
+            :color="usedPages >= maxPages ? 'error' : usedPages / maxPages >= 0.8 ? 'warning' : undefined"
+          />
         </div>
       </div>
     </UCard>

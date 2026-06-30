@@ -7,7 +7,7 @@ useHead({ title: 'Entrar · LinkLand' })
 const route = useRoute()
 const auth = useAuthStore()
 if (auth.isAuthenticated) {
-  await navigateTo('/dashboard')
+  await navigateTo(auth.isSuperadmin ? '/admin' : '/dashboard')
 }
 
 const { login } = useAuth()
@@ -35,8 +35,8 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
   loading.value = true
   notVerified.value = false
   try {
-    await login(event.data.email, event.data.password)
-    await navigateTo('/dashboard')
+    const me = await login(event.data.email, event.data.password)
+    await navigateTo(me.is_superadmin ? '/admin' : '/dashboard')
   } catch (err) {
     const message = getApiErrorMessage(err)
     // 400 "E-mail nao verificado" → oferece reenviar a confirmação.
