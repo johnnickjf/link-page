@@ -1,8 +1,7 @@
-const loading = ref(false)
-const error = ref<string | null>(null)
-
 export function useBilling() {
   const { request } = useApi()
+  const loading = ref(false)
+  const error = ref<string | null>(null)
 
   async function checkout(): Promise<void> {
     loading.value = true

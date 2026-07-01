@@ -25,14 +25,14 @@ useHead({ title: 'Termos de Uso · LinkLand' })
         </p>
         <p>
           Estes Termos de Uso regulam o acesso e a utilização do <strong>LinkLand</strong>
-          (disponível em <strong>link.landlabs.com.br</strong>), plataforma de criação de páginas de links
+          (disponível em <strong>linkland.me</strong>), plataforma de criação de páginas de links
           operada por:
         </p>
         <ul>
           <li><strong>Responsável:</strong> Johnnick Landim</li>
           <li><strong>CNPJ:</strong> 49.143.393/0001-81</li>
           <li><strong>Localização:</strong> Juiz de Fora – MG, Brasil</li>
-          <li><strong>Contato:</strong> <a href="mailto:contato@landlabs.com.br">contato@landlabs.com.br</a></li>
+          <li><strong>Contato:</strong> <a href="mailto:contato@linkland.me">contato@linkland.me</a></li>
         </ul>
         <p>
           Ao criar uma conta ou usar o LinkLand, você declara que leu, entendeu e concordou com estes
@@ -61,7 +61,7 @@ useHead({ title: 'Termos de Uso · LinkLand' })
           Ao se registrar, você se compromete a fornecer informações verdadeiras e a mantê-las atualizadas.
           Você é o único responsável pela confidencialidade de suas credenciais (e-mail e senha) e por todas
           as atividades realizadas em sua conta. Em caso de acesso não autorizado, notifique-nos
-          imediatamente pelo e-mail <a href="mailto:contato@landlabs.com.br">contato@landlabs.com.br</a>.
+          imediatamente pelo e-mail <a href="mailto:contato@linkland.me">contato@linkland.me</a>.
         </p>
 
         <h2>4. Uso Aceitável</h2>
@@ -118,7 +118,7 @@ useHead({ title: 'Termos de Uso · LinkLand' })
           Solicitações de reembolso realizadas em até <strong>7 (sete) dias corridos</strong> após a
           cobrança serão atendidas integralmente. Após esse prazo, não há reembolso proporcional para o
           período já em curso. Para solicitar reembolso, entre em contato pelo e-mail
-          <a href="mailto:contato@landlabs.com.br">contato@landlabs.com.br</a> informando o e-mail da
+          <a href="mailto:contato@linkland.me">contato@linkland.me</a> informando o e-mail da
           conta e a data da cobrança.
         </p>
 
@@ -179,7 +179,7 @@ useHead({ title: 'Termos de Uso · LinkLand' })
         <h2>12. Contato</h2>
         <p>
           Dúvidas sobre estes Termos? Entre em contato pelo e-mail
-          <a href="mailto:contato@landlabs.com.br">contato@landlabs.com.br</a>.
+          <a href="mailto:contato@linkland.me">contato@linkland.me</a>.
         </p>
       </div>
     </main>

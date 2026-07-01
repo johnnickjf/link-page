@@ -33,7 +33,7 @@ useHead({ title: 'Política de Privacidade · LinkLand' })
           <li><strong>Responsável:</strong> Johnnick Landim</li>
           <li><strong>CNPJ:</strong> 49.143.393/0001-81</li>
           <li><strong>Localização:</strong> Juiz de Fora – MG, Brasil</li>
-          <li><strong>E-mail do Encarregado (DPO):</strong> <a href="mailto:contato@landlabs.com.br">contato@landlabs.com.br</a></li>
+          <li><strong>E-mail do Encarregado (DPO):</strong> <a href="mailto:contato@linkland.me">contato@linkland.me</a></li>
         </ul>
 
         <hr />
@@ -158,7 +158,7 @@ useHead({ title: 'Política de Privacidade · LinkLand' })
         </ul>
         <p>
           Para exercer qualquer um desses direitos, envie um e-mail para
-          <a href="mailto:contato@landlabs.com.br">contato@landlabs.com.br</a> com o assunto
+          <a href="mailto:contato@linkland.me">contato@linkland.me</a> com o assunto
           <em>"Direitos do Titular – LGPD"</em>. Responderemos em até <strong>15 dias úteis</strong>.
         </p>
         <p>
@@ -205,7 +205,7 @@ useHead({ title: 'Política de Privacidade · LinkLand' })
         </p>
         <ul>
           <li><strong>Nome:</strong> Johnnick Landim</li>
-          <li><strong>E-mail:</strong> <a href="mailto:contato@landlabs.com.br">contato@landlabs.com.br</a></li>
+          <li><strong>E-mail:</strong> <a href="mailto:contato@linkland.me">contato@linkland.me</a></li>
         </ul>
 
         <h2>10. Alterações nesta Política</h2>
@@ -220,7 +220,7 @@ useHead({ title: 'Política de Privacidade · LinkLand' })
           Para dúvidas, solicitações ou reclamações relacionadas à sua privacidade:
         </p>
         <ul>
-          <li><strong>E-mail:</strong> <a href="mailto:contato@landlabs.com.br">contato@landlabs.com.br</a></li>
+          <li><strong>E-mail:</strong> <a href="mailto:contato@linkland.me">contato@linkland.me</a></li>
         </ul>
         <p>
           Caso não obtenha resposta satisfatória, você também pode contatar a

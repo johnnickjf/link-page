@@ -32,6 +32,10 @@ export const useAuthStore = defineStore('auth', () => {
   function clear(): void {
     tokenCookie.value = null
     user.value = null
+    // Sem isso, um segundo usuário logando na mesma aba (sem F5) herdaria
+    // páginas/cache do usuário anterior, já que usePagesStore usa `loaded`
+    // como cache de sessão.
+    usePagesStore().reset()
   }
 
   /** true se o usuário tem acesso premium completo (superadmin ou plano premium). */

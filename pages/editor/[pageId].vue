@@ -18,6 +18,7 @@ const title = ref('')
 const bio = ref('')
 const avatarUrl = ref('')
 const template = ref('minimal')
+const previousTemplate = ref('minimal')
 const slug = ref('')
 const published = ref(false)
 const blocks = ref<Block[]>([])
@@ -75,6 +76,7 @@ async function load(): Promise<void> {
     bio.value = page.bio ?? ''
     avatarUrl.value = page.avatar_url ?? ''
     template.value = page.template || 'minimal'
+    previousTemplate.value = template.value
     slug.value = page.slug
     published.value = page.is_published
     theme.value = { ...(page.theme ?? {}) }
@@ -125,14 +127,17 @@ async function saveHeader(): Promise<void> {
 async function saveTemplate(id: string): Promise<void> {
   try {
     await store.updatePage(pageId.value, { template: id })
+    previousTemplate.value = id
     toast.add({ title: 'Template alterado', color: 'success' })
   } catch (e) {
+    // Reverte só o template (não recarrega a página inteira) — do contrário,
+    // edições não salvas no cabeçalho/aparência seriam perdidas silenciosamente.
+    template.value = previousTemplate.value
     toast.add({
       title: 'Erro ao trocar template',
       description: getApiErrorMessage(e),
       color: 'error',
     })
-    await load()
   }
 }
 
@@ -231,7 +236,14 @@ async function persistOrder(): Promise<void> {
       description: getApiErrorMessage(e),
       color: 'error',
     })
-    await load()
+    // Resincroniza só os blocos (não a página inteira) — do contrário,
+    // edições não salvas no cabeçalho/aparência seriam perdidas silenciosamente.
+    try {
+      const blks = await store.fetchBlocks(pageId.value)
+      blocks.value = [...blks].sort((a, b) => a.position - b.position)
+    } catch {
+      // Mantém a ordem local se o resync também falhar.
+    }
   }
 }
 

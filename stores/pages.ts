@@ -29,6 +29,19 @@ export const usePagesStore = defineStore('pages', () => {
     if (i >= 0) pages.value[i] = page
   }
 
+  /**
+   * Limpa dados do usuário (páginas). Chamado no logout — sem isso, um
+   * segundo usuário logando na mesma aba (sem F5) veria as páginas do
+   * usuário anterior, já que `loaded` funciona como cache de sessão.
+   * `templates` não é resetado: é um catálogo fixo, não específico do usuário.
+   */
+  function reset(): void {
+    pages.value = []
+    loading.value = false
+    error.value = null
+    loaded.value = false
+  }
+
   // -------- Templates (cache de sessão) --------
   async function fetchTemplates(): Promise<Template[]> {
     if (templatesLoaded.value) return templates.value
@@ -147,6 +160,7 @@ export const usePagesStore = defineStore('pages', () => {
     loaded,
     templates,
     templatesLoaded,
+    reset,
     fetchTemplates,
     fetchPages,
     getPage,
