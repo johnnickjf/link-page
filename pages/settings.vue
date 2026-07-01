@@ -3,21 +3,12 @@ definePageMeta({ middleware: 'auth' })
 useHead({ title: 'Planos · LinkLand' })
 
 const auth = useAuthStore()
-const toast = useToast()
+const billing = useBilling()
 
 const currentPlan = computed(() => auth.user?.plan ?? 'free')
 const isPremium = computed(() => currentPlan.value === 'premium' || !!auth.user?.is_superadmin)
 const isFree = computed(() => currentPlan.value === 'free')
-
-function handleUpgrade(): void {
-  // TODO: integrar com Stripe ou sistema de pagamento
-  toast.add({
-    title: 'Em breve!',
-    description: 'O checkout está sendo configurado. Entre em contato para fazer upgrade agora.',
-    color: 'info',
-    duration: 6000,
-  })
-}
+const showManage = computed(() => currentPlan.value === 'premium')
 
 const FREE_FEATURES = [
   { label: '1 página', included: true },
@@ -73,6 +64,28 @@ const PREMIUM_FEATURES = [
       icon="i-lucide-sparkles"
       title="Você já tem o plano Premium"
       description="Aproveite todos os recursos sem limitações. Obrigado por apoiar o LinkLand!"
+    >
+      <template v-if="showManage" #actions>
+        <UButton
+          size="sm"
+          variant="subtle"
+          color="success"
+          :loading="billing.loading.value"
+          icon="i-lucide-credit-card"
+          @click="billing.portal()"
+        >
+          Gerenciar assinatura
+        </UButton>
+      </template>
+    </UAlert>
+
+    <UAlert
+      v-if="billing.error.value"
+      class="mx-auto mb-6 max-w-3xl"
+      color="error"
+      variant="soft"
+      icon="i-lucide-triangle-alert"
+      :description="billing.error.value"
     />
 
     <div class="mx-auto grid max-w-3xl items-start gap-6 lg:grid-cols-2">
@@ -142,10 +155,11 @@ const PREMIUM_FEATURES = [
             <button
               type="button"
               class="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
-              :disabled="isPremium"
-              @click="handleUpgrade"
+              :disabled="isPremium || billing.loading.value"
+              @click="billing.checkout()"
             >
               <UIcon v-if="isPremium" name="i-lucide-check" class="size-4" />
+              <UIcon v-else-if="billing.loading.value" name="i-lucide-loader-circle" class="size-4 animate-spin" />
               {{ isPremium ? 'Plano atual' : 'Assinar por R$19,90/mês' }}
             </button>
 

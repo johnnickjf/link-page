@@ -11,20 +11,42 @@ const pagesStore = usePagesStore()
 const toast = useToast()
 const { copy } = useClipboard()
 const origin = useRequestURL().origin
+const route = useRoute()
 
 const userLoading = ref(false)
 
 onMounted(async () => {
-  if (!auth.user) {
-    userLoading.value = true
-    try {
-      await fetchMe()
-    } catch {
-      // 401 já é tratado pelo useApi (refresh/logout).
-    } finally {
-      userLoading.value = false
-    }
+  const payment = route.query.payment as string | undefined
+  if (payment) {
+    // Remove o query param da URL sem recarregar a página.
+    await navigateTo('/dashboard', { replace: true })
   }
+
+  userLoading.value = true
+  try {
+    await fetchMe()
+  } catch {
+    // 401 já é tratado pelo useApi (refresh/logout).
+  } finally {
+    userLoading.value = false
+  }
+
+  if (payment === 'success') {
+    toast.add({
+      title: 'Pagamento confirmado!',
+      description: 'Seu plano Premium está ativo. Aproveite todos os recursos.',
+      color: 'success',
+      duration: 8000,
+    })
+  } else if (payment === 'cancelled') {
+    toast.add({
+      title: 'Checkout cancelado',
+      description: 'Nenhum valor foi cobrado. Volte quando quiser assinar.',
+      color: 'neutral',
+      duration: 5000,
+    })
+  }
+
   if (!pagesStore.loaded) await pagesStore.fetchPages()
 })
 
