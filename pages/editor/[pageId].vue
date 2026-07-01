@@ -23,11 +23,43 @@ const published = ref(false)
 const blocks = ref<Block[]>([])
 const theme = ref<Theme>({})
 
+// Snapshot do último estado salvo — usado para detectar dirty e reverter.
+const savedTitle = ref('')
+const savedBio = ref('')
+const savedAvatarUrl = ref('')
+const savedTheme = ref<Theme>({})
+
+function syncSnapshot(): void {
+  savedTitle.value = title.value
+  savedBio.value = bio.value
+  savedAvatarUrl.value = avatarUrl.value
+  savedTheme.value = JSON.parse(JSON.stringify(theme.value))
+}
+
+const headerDirty = computed(
+  () =>
+    title.value !== savedTitle.value ||
+    bio.value !== savedBio.value ||
+    avatarUrl.value !== savedAvatarUrl.value,
+)
+const themeDirty = computed(
+  () => JSON.stringify(theme.value) !== JSON.stringify(savedTheme.value),
+)
+const isDirty = computed(() => headerDirty.value || themeDirty.value)
+
+function revert(): void {
+  title.value = savedTitle.value
+  bio.value = savedBio.value
+  avatarUrl.value = savedAvatarUrl.value
+  theme.value = JSON.parse(JSON.stringify(savedTheme.value))
+}
+
 const loading = ref(true)
 const error = ref<string | null>(null)
 const savingHeader = ref(false)
 const savingPublish = ref(false)
 const savingAppearance = ref(false)
+const savingAll = ref(false)
 
 useHead(() => ({ title: `${title.value || 'Editor'} · LinkLand` }))
 
@@ -47,6 +79,7 @@ async function load(): Promise<void> {
     published.value = page.is_published
     theme.value = { ...(page.theme ?? {}) }
     blocks.value = [...blks].sort((a, b) => a.position - b.position)
+    syncSnapshot()
   } catch (e) {
     error.value = getApiErrorMessage(e)
   } finally {
@@ -61,14 +94,21 @@ const previewBlocks = computed<PublicBlock[]>(() =>
 const publicUrl = computed(() => `${origin}/${slug.value}`)
 
 // ---- Cabeçalho ----
+async function _persistHeader(): Promise<void> {
+  await store.updatePage(pageId.value, {
+    title: title.value.trim(),
+    bio: bio.value,
+    avatar_url: avatarUrl.value,
+  })
+  savedTitle.value = title.value
+  savedBio.value = bio.value
+  savedAvatarUrl.value = avatarUrl.value
+}
+
 async function saveHeader(): Promise<void> {
   savingHeader.value = true
   try {
-    await store.updatePage(pageId.value, {
-      title: title.value.trim(),
-      bio: bio.value,
-      avatar_url: avatarUrl.value,
-    })
+    await _persistHeader()
     toast.add({ title: 'Cabeçalho salvo', color: 'success' })
   } catch (e) {
     toast.add({
@@ -97,10 +137,15 @@ async function saveTemplate(id: string): Promise<void> {
 }
 
 // ---- Aparência (theme) ----
+async function _persistAppearance(): Promise<void> {
+  await store.updatePage(pageId.value, { theme: theme.value })
+  savedTheme.value = JSON.parse(JSON.stringify(theme.value))
+}
+
 async function saveAppearance(): Promise<void> {
   savingAppearance.value = true
   try {
-    await store.updatePage(pageId.value, { theme: theme.value })
+    await _persistAppearance()
     toast.add({ title: 'Aparência salva', color: 'success' })
   } catch (e) {
     toast.add({
@@ -110,6 +155,25 @@ async function saveAppearance(): Promise<void> {
     })
   } finally {
     savingAppearance.value = false
+  }
+}
+
+// ---- Salvar tudo (barra flutuante) ----
+async function saveAll(): Promise<void> {
+  if (!isDirty.value || savingAll.value) return
+  savingAll.value = true
+  try {
+    if (headerDirty.value) await _persistHeader()
+    if (themeDirty.value) await _persistAppearance()
+    toast.add({ title: 'Tudo salvo', color: 'success' })
+  } catch (e) {
+    toast.add({
+      title: 'Erro ao salvar',
+      description: getApiErrorMessage(e),
+      color: 'error',
+    })
+  } finally {
+    savingAll.value = false
   }
 }
 
@@ -376,7 +440,7 @@ async function copyPublicUrl(): Promise<void> {
         <!-- Edição -->
         <div
           class="min-w-0 space-y-6"
-          :class="mobileTab !== 'edit' ? 'hidden lg:block' : ''"
+          :class="[mobileTab !== 'edit' ? 'hidden lg:block' : '', isDirty ? 'pb-24 sm:pb-6' : '']"
         >
           <PageHeaderForm
             v-model:title="title"
@@ -486,6 +550,37 @@ async function copyPublicUrl(): Promise<void> {
       </div>
     </template>
 
+    <!-- Barra flutuante de save -->
+    <Transition name="save-bar">
+      <div
+        v-if="isDirty"
+        class="fixed bottom-4 left-3 right-3 z-50 flex items-center gap-3 rounded-xl border border-gray-200 bg-white px-4 py-2.5 shadow-xl dark:border-gray-700 dark:bg-gray-900 sm:left-1/2 sm:right-auto sm:bottom-6 sm:w-auto sm:-translate-x-1/2"
+      >
+        <UIcon name="i-lucide-circle-dot" class="size-3.5 shrink-0 text-amber-500" />
+        <span class="flex-1 text-sm text-gray-600 dark:text-gray-300 sm:flex-none">Alterações não salvas</span>
+        <div class="flex shrink-0 items-center gap-2">
+          <UButton
+            size="sm"
+            variant="ghost"
+            color="neutral"
+            icon="i-lucide-rotate-ccw"
+            :disabled="savingAll"
+            @click="revert"
+          >
+            Reverter
+          </UButton>
+          <UButton
+            size="sm"
+            icon="i-lucide-save"
+            :loading="savingAll"
+            @click="saveAll"
+          >
+            Salvar
+          </UButton>
+        </div>
+      </div>
+    </Transition>
+
     <!-- Modal criar/editar bloco -->
     <BlockEditorModal
       v-model:open="blockModalOpen"
@@ -520,3 +615,15 @@ async function copyPublicUrl(): Promise<void> {
     </UModal>
   </div>
 </template>
+
+<style scoped>
+.save-bar-enter-active,
+.save-bar-leave-active {
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+.save-bar-enter-from,
+.save-bar-leave-to {
+  opacity: 0;
+  transform: translateX(-50%) translateY(12px);
+}
+</style>

@@ -24,7 +24,7 @@ useHead({
     :class="preview ? 'relative min-h-full' : 'min-h-screen'"
     :style="rootStyle"
   >
-    <div class="mx-auto flex w-full max-w-[480px] flex-col items-center">
+    <div class="mx-auto flex w-full max-w-[480px] flex-col items-center pixel-content">
 
       <!-- Avatar quadrado -->
       <div class="pixel-avatar">
@@ -79,11 +79,9 @@ useHead({
 <style scoped>
 /* ── Base ── */
 .pixel-root {
+  position: relative;
+  overflow: hidden;
   background-color: #0a0a16;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
-  background-size: 16px 16px;
 
   --lp-text:        #f0f0f0;
   --lp-muted:       #7070a0;
@@ -92,6 +90,25 @@ useHead({
   --lp-link-border: var(--lp-accent);
   --lp-link-radius: 0;
   --lp-link-shadow: 4px 4px 0 #000;
+}
+
+/* Grade sempre visível, independente da cor/fundo personalizado. */
+.pixel-root::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.045) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Conteúdo acima da grade. */
+.pixel-content {
+  position: relative;
+  z-index: 1;
 }
 
 /* ── Título ── */
@@ -143,6 +160,9 @@ useHead({
   font-family: 'Press Start 2P', monospace;
   letter-spacing: 0.04em;
   text-transform: uppercase;
+  min-height: 44px; /* área de toque mínima recomendada (iOS HIG) */
+  white-space: normal;
+  word-break: break-word;
   box-shadow: 4px 4px 0 #000;
   transition: box-shadow 0.06s steps(1), transform 0.06s steps(1);
 }

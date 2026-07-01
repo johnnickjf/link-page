@@ -24,6 +24,14 @@ const backgroundTypes = [
   { value: 'image', label: 'Imagem' },
 ] as const
 
+function clearBackground(): void {
+  theme.value.background_type = undefined
+  theme.value.background_value = undefined
+  theme.value.background_from = undefined
+  theme.value.background_to = undefined
+  theme.value.background_direction = undefined
+}
+
 const directions = [
   { value: '135deg', label: '↘', aria: 'Diagonal (baixo-direita)' },
   { value: '90deg', label: '→', aria: 'Horizontal (direita)' },
@@ -95,6 +103,14 @@ const FONTS = [
         </div>
         <div :class="!canBackground ? 'pointer-events-none opacity-40' : ''">
           <div class="flex flex-wrap gap-2">
+            <UButton
+              size="sm"
+              :variant="!theme.background_type ? 'solid' : 'subtle'"
+              :color="!theme.background_type ? 'neutral' : 'neutral'"
+              @click="clearBackground"
+            >
+              Padrão
+            </UButton>
             <UButton
               v-for="b in backgroundTypes"
               :key="b.value"

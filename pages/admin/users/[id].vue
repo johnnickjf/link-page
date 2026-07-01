@@ -30,6 +30,7 @@ const PREMIUM_BLOCK_TYPES = [
 const PREMIUM_TEMPLATES = [
   { value: 'gradient', label: 'Gradient' },
   { value: 'neon', label: 'Neon' },
+  { value: 'pixel', label: 'Pixel' },
 ]
 
 const planForm = reactive({ plan: 'free' as Plan, max_pages: null as number | null, max_blocks_per_page: null as number | null })
