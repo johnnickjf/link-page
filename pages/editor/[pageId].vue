@@ -186,6 +186,29 @@ async function toggleBlock(block: Block): Promise<void> {
   }
 }
 
+const duplicatingBlock = ref(false)
+async function duplicateBlock(block: Block): Promise<void> {
+  if (duplicatingBlock.value) return
+  duplicatingBlock.value = true
+  try {
+    const created = await store.createBlock(pageId.value, {
+      type: block.type,
+      config: { ...block.config } as never,
+      position: blocks.value.length,
+    })
+    blocks.value.push(created)
+    toast.add({ title: 'Bloco duplicado', color: 'success' })
+  } catch (e) {
+    toast.add({
+      title: 'Erro ao duplicar',
+      description: getApiErrorMessage(e),
+      color: 'error',
+    })
+  } finally {
+    duplicatingBlock.value = false
+  }
+}
+
 const blockToDelete = ref<Block | null>(null)
 const deletingBlock = ref(false)
 async function confirmDeleteBlock(): Promise<void> {
@@ -315,6 +338,17 @@ async function copyPublicUrl(): Promise<void> {
           >
             <span class="hidden sm:inline">Ver página</span>
           </UButton>
+          <UButton
+            v-if="!published"
+            :to="`/preview/${pageId}`"
+            target="_blank"
+            icon="i-lucide-eye"
+            size="sm"
+            variant="subtle"
+            color="neutral"
+          >
+            <span class="hidden sm:inline">Pré-visualizar</span>
+          </UButton>
         </div>
       </div>
 
@@ -370,6 +404,7 @@ async function copyPublicUrl(): Promise<void> {
               @edit="editBlock"
               @remove="(b) => (blockToDelete = b)"
               @toggle="toggleBlock"
+              @duplicate="duplicateBlock"
             />
           </UCard>
 

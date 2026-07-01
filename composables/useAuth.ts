@@ -1,5 +1,6 @@
 import type {
   AuthToken,
+  ChangePasswordPayload,
   ForgotPasswordPayload,
   RegisterPayload,
   ResendVerificationPayload,
@@ -59,6 +60,22 @@ export function useAuth() {
     return request('/auth/reset-password', { method: 'POST', body: payload })
   }
 
+  async function updateProfile(name: string): Promise<User> {
+    const me = await request<User>('/user/me', { method: 'PUT', body: { name } })
+    auth.setUser(me)
+    return me
+  }
+
+  function changePassword(payload: ChangePasswordPayload): Promise<unknown> {
+    return request('/user/me/change-password', { method: 'POST', body: payload })
+  }
+
+  async function deleteAccount(): Promise<void> {
+    await request('/user/me', { method: 'DELETE' })
+    auth.clear()
+    await navigateTo('/login')
+  }
+
   return {
     user: computed(() => auth.user),
     isAuthenticated: computed(() => auth.isAuthenticated),
@@ -70,5 +87,8 @@ export function useAuth() {
     resendVerification,
     forgotPassword,
     resetPassword,
+    updateProfile,
+    changePassword,
+    deleteAccount,
   }
 }

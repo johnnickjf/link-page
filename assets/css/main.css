@@ -1,5 +1,6 @@
 @import "tailwindcss";
 @import "@nuxt/ui";
+@plugin "@tailwindcss/typography";
 
 /* Tokens de tipografia consumidos pelos templates da página pública. */
 @theme {

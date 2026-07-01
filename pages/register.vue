@@ -15,6 +15,7 @@ const loading = ref(false)
 const registered = ref(false)
 const registeredEmail = ref('')
 const showReferral = ref(false)
+const showPassword = ref(false)
 const state = reactive({ name: '', email: '', password: '', referral_code: '' })
 
 // Validação client-side básica; a regra final de senha é do backend.
@@ -99,36 +100,72 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
       <UFormField
         label="Senha"
         name="password"
-        hint="8+ caracteres, com maiúscula, minúscula e número"
       >
         <UInput
           v-model="state.password"
-          type="password"
+          :type="showPassword ? 'text' : 'password'"
           autocomplete="new-password"
           placeholder="••••••••"
           class="w-full"
-        />
+        >
+          <template #trailing>
+            <button
+              type="button"
+              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              :aria-label="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
+              @click="showPassword = !showPassword"
+            >
+              <UIcon :name="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" class="size-4" />
+            </button>
+          </template>
+        </UInput>
+        <PasswordStrengthBar :password="state.password" class="mt-2" />
       </UFormField>
 
-      <!-- Código de indicação (opcional, colapsável) -->
+      <!-- Código de indicação / cupom (opcional, colapsável) -->
       <div>
         <button
           type="button"
-          class="text-xs text-gray-500 hover:text-primary-500 dark:text-gray-400 dark:hover:text-primary-400"
+          class="flex items-center gap-1 text-sm font-medium text-primary-600 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
           @click="showReferral = !showReferral"
         >
-          {{ showReferral ? '− Remover código de indicação' : '+ Tenho um código de indicação' }}
-        </button>
-        <UFormField v-if="showReferral" name="referral_code" class="mt-2">
-          <UInput
-            v-model="state.referral_code"
-            placeholder="CODIGO123"
-            class="w-full"
+          <UIcon
+            :name="showReferral ? 'i-lucide-chevron-up' : 'i-lucide-tag'"
+            class="size-4"
           />
-        </UFormField>
+          {{ showReferral ? 'Remover código' : 'Tenho um cupom ou código de indicação' }}
+        </button>
+        <Transition
+          enter-active-class="transition-all duration-200 ease-out"
+          enter-from-class="opacity-0 -translate-y-1"
+          enter-to-class="opacity-100 translate-y-0"
+          leave-active-class="transition-all duration-150 ease-in"
+          leave-from-class="opacity-100 translate-y-0"
+          leave-to-class="opacity-0 -translate-y-1"
+        >
+          <UFormField v-if="showReferral" name="referral_code" class="mt-2">
+            <UInput
+              v-model="state.referral_code"
+              placeholder="Ex.: AMIGO2024"
+              class="w-full"
+              autofocus
+            >
+              <template #leading>
+                <UIcon name="i-lucide-ticket" class="size-4 text-gray-400" />
+              </template>
+            </UInput>
+          </UFormField>
+        </Transition>
       </div>
 
       <UButton type="submit" block :loading="loading">Criar conta</UButton>
+
+      <p class="text-center text-xs text-gray-400 dark:text-gray-500">
+        Ao criar sua conta, você concorda com os
+        <NuxtLink to="/termos" target="_blank" class="underline hover:text-gray-600 dark:hover:text-gray-300">Termos de Uso</NuxtLink>
+        e a
+        <NuxtLink to="/privacidade" target="_blank" class="underline hover:text-gray-600 dark:hover:text-gray-300">Política de Privacidade</NuxtLink>.
+      </p>
     </UForm>
 
     <template #footer>

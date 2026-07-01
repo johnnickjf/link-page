@@ -5,8 +5,8 @@ const gradId = useId()
 <template>
   <a
     href="/"
-    class="mt-12 flex flex-col items-center gap-1 text-center text-xs transition hover:opacity-100"
-    style="color: var(--lp-muted); opacity: 0.8"
+    class="mt-12 flex flex-col items-center gap-1.5 text-center text-xs opacity-80 transition-opacity hover:opacity-100"
+    style="color: var(--lp-text)"
     aria-label="Criado com LinkLand — crie sua conta gratuitamente"
   >
     <div class="flex items-center gap-1.5">
@@ -34,6 +34,8 @@ const gradId = useId()
       </svg>
       <span class="font-semibold" aria-hidden="true">LinkLand</span>
     </div>
-    <span class="text-[11px] text-blue-500" aria-hidden="true">Crie sua conta gratuitamente →</span>
+    <span class="text-[11px]" style="color: var(--lp-accent)" aria-hidden="true">
+      Crie sua conta gratuitamente →
+    </span>
   </a>
 </template>

@@ -17,23 +17,48 @@ function goHome(): void {
 
 <template>
   <div
-    class="flex min-h-screen items-center justify-center bg-gray-50 p-6 text-center text-gray-900 dark:bg-gray-950 dark:text-gray-100"
+    class="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-6 text-center text-gray-900 dark:bg-gray-950 dark:text-gray-100"
   >
-    <div class="max-w-md">
-      <p class="font-display text-7xl font-bold text-primary-500">
+    <div class="mb-10">
+      <Logo />
+    </div>
+
+    <div class="max-w-sm">
+      <p class="font-display text-8xl font-bold text-primary-500 select-none">
         {{ error?.statusCode || 500 }}
       </p>
+
       <h1 class="mt-4 text-2xl font-bold tracking-tight">
-        {{ is404 ? 'Página não encontrada' : 'Algo deu errado' }}
+        {{ is404 ? 'Essa página não existe' : 'Algo deu errado' }}
       </h1>
+
       <p class="mt-2 text-gray-500 dark:text-gray-400">
         {{
           is404
             ? 'Esse endereço não existe ou ainda não foi publicado.'
-            : 'Tente novamente em instantes.'
+            : 'Tente novamente em instantes. Se o problema persistir, entre em contato.'
         }}
       </p>
-      <UButton class="mt-6" size="lg" @click="goHome">Voltar ao início</UButton>
+
+      <div class="mt-8 flex flex-col items-center gap-3 sm:flex-row sm:justify-center">
+        <UButton size="lg" icon="i-lucide-house" @click="goHome">
+          Voltar ao início
+        </UButton>
+        <UButton
+          v-if="is404"
+          size="lg"
+          variant="ghost"
+          color="neutral"
+          icon="i-lucide-arrow-left"
+          @click="$router.back()"
+        >
+          Página anterior
+        </UButton>
+      </div>
     </div>
+
+    <p class="mt-16 text-xs text-gray-400 dark:text-gray-600">
+      LinkLand · Seus links, sua identidade
+    </p>
   </div>
 </template>

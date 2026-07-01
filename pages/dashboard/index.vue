@@ -15,6 +15,27 @@ const route = useRoute()
 
 const userLoading = ref(false)
 
+// ---- Onboarding ----
+const ONBOARDING_KEY = 'll_onboarding_done'
+const showOnboarding = ref(false)
+
+function dismissOnboarding(): void {
+  showOnboarding.value = false
+  if (import.meta.client) localStorage.setItem(ONBOARDING_KEY, '1')
+}
+
+function checkOnboarding(): void {
+  if (!import.meta.client) return
+  const done = localStorage.getItem(ONBOARDING_KEY)
+  if (!done && pagesStore.pages.length === 0) {
+    showOnboarding.value = true
+  }
+}
+
+watch(() => pagesStore.loaded, (loaded) => {
+  if (loaded) checkOnboarding()
+}, { immediate: true })
+
 onMounted(async () => {
   const payment = route.query.payment as string | undefined
   if (payment) {
@@ -169,25 +190,43 @@ async function confirmDelete(): Promise<void> {
 
 <template>
   <div>
+    <OnboardingModal
+      v-if="showOnboarding"
+      @done="dismissOnboarding"
+    />
     <div class="flex items-center justify-between gap-4">
       <h1 class="font-display text-2xl font-bold tracking-tight">Minhas páginas</h1>
       <UButton icon="i-lucide-plus" @click="createOpen = true">Nova página</UButton>
     </div>
 
     <!-- CTA Premium (só para Free) -->
-    <UAlert
+    <div
       v-if="isFree && !userLoading"
-      class="mt-6"
-      icon="i-lucide-sparkles"
-      color="primary"
-      variant="soft"
-      title="Desbloqueie o LinkLand Premium"
-      description="Templates exclusivos, fontes personalizadas, QR Code, blocos de texto e imagem — e muito mais por R$19,90/mês."
+      class="mt-6 overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 px-6 py-5 shadow-lg"
     >
-      <template #actions>
-        <UButton size="sm" to="/settings">Ver planos</UButton>
-      </template>
-    </UAlert>
+      <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+        <div class="flex items-start gap-3">
+          <div
+            class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/20 text-white"
+          >
+            <UIcon name="i-lucide-sparkles" class="size-5" />
+          </div>
+          <div>
+            <p class="font-semibold text-white">Desbloqueie o LinkLand Premium</p>
+            <p class="mt-1 text-sm text-white/75">
+              Templates exclusivos, fontes, QR Code, blocos de texto e imagem — tudo por
+              <strong class="text-white">R$19,90/mês</strong>.
+            </p>
+          </div>
+        </div>
+        <NuxtLink
+          to="/settings"
+          class="shrink-0 self-start rounded-lg bg-white px-4 py-2 text-sm font-semibold text-indigo-600 shadow-sm transition hover:bg-white/90 sm:self-auto"
+        >
+          Ver planos →
+        </NuxtLink>
+      </div>
+    </div>
 
     <!-- Seu plano -->
     <UCard class="mt-6">
@@ -298,6 +337,17 @@ async function confirmDelete(): Promise<void> {
             color="neutral"
           >
             Ver
+          </UButton>
+          <UButton
+            v-else
+            :to="`/preview/${page.id}`"
+            target="_blank"
+            icon="i-lucide-eye"
+            size="sm"
+            variant="ghost"
+            color="neutral"
+          >
+            Prévia
           </UButton>
           <UButton
             class="ml-auto"

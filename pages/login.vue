@@ -14,6 +14,7 @@ const { login } = useAuth()
 const toast = useToast()
 const loading = ref(false)
 const notVerified = ref(false)
+const showPassword = ref(false)
 const state = reactive({ email: '', password: '' })
 
 // Banners vindos de redirecionamentos (verify-email / reset-password).
@@ -99,11 +100,22 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
         <UFormField label="Senha" name="password">
           <UInput
             v-model="state.password"
-            type="password"
+            :type="showPassword ? 'text' : 'password'"
             autocomplete="current-password"
             placeholder="••••••••"
             class="w-full"
-          />
+          >
+            <template #trailing>
+              <button
+                type="button"
+                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                :aria-label="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
+                @click="showPassword = !showPassword"
+              >
+                <UIcon :name="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" class="size-4" />
+              </button>
+            </template>
+          </UInput>
         </UFormField>
 
         <div class="flex justify-end">
