@@ -6,6 +6,7 @@ import ClassicTemplate from '~/components/templates/ClassicTemplate.vue'
 import DarkTemplate from '~/components/templates/DarkTemplate.vue'
 import GradientTemplate from '~/components/templates/GradientTemplate.vue'
 import NeonTemplate from '~/components/templates/NeonTemplate.vue'
+import PixelTemplate from '~/components/templates/PixelTemplate.vue'
 
 // Despacha o template pelo id (page.template). Reusado no preview do editor e
 // na página pública (Fase 6). Fallback para 'minimal'. Novos templates da
@@ -29,6 +30,7 @@ const TEMPLATES: Record<string, Component> = {
   dark: DarkTemplate,
   gradient: GradientTemplate,
   neon: NeonTemplate,
+  pixel: PixelTemplate,
 }
 
 const component = computed<Component>(
