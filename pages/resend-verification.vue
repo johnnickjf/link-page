@@ -2,7 +2,10 @@
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
 
 definePageMeta({ layout: false })
-useHead({ title: 'Reenviar confirmação · LinkLand' })
+useHead({
+  title: 'Reenviar confirmação · LinkLand',
+  meta: [{ name: 'robots', content: 'noindex, follow' }],
+})
 
 const { resendVerification } = useAuth()
 const loading = ref(false)

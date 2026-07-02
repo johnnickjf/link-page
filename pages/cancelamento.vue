@@ -1,6 +1,9 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
-useHead({ title: 'Assinatura cancelada · LinkLand' })
+useHead({
+  title: 'Assinatura cancelada · LinkLand',
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
+})
 
 const auth = useAuthStore()
 const { fetchMe } = useAuth()

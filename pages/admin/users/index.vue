@@ -2,7 +2,10 @@
 import type { AdminUser, Paginated, Plan } from '~/types/api'
 
 definePageMeta({ layout: 'admin', middleware: 'superadmin' })
-useHead({ title: 'Usuários · Admin · LinkLand' })
+useHead({
+  title: 'Usuários · Admin · LinkLand',
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
+})
 
 const route = useRoute()
 const { listUsers } = useAdminApi()

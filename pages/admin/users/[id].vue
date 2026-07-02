@@ -13,7 +13,10 @@ const user = ref<AdminUser | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 
-useHead(() => ({ title: `${user.value?.name || 'Usuário'} · Admin · LinkLand` }))
+useHead(() => ({
+  title: `${user.value?.name || 'Usuário'} · Admin · LinkLand`,
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
+}))
 
 const planChips: { value: Plan; label: string }[] = [
   { value: 'free', label: 'Free' },

@@ -2,7 +2,10 @@
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
 
 definePageMeta({ layout: false })
-useHead({ title: 'Recuperar senha · LinkLand' })
+useHead({
+  title: 'Recuperar senha · LinkLand',
+  meta: [{ name: 'robots', content: 'noindex, follow' }],
+})
 
 const { forgotPassword } = useAuth()
 const toast = useToast()

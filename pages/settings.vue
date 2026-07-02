@@ -1,6 +1,9 @@
 <script setup lang="ts">
 definePageMeta({ middleware: 'auth' })
-useHead({ title: 'Planos · LinkLand' })
+useHead({
+  title: 'Planos · LinkLand',
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
+})
 
 const auth = useAuthStore()
 const billing = useBilling()

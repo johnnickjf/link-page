@@ -62,7 +62,10 @@ const savingPublish = ref(false)
 const savingAppearance = ref(false)
 const savingAll = ref(false)
 
-useHead(() => ({ title: `${title.value || 'Editor'} · LinkLand` }))
+useHead(() => ({
+  title: `${title.value || 'Editor'} · LinkLand`,
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
+}))
 
 async function load(): Promise<void> {
   loading.value = true

@@ -2,7 +2,10 @@
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
 
 definePageMeta({ layout: false })
-useHead({ title: 'Definir nova senha · LinkLand' })
+useHead({
+  title: 'Definir nova senha · LinkLand',
+  meta: [{ name: 'robots', content: 'noindex, follow' }],
+})
 
 const route = useRoute()
 const { resetPassword } = useAuth()

@@ -2,7 +2,10 @@
 import type { AdminDashboard, AdminUser, Paginated, Plan } from '~/types/api'
 
 definePageMeta({ layout: 'admin', middleware: 'superadmin' })
-useHead({ title: 'Dashboard · Admin · LinkLand' })
+useHead({
+  title: 'Dashboard · Admin · LinkLand',
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
+})
 
 const { getDashboard, listUsers } = useAdminApi()
 const dashboard = ref<AdminDashboard | null>(null)

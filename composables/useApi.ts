@@ -77,11 +77,14 @@ export function useApi() {
     retry = true,
   ): Promise<T> {
     try {
-      return await $fetch<T>(url, {
+      // Cast explícito: os módulos de SEO registram rotas Nitro tipadas
+      // (ex.: /sitemap.xml), o que faz o TS inferir um tipo de retorno
+      // condicional para `$fetch` em vez do genérico `T` deste wrapper.
+      return (await $fetch<T>(url, {
         baseURL: config.public.apiBase,
         ...opts,
         headers: withAuthHeaders(opts.headers),
-      })
+      })) as T
     } catch (error) {
       const status = (error as FetchError).statusCode
       if (status === 401 && retry && url !== '/auth/refresh') {

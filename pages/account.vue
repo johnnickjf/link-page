@@ -2,7 +2,10 @@
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
 
 definePageMeta({ middleware: 'auth' })
-useHead({ title: 'Minha conta · LinkLand' })
+useHead({
+  title: 'Minha conta · LinkLand',
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
+})
 
 const auth = useAuthStore()
 const { updateProfile, changePassword, deleteAccount } = useAuth()

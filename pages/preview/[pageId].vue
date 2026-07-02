@@ -29,6 +29,7 @@ onMounted(async () => {
 
 useHead(() => ({
   title: page.value ? `Pré-visualização: ${page.value.title} · LinkLand` : 'Pré-visualização · LinkLand',
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
 }))
 
 const previewBlocks = computed<PublicBlock[]>(() =>

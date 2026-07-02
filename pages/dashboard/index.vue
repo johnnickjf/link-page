@@ -3,7 +3,10 @@ import type { FormError, FormSubmitEvent } from '@nuxt/ui'
 import type { Page } from '~/types/api'
 
 definePageMeta({ middleware: 'auth' })
-useHead({ title: 'Minhas páginas · LinkLand' })
+useHead({
+  title: 'Minhas páginas · LinkLand',
+  meta: [{ name: 'robots', content: 'noindex, nofollow' }],
+})
 
 const auth = useAuthStore()
 const { fetchMe } = useAuth()

@@ -1,6 +1,9 @@
 <script setup lang="ts">
 definePageMeta({ layout: false })
-useHead({ title: 'Verificando e-mail · LinkLand' })
+useHead({
+  title: 'Verificando e-mail · LinkLand',
+  meta: [{ name: 'robots', content: 'noindex, follow' }],
+})
 
 const route = useRoute()
 const { verifyEmail } = useAuth()

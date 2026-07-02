@@ -1,0 +1,15 @@
+User-agent: *
+Allow: /
+Disallow: /dashboard
+Disallow: /editor
+Disallow: /account
+Disallow: /settings
+Disallow: /admin
+Disallow: /preview
+Disallow: /cancelamento
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /resend-verification
+
+Sitemap: https://linkland.me/sitemap.xml
