@@ -57,59 +57,28 @@ const steps = [
   },
 ]
 
-const features = [
+// Seção única "Por que escolher a LinkLand": mistura recursos, público e
+// diferenciais num só bloco enxuto (evita repetir 3 grids parecidos seguidos).
+const highlights = [
   {
     icon: 'i-lucide-layout-template',
-    title: 'Templates com identidade de verdade',
-    text: 'Modelos modernos — do minimalista ao retrô Pixel Art — para sua página de links não parecer genérica.',
+    title: 'Templates com identidade',
+    text: 'Do minimalista ao retrô Pixel Art — nada de página com cara de link genérico.',
   },
   {
     icon: 'i-lucide-blocks',
-    title: 'Blocos flexíveis para tudo',
-    text: 'Links, redes sociais, botão de WhatsApp, texto e imagem. Arraste para reordenar como quiser.',
+    title: 'Blocos para tudo',
+    text: 'Links, redes sociais, WhatsApp, texto e imagem — para criadores, empresas e profissionais liberais.',
   },
   {
-    icon: 'i-lucide-zap',
-    title: 'Publicação instantânea',
-    text: 'Sua página de links no ar assim que você publicar — sem esperar aprovação nem revisão.',
+    icon: 'i-lucide-gauge',
+    title: 'Leve e instantânea',
+    text: 'Publica na hora e abre rápido em qualquer celular, direto da bio do Instagram e do TikTok.',
   },
   {
-    icon: 'i-lucide-smartphone',
-    title: 'Pensado primeiro pro celular',
-    text: 'Rápida, leve e responsiva: abre na hora direto da bio do Instagram e do TikTok.',
-  },
-]
-
-const audiences = [
-  {
-    icon: 'i-lucide-clapperboard',
-    title: 'Criadores de conteúdo',
-    text: 'Centralize redes sociais, vídeos e parcerias num link único para a bio.',
-  },
-  {
-    icon: 'i-lucide-store',
-    title: 'Empresas e comércio local',
-    text: 'Catálogo, WhatsApp, endereço e redes sociais numa página só, fácil de manter.',
-  },
-  {
-    icon: 'i-lucide-briefcase',
-    title: 'Profissionais liberais',
-    text: 'Advogados, dentistas, personal trainers e consultores com uma bio personalizada e profissional.',
-  },
-  {
-    icon: 'i-lucide-graduation-cap',
-    title: 'Infoprodutores e afiliados',
-    text: 'Reúna cursos, e-books e links de afiliado num agregador de links organizado.',
-  },
-  {
-    icon: 'i-lucide-music',
-    title: 'Artistas e músicos',
-    text: 'Shows, playlists no Spotify, clipes e redes sociais num único link para divulgar em qualquer lugar.',
-  },
-  {
-    icon: 'i-lucide-party-popper',
-    title: 'Eventos e datas especiais',
-    text: 'Casamentos, formaturas e eventos com uma página bonita para convites, RSVP e informações.',
+    icon: 'i-lucide-gift',
+    title: 'Grátis de verdade',
+    text: 'O plano gratuito é completo o bastante para começar sem travar sua criatividade.',
   },
 ]
 
@@ -127,29 +96,6 @@ const premiumFeatures = [
   'Blocos de Texto e Imagem, fontes e fundo personalizados',
   'QR Code da sua página para divulgar offline',
   'Remova a marca "Criado por LinkLand"',
-]
-
-const differentiators = [
-  {
-    icon: 'i-lucide-flag',
-    title: 'Feita para o Brasil',
-    text: 'Suporte e produto em português, pensados para criadores e negócios brasileiros — não é só uma tradução.',
-  },
-  {
-    icon: 'i-lucide-gift',
-    title: 'Grátis de verdade',
-    text: 'O plano gratuito da LinkLand é completo o suficiente para começar sem esbarrar em bloqueios logo de cara.',
-  },
-  {
-    icon: 'i-lucide-sparkles',
-    title: 'Visual que impressiona',
-    text: 'Templates com personalidade — do minimalista ao Pixel Art — em vez de um link genérico e sem graça.',
-  },
-  {
-    icon: 'i-lucide-gauge',
-    title: 'Leve e instantânea',
-    text: 'Páginas otimizadas para carregar rápido em qualquer celular, sem travar a experiência de quem clicou na sua bio.',
-  },
 ]
 
 const faqs = [
@@ -294,7 +240,7 @@ useHead({
         class="relative overflow-hidden bg-gradient-to-b from-indigo-50 via-white to-white dark:from-indigo-950/40 dark:via-gray-950 dark:to-gray-950"
       >
         <div
-          class="mx-auto grid max-w-6xl items-center gap-12 px-5 py-16 sm:py-24 lg:grid-cols-2"
+          class="mx-auto grid max-w-6xl items-center gap-8 px-5 py-16 sm:py-24 lg:grid-cols-2 lg:gap-12"
         >
           <div class="text-center lg:text-left">
             <span
@@ -354,10 +300,10 @@ useHead({
               <img
                 src="/image-iphone.png"
                 alt="Exemplo de página de links da LinkLand aberta num celular, com links, redes sociais e botão de WhatsApp"
-                width="700"
-                height="1050"
+                width="600"
+                height="1144"
                 fetchpriority="high"
-                class="w-full max-w-[220px] drop-shadow-2xl sm:max-w-[330px]"
+                class="w-full max-w-[160px] drop-shadow-2xl sm:max-w-[280px]"
               />
             </picture>
           </div>
@@ -389,59 +335,30 @@ useHead({
         </ol>
       </section>
 
-      <!-- Features -->
-      <section aria-labelledby="recursos-heading" class="mx-auto max-w-6xl px-5 py-16 sm:py-20">
-        <h2 id="recursos-heading" class="text-center font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          Tudo o que você precisa numa página de links
-        </h2>
-        <p class="mx-auto mt-3 max-w-2xl text-center text-gray-600 dark:text-gray-400">
-          Simples de montar, bonito de mostrar — sem depender de outra pessoa.
-        </p>
-
-        <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          <div
-            v-for="feature in features"
-            :key="feature.title"
-            class="rounded-2xl border border-gray-200 p-6 transition hover:border-primary-300 hover:shadow-lg dark:border-gray-800 dark:hover:border-primary-800"
-          >
-            <div
-              class="flex size-11 items-center justify-center rounded-xl bg-primary-50 text-primary-600 dark:bg-primary-950/60 dark:text-primary-300"
-            >
-              <UIcon :name="feature.icon" class="size-6" aria-hidden="true" />
-            </div>
-            <h3 class="mt-4 font-semibold">{{ feature.title }}</h3>
-            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">
-              {{ feature.text }}
-            </p>
-          </div>
-        </div>
-      </section>
-
-      <!-- Para quem é a LinkLand -->
-      <section aria-labelledby="para-quem-heading" class="bg-gray-50 px-5 py-16 dark:bg-gray-900/40 sm:py-20">
+      <!-- Por que escolher a LinkLand (recursos + público + diferenciais, num só bloco) -->
+      <section aria-labelledby="recursos-heading" class="bg-gray-50 px-5 py-16 dark:bg-gray-900/40 sm:py-20">
         <div class="mx-auto max-w-6xl">
-          <h2 id="para-quem-heading" class="text-center font-display text-3xl font-bold tracking-tight sm:text-4xl">
-            Para quem é a LinkLand
+          <h2 id="recursos-heading" class="text-center font-display text-3xl font-bold tracking-tight sm:text-4xl">
+            Por que escolher a LinkLand
           </h2>
           <p class="mx-auto mt-3 max-w-2xl text-center text-gray-600 dark:text-gray-400">
-            Se você tem links para compartilhar, a LinkLand é para você.
+            A alternativa 100% brasileira ao Linktree, para criadores, empresas
+            e profissionais que querem uma bio bonita e fácil de manter.
           </p>
 
-          <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+          <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
             <div
-              v-for="audience in audiences"
-              :key="audience.title"
-              class="flex items-start gap-4 rounded-2xl bg-white p-5 dark:bg-gray-900"
+              v-for="item in highlights"
+              :key="item.title"
+              class="rounded-2xl bg-white p-6 dark:bg-gray-900"
             >
               <div
-                class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600 dark:bg-primary-950/60 dark:text-primary-300"
+                class="flex size-11 items-center justify-center rounded-xl bg-primary-50 text-primary-600 dark:bg-primary-950/60 dark:text-primary-300"
               >
-                <UIcon :name="audience.icon" class="size-5" aria-hidden="true" />
+                <UIcon :name="item.icon" class="size-6" aria-hidden="true" />
               </div>
-              <div>
-                <h3 class="font-semibold">{{ audience.title }}</h3>
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ audience.text }}</p>
-              </div>
+              <h3 class="mt-4 font-semibold">{{ item.title }}</h3>
+              <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{{ item.text }}</p>
             </div>
           </div>
         </div>
@@ -491,36 +408,6 @@ useHead({
               <UButton to="/register" block class="mt-6">
                 Experimentar o Premium
               </UButton>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Diferenciais -->
-      <section aria-labelledby="diferenciais-heading" class="bg-gray-50 px-5 py-16 dark:bg-gray-900/40 sm:py-20">
-        <div class="mx-auto max-w-6xl">
-          <h2 id="diferenciais-heading" class="text-center font-display text-3xl font-bold tracking-tight sm:text-4xl">
-            Por que escolher a LinkLand
-          </h2>
-          <p class="mx-auto mt-3 max-w-2xl text-center text-gray-600 dark:text-gray-400">
-            Uma alternativa ao Linktree pensada do zero para quem fala português.
-          </p>
-
-          <div class="mt-12 grid gap-6 sm:grid-cols-2">
-            <div
-              v-for="item in differentiators"
-              :key="item.title"
-              class="flex items-start gap-4 rounded-2xl bg-white p-5 dark:bg-gray-900"
-            >
-              <div
-                class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-50 text-primary-600 dark:bg-primary-950/60 dark:text-primary-300"
-              >
-                <UIcon :name="item.icon" class="size-5" aria-hidden="true" />
-              </div>
-              <div>
-                <h3 class="font-semibold">{{ item.title }}</h3>
-                <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ item.text }}</p>
-              </div>
             </div>
           </div>
         </div>
