@@ -8,6 +8,7 @@ const route = useRoute()
 const nav = [
   { label: 'Dashboard', to: '/admin', icon: 'i-lucide-layout-dashboard' },
   { label: 'Usuários', to: '/admin/users', icon: 'i-lucide-users' },
+  { label: 'Suporte', to: '/admin/support', icon: 'i-lucide-life-buoy' },
 ]
 
 function isActive(to: string): boolean {

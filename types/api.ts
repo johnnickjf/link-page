@@ -323,3 +323,80 @@ export interface UpdatePlanPayload {
 export interface MessageResponse {
   message: string
 }
+
+// ---------------------------------------------------------------------------
+// Suporte (/support, /system/support)
+// ---------------------------------------------------------------------------
+
+export type SupportType =
+  | 'support'
+  | 'question'
+  | 'suggestion'
+  | 'bug_report'
+  | 'billing'
+  | 'other'
+
+export type SupportStatus = 'open' | 'answered' | 'closed'
+
+/** POST /support — enviado pelo próprio usuário autenticado. */
+export interface CreateSupportPayload {
+  type: SupportType
+  email: string
+  message: string
+}
+
+/** Retorno da criação — confirmação simples para o usuário. */
+export interface SupportRequestConfirmation {
+  id: ID
+  type: SupportType
+  email: string
+  message: string
+  status: SupportStatus
+  created_at: string
+}
+
+/** Dados do usuário embutidos nas respostas do painel admin. */
+export interface SupportUserInfo {
+  id: ID
+  name: string
+  email: string
+  plan?: Plan | null
+  is_active?: boolean | null
+  created_at?: string | null
+}
+
+/** Item leve da listagem do painel (sem a mensagem completa). */
+export interface AdminSupportListItem {
+  id: ID
+  type: SupportType
+  email: string
+  status: SupportStatus
+  created_at: string
+  user: SupportUserInfo
+}
+
+export interface AdminSupportListParams {
+  page?: number
+  page_size?: number
+  status?: SupportStatus
+  type?: SupportType
+  q?: string
+}
+
+/** Detalhe completo — usado na tela de visualização/resposta do admin. */
+export interface AdminSupportDetail {
+  id: ID
+  type: SupportType
+  email: string
+  message: string
+  status: SupportStatus
+  created_at: string
+  replied_at: string | null
+  reply_message: string | null
+  replied_by: SupportUserInfo | null
+  user: SupportUserInfo
+}
+
+export interface ReplySupportPayload {
+  message: string
+}

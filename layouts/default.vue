@@ -10,6 +10,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
   [
     { label: 'Minha conta', icon: 'i-lucide-user', to: '/account' },
     { label: 'Planos', icon: 'i-lucide-sparkles', to: '/settings' },
+    { label: 'Suporte', icon: 'i-lucide-life-buoy', to: '/support' },
   ],
   [
     {

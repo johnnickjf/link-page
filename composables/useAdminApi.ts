@@ -1,10 +1,14 @@
 import type {
   AdminDashboard,
+  AdminSupportDetail,
+  AdminSupportListItem,
+  AdminSupportListParams,
   AdminUser,
   AdminUserListParams,
   ID,
   MessageResponse,
   Paginated,
+  ReplySupportPayload,
   UpdatePlanPayload,
 } from '~/types/api'
 
@@ -64,6 +68,24 @@ export function useAdminApi() {
     })
   }
 
+  // ---- Suporte ----
+  function listSupportRequests(params: AdminSupportListParams = {}) {
+    return request<Paginated<AdminSupportListItem>>('/system/support', {
+      query: params,
+    })
+  }
+
+  function getSupportRequest(id: ID) {
+    return request<AdminSupportDetail>(`/system/support/${id}`)
+  }
+
+  function replySupportRequest(id: ID, payload: ReplySupportPayload) {
+    return request<AdminSupportDetail>(`/system/support/${id}/reply`, {
+      method: 'POST',
+      body: payload,
+    })
+  }
+
   return {
     getDashboard,
     listUsers,
@@ -74,5 +96,8 @@ export function useAdminApi() {
     verifyEmail,
     deleteUser,
     sendPremiumInvite,
+    listSupportRequests,
+    getSupportRequest,
+    replySupportRequest,
   }
 }
