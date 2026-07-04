@@ -138,8 +138,8 @@ const PREMIUM_FEATURES = [
 
     <div class="mx-auto grid max-w-3xl items-start gap-6 lg:grid-cols-2">
 
-      <!-- Free -->
-      <div class="rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900">
+      <!-- Free (no celular vem depois do Premium; no desktop mantém a ordem natural) -->
+      <div class="order-2 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900 lg:order-none">
         <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Free</p>
         <div class="mt-3 flex items-end gap-1">
           <span class="font-display text-4xl font-bold tracking-tight">R$0</span>
@@ -177,8 +177,8 @@ const PREMIUM_FEATURES = [
         </ul>
       </div>
 
-      <!-- Premium -->
-      <div class="relative">
+      <!-- Premium (aparece primeiro no celular, sem precisar rolar) -->
+      <div class="order-1 relative lg:order-none">
         <div class="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap">
           <span
             class="rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-4 py-1 text-xs font-semibold text-white shadow"
