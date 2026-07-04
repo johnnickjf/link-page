@@ -13,6 +13,27 @@ const isPremium = computed(() => currentPlan.value === 'premium' || !!auth.user?
 const isFree = computed(() => currentPlan.value === 'free')
 const showManage = computed(() => currentPlan.value === 'premium')
 
+// ---- Mensal / Anual ----
+const MONTHLY_PRICE = 19.9
+const YEARLY_PRICE = 199.9
+
+function brl(value: number): string {
+  return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
+const yearlySavingsLabel = brl(MONTHLY_PRICE * 12 - YEARLY_PRICE)
+const yearlyMonthlyEquivalentLabel = brl(YEARLY_PRICE / 12)
+const yearlyDiscountPct = Math.round(
+  ((MONTHLY_PRICE * 12 - YEARLY_PRICE) / (MONTHLY_PRICE * 12)) * 100,
+)
+
+const interval = ref<'monthly' | 'yearly'>('monthly')
+const priceLabel = computed(() => (interval.value === 'monthly' ? 'R$19,90' : 'R$199,90'))
+const priceSuffix = computed(() => (interval.value === 'monthly' ? '/mês' : '/ano'))
+const ctaLabel = computed(() =>
+  interval.value === 'monthly' ? 'Assinar por R$19,90/mês' : 'Assinar por R$199,90/ano',
+)
+
 const FREE_FEATURES = [
   { label: '1 página', included: true },
   { label: 'Até 10 blocos por página', included: true },
@@ -94,6 +115,27 @@ const PREMIUM_FEATURES = [
       :description="billing.error.value"
     />
 
+    <!-- Mensal / Anual -->
+    <div class="mx-auto mb-8 flex w-fit items-center gap-1 rounded-lg border border-gray-200 p-1 dark:border-gray-800">
+      <UButton
+        size="sm"
+        :variant="interval === 'monthly' ? 'solid' : 'ghost'"
+        :color="interval === 'monthly' ? 'primary' : 'neutral'"
+        @click="interval = 'monthly'"
+      >
+        Mensal
+      </UButton>
+      <UButton
+        size="sm"
+        :variant="interval === 'yearly' ? 'solid' : 'ghost'"
+        :color="interval === 'yearly' ? 'primary' : 'neutral'"
+        @click="interval = 'yearly'"
+      >
+        Anual
+        <UBadge color="success" variant="subtle" size="sm" class="ml-1.5">-{{ yearlyDiscountPct }}%</UBadge>
+      </UButton>
+    </div>
+
     <div class="mx-auto grid max-w-3xl items-start gap-6 lg:grid-cols-2">
 
       <!-- Free -->
@@ -149,9 +191,12 @@ const PREMIUM_FEATURES = [
           <div class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 px-6 py-6">
             <p class="text-sm font-semibold text-indigo-100">Premium</p>
             <div class="mt-2 flex items-end gap-1">
-              <span class="font-display text-4xl font-bold tracking-tight text-white">R$19,90</span>
-              <span class="mb-1 text-sm text-indigo-200">/mês</span>
+              <span class="font-display text-4xl font-bold tracking-tight text-white">{{ priceLabel }}</span>
+              <span class="mb-1 text-sm text-indigo-200">{{ priceSuffix }}</span>
             </div>
+            <p v-if="interval === 'yearly'" class="mt-1 text-sm text-indigo-100">
+              Equivale a R${{ yearlyMonthlyEquivalentLabel }}/mês · economize R${{ yearlySavingsLabel }} no ano
+            </p>
             <p class="mt-1.5 text-sm text-indigo-100">
               Tudo que você precisa para crescer online.
             </p>
@@ -162,11 +207,11 @@ const PREMIUM_FEATURES = [
               type="button"
               class="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
               :disabled="isPremium || billing.loading.value"
-              @click="billing.checkout()"
+              @click="billing.checkout(interval)"
             >
               <UIcon v-if="isPremium" name="i-lucide-check" class="size-4" />
               <UIcon v-else-if="billing.loading.value" name="i-lucide-loader-circle" class="size-4 animate-spin" />
-              {{ isPremium ? 'Plano atual' : 'Assinar por R$19,90/mês' }}
+              {{ isPremium ? 'Plano atual' : ctaLabel }}
             </button>
 
             <ul class="mt-6 space-y-3">

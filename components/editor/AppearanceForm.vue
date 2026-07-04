@@ -8,6 +8,7 @@ const emit = defineEmits<{ save: [] }>()
 
 const { uploadImage } = useImageUpload()
 const auth = useAuthStore()
+const { open: openPremiumUpsell } = usePremiumUpsell()
 const canBackground = computed(() => auth.canUseFeature('custom_background'))
 const canFont = computed(() => auth.canUseFeature('custom_font'))
 const canHideBranding = computed(() => auth.canUseFeature('hide_branding'))
@@ -101,6 +102,7 @@ const FONTS = [
           <p class="text-sm font-medium">Fundo</p>
           <UBadge v-if="!canBackground" color="primary" variant="subtle" size="sm">Premium</UBadge>
         </div>
+        <div :class="!canBackground ? 'cursor-pointer' : ''" @click="!canBackground && openPremiumUpsell()">
         <div :class="!canBackground ? 'pointer-events-none opacity-40' : ''">
           <div class="flex flex-wrap gap-2">
             <UButton
@@ -159,13 +161,18 @@ const FONTS = [
             />
           </div>
         </div>
+        </div>
         <p v-if="!canBackground" class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
           Personalize o fundo no plano Premium.
         </p>
       </div>
 
       <!-- Fonte (premium) -->
-      <div class="border-t border-gray-100 pt-4 dark:border-gray-800">
+      <div
+        class="border-t border-gray-100 pt-4 dark:border-gray-800"
+        :class="!canFont ? 'cursor-pointer' : ''"
+        @click="!canFont && openPremiumUpsell()"
+      >
         <div class="mb-2 flex items-center gap-2">
           <p class="text-sm font-medium">Fonte</p>
           <UBadge v-if="!canFont" color="primary" variant="subtle" size="sm">Premium</UBadge>
@@ -201,6 +208,8 @@ const FONTS = [
       <!-- Branding (premium) -->
       <div
         class="flex items-center justify-between gap-3 border-t border-gray-100 pt-4 dark:border-gray-800"
+        :class="!canHideBranding ? 'cursor-pointer' : ''"
+        @click="!canHideBranding && openPremiumUpsell()"
       >
         <div>
           <p class="flex items-center gap-2 font-medium">
@@ -213,7 +222,10 @@ const FONTS = [
             Remove a assinatura no rodapé da página.
           </p>
         </div>
-        <USwitch v-model="theme.hide_branding" :disabled="!canHideBranding" />
+        <USwitch
+          :model-value="canHideBranding && !!theme.hide_branding"
+          @update:model-value="(v: boolean) => { if (canHideBranding) theme.hide_branding = v }"
+        />
       </div>
 
       <div class="flex justify-end">

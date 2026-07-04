@@ -24,6 +24,7 @@ const store = usePagesStore()
 const toast = useToast()
 const { uploadImage } = useImageUpload()
 const auth = useAuthStore()
+const { open: openPremiumUpsell } = usePremiumUpsell()
 const isEdit = computed(() => Boolean(props.block))
 
 const PREMIUM_BLOCK_TYPES = new Set<BlockType>(['text', 'image'])
@@ -58,7 +59,10 @@ function iconAriaLabel(ic: string): string {
 }
 
 function selectType(type: BlockType): void {
-  if (PREMIUM_BLOCK_TYPES.has(type) && !auth.canUseBlockType(type)) return
+  if (PREMIUM_BLOCK_TYPES.has(type) && !auth.canUseBlockType(type)) {
+    openPremiumUpsell()
+    return
+  }
   form.type = type
   error.value = null
 }
@@ -216,10 +220,9 @@ async function submit(): Promise<void> {
                 ? 'border-primary-500 ring-2 ring-primary-500/30'
                 : 'border-gray-200 hover:border-gray-300 dark:border-gray-700',
               PREMIUM_BLOCK_TYPES.has(t.value) && !auth.canUseBlockType(t.value)
-                ? 'cursor-not-allowed opacity-50'
+                ? 'opacity-50'
                 : '',
             ]"
-            :disabled="PREMIUM_BLOCK_TYPES.has(t.value) && !auth.canUseBlockType(t.value)"
             @click="selectType(t.value)"
           >
             <UIcon :name="t.icon" class="size-5" />

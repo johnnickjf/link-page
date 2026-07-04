@@ -18,6 +18,12 @@ const showReferral = ref(false)
 const showPassword = ref(false)
 const state = reactive({ name: '', email: '', password: '', referral_code: '' })
 
+// Salva sempre em maiúsculas (bate com os Promotion Codes do Stripe).
+const referralCode = computed({
+  get: () => state.referral_code,
+  set: (v: string) => { state.referral_code = v.toUpperCase() },
+})
+
 // Validação client-side básica; a regra final de senha é do backend.
 function validate(s: typeof state): FormError[] {
   const errors: FormError[] = []
@@ -145,9 +151,9 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
         >
           <UFormField v-if="showReferral" name="referral_code" class="mt-2">
             <UInput
-              v-model="state.referral_code"
+              v-model="referralCode"
               placeholder="Ex.: AMIGO2024"
-              class="w-full"
+              class="w-full uppercase placeholder:normal-case"
               autofocus
             >
               <template #leading>

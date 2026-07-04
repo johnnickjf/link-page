@@ -9,6 +9,7 @@ const toast = useToast()
 const auth = useAuthStore()
 const { copy } = useClipboard()
 const { request } = useApi()
+const { open: openPremiumUpsell } = usePremiumUpsell()
 const origin = useRequestURL().origin
 const pageId = computed(() => String(route.params.pageId))
 const canQr = computed(() => auth.canUseFeature('qr_code'))
@@ -530,7 +531,7 @@ async function copyPublicUrl(): Promise<void> {
               </p>
             </div>
           </UCard>
-          <UCard v-else>
+          <UCard v-else class="cursor-pointer" @click="openPremiumUpsell">
             <template #header>
               <div class="flex items-center gap-2">
                 <h2 class="font-display font-semibold">QR Code</h2>

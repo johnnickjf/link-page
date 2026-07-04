@@ -6,6 +6,7 @@ const emit = defineEmits<{ change: [id: string] }>()
 
 const auth = useAuthStore()
 const pagesStore = usePagesStore()
+const { open: openPremiumUpsell } = usePremiumUpsell()
 
 const templates = ref<Template[]>([])
 const loading = ref(true)
@@ -30,7 +31,10 @@ async function load(): Promise<void> {
 onMounted(load)
 
 function select(t: Template): void {
-  if (t.premium && !auth.canUseTemplate(t.id)) return
+  if (t.premium && !auth.canUseTemplate(t.id)) {
+    openPremiumUpsell()
+    return
+  }
   if (t.id === model.value) return
   model.value = t.id
   emit('change', t.id)

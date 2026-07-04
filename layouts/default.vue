@@ -85,5 +85,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
         </div>
       </div>
     </footer>
+
+    <PremiumUpsellModal />
   </div>
 </template>
