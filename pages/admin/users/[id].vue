@@ -81,6 +81,7 @@ async function load(): Promise<void> {
     const u = await admin.getUser(id.value)
     user.value = u
     syncPlanForm(u)
+    referralCodeInput.value = u.referral_code ?? ''
   } catch (e) {
     error.value = getApiErrorMessage(e)
   } finally {
@@ -166,6 +167,28 @@ async function resetPw(_e: FormSubmitEvent<typeof pwState>): Promise<void> {
   } finally {
     savingPw.value = false
   }
+}
+
+// ---- Código de indicação ----
+const referralCodeInput = ref('')
+const savingReferralCode = ref(false)
+async function saveReferralCode(): Promise<void> {
+  savingReferralCode.value = true
+  try {
+    user.value = await admin.setReferralCode(id.value, {
+      referral_code: referralCodeInput.value.trim() || null,
+    })
+    referralCodeInput.value = user.value.referral_code ?? ''
+    toast.add({ title: 'Código de indicação atualizado', color: 'success' })
+  } catch (e) {
+    toast.add({ title: 'Erro ao atualizar código', description: getApiErrorMessage(e), color: 'error' })
+  } finally {
+    savingReferralCode.value = false
+  }
+}
+function removeReferralCode(): void {
+  referralCodeInput.value = ''
+  saveReferralCode()
 }
 
 // ---- Convite Premium ----
@@ -477,6 +500,43 @@ async function confirmDelete(): Promise<void> {
               </UButton>
             </div>
           </UForm>
+        </UCard>
+
+        <!-- Código de indicação -->
+        <UCard>
+          <template #header>
+            <div class="flex items-center gap-2">
+              <UIcon name="i-lucide-tag" class="size-4 text-gray-500" />
+              <h3 class="font-display font-semibold">Código de indicação</h3>
+            </div>
+          </template>
+          <div class="space-y-3">
+            <UFormField label="Código" hint="Salvo em maiúsculas">
+              <UInput
+                v-model="referralCodeInput"
+                placeholder="Ex.: DRUMONT"
+                class="w-full uppercase placeholder:normal-case"
+              />
+            </UFormField>
+            <p class="text-xs text-gray-500 dark:text-gray-400">
+              Libera manualmente um cupom de indicação pra quem esqueceu de usar no cadastro.
+            </p>
+            <div class="flex justify-end gap-2">
+              <UButton
+                v-if="user.referral_code"
+                variant="ghost"
+                color="neutral"
+                size="sm"
+                :disabled="savingReferralCode"
+                @click="removeReferralCode"
+              >
+                Remover
+              </UButton>
+              <UButton :loading="savingReferralCode" icon="i-lucide-save" size="sm" @click="saveReferralCode">
+                Salvar
+              </UButton>
+            </div>
+          </div>
         </UCard>
 
         <!-- Status e verificação -->

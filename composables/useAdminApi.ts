@@ -9,6 +9,7 @@ import type {
   MessageResponse,
   Paginated,
   ReplySupportPayload,
+  SetReferralCodePayload,
   UpdatePlanPayload,
 } from '~/types/api'
 
@@ -58,6 +59,13 @@ export function useAdminApi() {
     })
   }
 
+  function setReferralCode(id: ID, payload: SetReferralCodePayload) {
+    return request<AdminUser>(`/system/users/${id}/referral-code`, {
+      method: 'PATCH',
+      body: payload,
+    })
+  }
+
   function deleteUser(id: ID) {
     return request<MessageResponse>(`/system/users/${id}`, { method: 'DELETE' })
   }
@@ -96,6 +104,7 @@ export function useAdminApi() {
     verifyEmail,
     deleteUser,
     sendPremiumInvite,
+    setReferralCode,
     listSupportRequests,
     getSupportRequest,
     replySupportRequest,

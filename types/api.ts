@@ -320,6 +320,11 @@ export interface UpdatePlanPayload {
   custom_features?: CustomFeatures
 }
 
+/** PATCH /system/users/{id}/referral-code — null/vazio remove o código. */
+export interface SetReferralCodePayload {
+  referral_code: string | null
+}
+
 export interface MessageResponse {
   message: string
 }

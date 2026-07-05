@@ -11,12 +11,19 @@ if (auth.isAuthenticated) {
 
 const { register } = useAuth()
 const toast = useToast()
+const { get: getReferralCode, clear: clearReferralCode } = useReferralCode()
 const loading = ref(false)
 const registered = ref(false)
 const registeredEmail = ref('')
-const showReferral = ref(false)
 const showPassword = ref(false)
 const state = reactive({ name: '', email: '', password: '', referral_code: '' })
+
+// Se veio de um link com ?referral_code=X (capturado em app.vue e salvo no
+// localStorage), preenche e já deixa o campo visível — a pessoa não precisa
+// clicar em "Tenho um cupom" nem digitar nada.
+const capturedReferralCode = getReferralCode()
+if (capturedReferralCode) state.referral_code = capturedReferralCode
+const showReferral = ref(Boolean(capturedReferralCode))
 
 // Salva sempre em maiúsculas (bate com os Promotion Codes do Stripe).
 const referralCode = computed({
@@ -48,6 +55,9 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
     const payload = { ...event.data }
     if (!payload.referral_code?.trim()) delete (payload as Record<string, unknown>).referral_code
     await register(payload)
+    // Cupom já foi usado no cadastro — evita reaplicar num próximo cadastro
+    // na mesma aba/computador.
+    clearReferralCode()
     // Não loga direto: o usuário precisa confirmar o e-mail antes.
     registeredEmail.value = event.data.email
     registered.value = true
