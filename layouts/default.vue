@@ -29,7 +29,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
     class="flex min-h-screen flex-col bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100"
   >
     <header
-      class="border-b border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900"
+      class="sticky top-0 z-40 border-b border-gray-200/80 bg-white/85 backdrop-blur-md dark:border-gray-800 dark:bg-gray-900/85"
     >
       <div
         class="mx-auto flex max-w-5xl items-center justify-between px-5 py-3"

@@ -97,6 +97,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
       <UFormField label="Nome" name="name">
         <UInput
           v-model="state.name"
+          size="lg"
           autocomplete="name"
           placeholder="Seu nome"
           class="w-full"
@@ -107,6 +108,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
         <UInput
           v-model="state.email"
           type="email"
+          size="lg"
           autocomplete="email"
           placeholder="voce@email.com"
           class="w-full"
@@ -120,6 +122,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
         <UInput
           v-model="state.password"
           :type="showPassword ? 'text' : 'password'"
+          size="lg"
           autocomplete="new-password"
           placeholder="••••••••"
           class="w-full"
@@ -174,7 +177,15 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
         </Transition>
       </div>
 
-      <UButton type="submit" block :loading="loading">Criar conta</UButton>
+      <UButton
+        type="submit"
+        block
+        size="lg"
+        :loading="loading"
+        class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/25 transition hover:opacity-90"
+      >
+        Criar conta
+      </UButton>
 
       <p class="text-center text-xs text-gray-400 dark:text-gray-500">
         Ao criar sua conta, você concorda com os

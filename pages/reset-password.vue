@@ -24,6 +24,8 @@ if (!token.value) {
 }
 
 const state = reactive({ password: '', confirm: '' })
+const showPassword = ref(false)
+const showConfirm = ref(false)
 
 function validate(s: typeof state): FormError[] {
   const errors: FormError[] = []
@@ -81,28 +83,47 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
       class="space-y-4"
       @submit="onSubmit"
     >
-      <UFormField
-        label="Nova senha"
-        name="password"
-        hint="8+ caracteres, com maiúscula, minúscula e número"
-      >
+      <UFormField label="Nova senha" name="password">
         <UInput
           v-model="state.password"
-          type="password"
+          :type="showPassword ? 'text' : 'password'"
           autocomplete="new-password"
           placeholder="••••••••"
           class="w-full"
-        />
+        >
+          <template #trailing>
+            <button
+              type="button"
+              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              :aria-label="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
+              @click="showPassword = !showPassword"
+            >
+              <UIcon :name="showPassword ? 'i-lucide-eye-off' : 'i-lucide-eye'" class="size-4" />
+            </button>
+          </template>
+        </UInput>
+        <PasswordStrengthBar :password="state.password" class="mt-2" />
       </UFormField>
 
       <UFormField label="Confirmar nova senha" name="confirm">
         <UInput
           v-model="state.confirm"
-          type="password"
+          :type="showConfirm ? 'text' : 'password'"
           autocomplete="new-password"
           placeholder="••••••••"
           class="w-full"
-        />
+        >
+          <template #trailing>
+            <button
+              type="button"
+              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              :aria-label="showConfirm ? 'Ocultar senha' : 'Mostrar senha'"
+              @click="showConfirm = !showConfirm"
+            >
+              <UIcon :name="showConfirm ? 'i-lucide-eye-off' : 'i-lucide-eye'" class="size-4" />
+            </button>
+          </template>
+        </UInput>
       </UFormField>
 
       <UButton type="submit" block :loading="loading">Redefinir senha</UButton>

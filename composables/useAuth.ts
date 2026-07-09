@@ -1,6 +1,7 @@
 import type {
   AuthToken,
   ChangePasswordPayload,
+  ChangePasswordResponse,
   ForgotPasswordPayload,
   RegisterPayload,
   ResendVerificationPayload,
@@ -66,8 +67,14 @@ export function useAuth() {
     return me
   }
 
-  function changePassword(payload: ChangePasswordPayload): Promise<unknown> {
-    return request('/user/me/change-password', { method: 'POST', body: payload })
+  async function changePassword(payload: ChangePasswordPayload): Promise<void> {
+    const res = await request<ChangePasswordResponse>('/user/me/change-password', {
+      method: 'POST',
+      body: payload,
+    })
+    // O backend invalida todos os tokens antigos na troca; este token novo
+    // mantém a sessão atual logada.
+    auth.setToken({ access_token: res.access_token, token_type: res.token_type })
   }
 
   async function deleteAccount(): Promise<void> {

@@ -84,6 +84,13 @@ export interface ChangePasswordPayload {
   new_password: string
 }
 
+/** Troca de senha desloga as outras sessões; o token novo mantém a atual. */
+export interface ChangePasswordResponse {
+  message: string
+  access_token: string
+  token_type: string
+}
+
 // ---------------------------------------------------------------------------
 // Blocos
 // ---------------------------------------------------------------------------

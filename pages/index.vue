@@ -224,13 +224,22 @@ useHead({
       Pular para o conteúdo
     </a>
 
-    <!-- Nav -->
-    <header class="mx-auto flex max-w-6xl items-center justify-between px-5 py-5">
-      <Logo to="/" />
-      <nav aria-label="Principal" class="flex items-center gap-2">
-        <UButton to="/login" variant="ghost" color="neutral">Entrar</UButton>
-        <UButton to="/register">Criar conta</UButton>
-      </nav>
+    <!-- Nav (sticky + glassy: acompanha o scroll sem pesar) -->
+    <header
+      class="sticky top-0 z-40 border-b border-gray-200/60 bg-white/75 backdrop-blur-md dark:border-white/5 dark:bg-gray-950/70"
+    >
+      <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-4">
+        <Logo to="/" />
+        <nav aria-label="Principal" class="flex items-center gap-2">
+          <UButton to="/login" variant="ghost" color="neutral">Entrar</UButton>
+          <UButton
+            to="/register"
+            class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-sm shadow-indigo-500/25 transition hover:opacity-90"
+          >
+            Criar conta
+          </UButton>
+        </nav>
+      </div>
     </header>
 
     <main id="conteudo-principal">
@@ -239,27 +248,38 @@ useHead({
         aria-labelledby="hero-heading"
         class="relative overflow-hidden bg-gradient-to-b from-indigo-50 via-white to-white dark:from-indigo-950/40 dark:via-gray-950 dark:to-gray-950"
       >
+        <!-- Ambiente: glows da paleta da marca + pontos (profundidade sem peso) -->
         <div
-          class="mx-auto grid max-w-6xl items-center gap-8 px-5 py-16 sm:py-24 lg:grid-cols-2 lg:gap-12"
+          aria-hidden="true"
+          class="pointer-events-none absolute -left-32 -top-32 size-[26rem] rounded-full bg-indigo-400/25 blur-3xl dark:bg-indigo-600/20"
+        />
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute -right-24 top-1/3 size-[22rem] rounded-full bg-fuchsia-400/20 blur-3xl dark:bg-fuchsia-600/15"
+        />
+        <div aria-hidden="true" class="bg-dots pointer-events-none absolute inset-0 opacity-60 dark:opacity-40" />
+
+        <div
+          class="relative mx-auto grid max-w-6xl items-center gap-8 px-5 py-16 sm:py-24 lg:grid-cols-2 lg:gap-12"
         >
           <div class="text-center lg:text-left">
             <span
-              class="inline-flex items-center gap-2 rounded-full bg-primary-50 px-3 py-1 text-sm font-medium text-primary-600 dark:bg-primary-950/60 dark:text-primary-300"
+              class="animate-rise inline-flex items-center gap-2 rounded-full border border-primary-200/70 bg-white/70 px-3 py-1 text-sm font-medium text-primary-600 shadow-sm backdrop-blur-sm dark:border-primary-800/60 dark:bg-primary-950/50 dark:text-primary-300"
             >
-              <UIcon name="i-lucide-sparkles" aria-hidden="true" />
+              <span class="animate-pulse-dot size-1.5 rounded-full bg-primary-500" aria-hidden="true" />
               A alternativa brasileira ao Linktree
             </span>
 
             <h1
               id="hero-heading"
-              class="mt-5 font-display text-4xl font-bold leading-tight tracking-tight sm:text-5xl lg:text-6xl"
+              class="animate-rise mt-5 font-display text-4xl font-bold leading-[1.1] tracking-tight [animation-delay:80ms] sm:text-5xl lg:text-6xl"
             >
               Um link para
               <span class="text-brand-gradient">tudo</span> o que você faz.
             </h1>
 
             <p
-              class="mx-auto mt-5 max-w-xl text-lg text-gray-600 dark:text-gray-400 lg:mx-0"
+              class="animate-rise mx-auto mt-5 max-w-xl text-lg text-gray-600 [animation-delay:160ms] dark:text-gray-400 lg:mx-0"
             >
               Crie sua página de links grátis: reúna redes sociais, WhatsApp e
               todo o seu conteúdo num único link para a bio do Instagram e do
@@ -267,9 +287,14 @@ useHead({
             </p>
 
             <div
-              class="mt-8 flex flex-col items-center gap-3 sm:flex-row lg:justify-start sm:justify-center"
+              class="animate-rise mt-8 flex flex-col items-center gap-3 [animation-delay:240ms] sm:flex-row sm:justify-center lg:justify-start"
             >
-              <UButton to="/register" size="xl" trailing-icon="i-lucide-arrow-right">
+              <UButton
+                to="/register"
+                size="xl"
+                trailing-icon="i-lucide-arrow-right"
+                class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-lg shadow-indigo-500/30 transition hover:-translate-y-0.5 hover:opacity-95 hover:shadow-xl hover:shadow-indigo-500/30"
+              >
                 Criar minha página grátis
               </UButton>
               <UButton to="/login" size="xl" variant="subtle" color="neutral">
@@ -277,7 +302,7 @@ useHead({
               </UButton>
             </div>
 
-            <ul class="mx-auto mt-5 flex max-w-xl flex-wrap justify-center gap-x-5 gap-y-1.5 text-sm text-gray-500 dark:text-gray-400 lg:mx-0 lg:justify-start">
+            <ul class="animate-rise mx-auto mt-6 flex max-w-xl flex-wrap justify-center gap-x-5 gap-y-1.5 text-sm text-gray-500 [animation-delay:320ms] dark:text-gray-400 lg:mx-0 lg:justify-start">
               <li class="flex items-center gap-1.5">
                 <UIcon name="i-lucide-check" class="size-4 text-green-500" aria-hidden="true" />
                 Grátis para sempre
@@ -293,9 +318,13 @@ useHead({
             </ul>
           </div>
 
-          <!-- Imagem da homepage -->
-          <div class="flex justify-center">
-            <picture>
+          <!-- Imagem da homepage: glow atrás + flutuação lenta -->
+          <div class="relative flex justify-center">
+            <div
+              aria-hidden="true"
+              class="pointer-events-none absolute left-1/2 top-1/2 h-[80%] w-[70%] -translate-x-1/2 -translate-y-1/2 rounded-full bg-gradient-to-br from-indigo-400/35 via-purple-400/25 to-fuchsia-400/30 blur-3xl dark:from-indigo-600/30 dark:via-purple-600/20 dark:to-fuchsia-600/25"
+            />
+            <picture class="animate-float relative">
               <source srcset="/image-iphone.webp" type="image/webp" />
               <img
                 src="/image-iphone.png"
@@ -303,7 +332,7 @@ useHead({
                 width="600"
                 height="1144"
                 fetchpriority="high"
-                class="w-full max-w-[160px] drop-shadow-2xl sm:max-w-[280px]"
+                class="w-full max-w-[170px] drop-shadow-2xl sm:max-w-[280px]"
               />
             </picture>
           </div>
@@ -311,70 +340,120 @@ useHead({
       </section>
 
       <!-- Como funciona -->
-      <section aria-labelledby="como-funciona-heading" class="mx-auto max-w-6xl px-5 py-16 sm:py-20">
-        <h2 id="como-funciona-heading" class="text-center font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          Como funciona
-        </h2>
-        <p class="mx-auto mt-3 max-w-2xl text-center text-gray-600 dark:text-gray-400">
-          Três passos entre você e sua página de links no ar.
-        </p>
+      <section aria-labelledby="como-funciona-heading" class="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+        <div v-reveal class="text-center">
+          <span
+            class="inline-flex items-center gap-1.5 rounded-full border border-primary-200/70 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-600 dark:border-primary-800/60 dark:bg-primary-950/50 dark:text-primary-300"
+          >
+            <UIcon name="i-lucide-rocket" class="size-3.5" aria-hidden="true" />
+            Simples e rápido
+          </span>
+          <h2 id="como-funciona-heading" class="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+            Como funciona
+          </h2>
+          <p class="mx-auto mt-3 max-w-2xl text-gray-600 dark:text-gray-400">
+            Três passos entre você e sua página de links no ar.
+          </p>
+        </div>
 
-        <ol class="mt-12 grid gap-8 sm:grid-cols-3">
-          <li v-for="(step, i) in steps" :key="step.title" class="relative text-center">
-            <div
-              class="mx-auto flex size-14 items-center justify-center rounded-2xl bg-primary-50 text-primary-600 dark:bg-primary-950/60 dark:text-primary-300"
-            >
-              <UIcon :name="step.icon" class="size-7" aria-hidden="true" />
+        <ol class="relative mt-14 grid gap-10 sm:grid-cols-3 sm:gap-8">
+          <!-- Linha conectando os passos (só desktop) -->
+          <div
+            aria-hidden="true"
+            class="absolute left-[16%] right-[16%] top-8 hidden border-t-2 border-dashed border-primary-200 dark:border-primary-900/60 sm:block"
+          />
+          <li
+            v-for="(step, i) in steps"
+            :key="step.title"
+            v-reveal="i * 120"
+            class="relative text-center"
+          >
+            <div class="relative mx-auto w-fit">
+              <div
+                class="relative z-10 flex size-16 items-center justify-center rounded-2xl bg-brand-gradient text-white shadow-lg shadow-indigo-500/25"
+              >
+                <UIcon :name="step.icon" class="size-7" aria-hidden="true" />
+              </div>
+              <span
+                class="absolute -right-2 -top-2 z-20 flex size-6 items-center justify-center rounded-full bg-white text-[11px] font-bold text-primary-600 shadow ring-1 ring-gray-200 dark:bg-gray-900 dark:text-primary-300 dark:ring-gray-700"
+              >
+                {{ i + 1 }}
+              </span>
             </div>
-            <span class="mt-3 block text-xs font-semibold uppercase tracking-wide text-primary-500">
-              Passo {{ i + 1 }}
-            </span>
-            <h3 class="mt-1 font-semibold">{{ step.title }}</h3>
-            <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{{ step.text }}</p>
+            <h3 class="mt-4 font-display font-semibold">{{ step.title }}</h3>
+            <p class="mx-auto mt-2 max-w-[16rem] text-sm text-gray-600 dark:text-gray-400">{{ step.text }}</p>
           </li>
         </ol>
       </section>
 
       <!-- Por que escolher a LinkLand (recursos + público + diferenciais, num só bloco) -->
-      <section aria-labelledby="recursos-heading" class="bg-gray-50 px-5 py-16 dark:bg-gray-900/40 sm:py-20">
-        <div class="mx-auto max-w-6xl">
-          <h2 id="recursos-heading" class="text-center font-display text-3xl font-bold tracking-tight sm:text-4xl">
-            Por que escolher a LinkLand
-          </h2>
-          <p class="mx-auto mt-3 max-w-2xl text-center text-gray-600 dark:text-gray-400">
-            A alternativa 100% brasileira ao Linktree, para criadores, empresas
-            e profissionais que querem uma bio bonita e fácil de manter.
-          </p>
+      <section
+        aria-labelledby="recursos-heading"
+        class="relative overflow-hidden bg-gray-50 px-5 py-16 dark:bg-gray-900/40 sm:py-24"
+      >
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute -right-32 -top-24 size-[24rem] rounded-full bg-purple-400/15 blur-3xl dark:bg-purple-600/10"
+        />
+        <div class="relative mx-auto max-w-6xl">
+          <div v-reveal class="text-center">
+            <span
+              class="inline-flex items-center gap-1.5 rounded-full border border-primary-200/70 bg-white px-3 py-1 text-xs font-semibold text-primary-600 dark:border-primary-800/60 dark:bg-primary-950/50 dark:text-primary-300"
+            >
+              <UIcon name="i-lucide-heart" class="size-3.5" aria-hidden="true" />
+              Feita para você
+            </span>
+            <h2 id="recursos-heading" class="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+              Por que escolher a LinkLand
+            </h2>
+            <p class="mx-auto mt-3 max-w-2xl text-gray-600 dark:text-gray-400">
+              A alternativa 100% brasileira ao Linktree, para criadores, empresas
+              e profissionais que querem uma bio bonita e fácil de manter.
+            </p>
+          </div>
 
-          <div class="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
             <div
-              v-for="item in highlights"
+              v-for="(item, i) in highlights"
               :key="item.title"
-              class="rounded-2xl bg-white p-6 dark:bg-gray-900"
+              v-reveal="i * 90"
+              class="card-lift rounded-2xl border border-gray-200/80 bg-white p-6 dark:border-white/5 dark:bg-gray-900"
             >
               <div
-                class="flex size-11 items-center justify-center rounded-xl bg-primary-50 text-primary-600 dark:bg-primary-950/60 dark:text-primary-300"
+                class="flex size-11 items-center justify-center rounded-xl bg-brand-gradient text-white shadow-md shadow-indigo-500/20"
               >
                 <UIcon :name="item.icon" class="size-6" aria-hidden="true" />
               </div>
-              <h3 class="mt-4 font-semibold">{{ item.title }}</h3>
-              <p class="mt-2 text-sm text-gray-600 dark:text-gray-400">{{ item.text }}</p>
+              <h3 class="mt-4 font-display font-semibold">{{ item.title }}</h3>
+              <p class="mt-2 text-sm leading-relaxed text-gray-600 dark:text-gray-400">{{ item.text }}</p>
             </div>
           </div>
         </div>
       </section>
 
       <!-- Grátis vs Premium -->
-      <section aria-labelledby="planos-heading" class="mx-auto max-w-6xl px-5 py-16 sm:py-20">
-        <h2 id="planos-heading" class="text-center font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          Grátis para começar, Premium para ir além
-        </h2>
-        <p class="mx-auto mt-3 max-w-2xl text-center text-gray-600 dark:text-gray-400">
-          Comece sem gastar nada. Faça upgrade só quando fizer sentido para você.
-        </p>
+      <section aria-labelledby="planos-heading" class="mx-auto max-w-6xl px-5 py-16 sm:py-24">
+        <div v-reveal class="text-center">
+          <span
+            class="inline-flex items-center gap-1.5 rounded-full border border-primary-200/70 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-600 dark:border-primary-800/60 dark:bg-primary-950/50 dark:text-primary-300"
+          >
+            <UIcon name="i-lucide-sparkles" class="size-3.5" aria-hidden="true" />
+            Planos
+          </span>
+          <h2 id="planos-heading" class="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+            Grátis para começar, Premium para ir além
+          </h2>
+          <p class="mx-auto mt-3 max-w-2xl text-gray-600 dark:text-gray-400">
+            Comece sem gastar nada. Faça upgrade só quando fizer sentido para você.
+          </p>
+        </div>
 
-        <div class="mx-auto mt-12 grid max-w-3xl gap-6 lg:grid-cols-2">
-          <div class="rounded-2xl border border-gray-200 p-6 dark:border-gray-800">
+        <div class="mx-auto mt-12 grid max-w-3xl items-start gap-6 lg:grid-cols-2">
+          <!-- Free (no celular vem depois do Premium) -->
+          <div
+            v-reveal="100"
+            class="card-lift order-2 rounded-2xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900 lg:order-none"
+          >
             <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Free</p>
             <p class="mt-1 font-display text-3xl font-bold tracking-tight">R$0</p>
             <ul class="mt-5 space-y-3 text-sm">
@@ -388,65 +467,97 @@ useHead({
             </UButton>
           </div>
 
-          <div class="relative rounded-2xl ring-2 ring-primary-500/50">
+          <!-- Premium: borda em gradiente da marca (aparece primeiro no celular) -->
+          <div v-reveal class="order-1 relative lg:order-none">
             <span
-              class="absolute -top-3 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full bg-brand-gradient px-3 py-1 text-xs font-semibold text-white shadow"
+              class="absolute -top-3 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap rounded-full bg-brand-gradient px-3 py-1 text-xs font-semibold text-white shadow-md shadow-indigo-500/30"
             >
               Mais popular
             </span>
-            <div class="rounded-2xl p-6">
-              <p class="text-sm font-medium text-primary-600 dark:text-primary-400">Premium</p>
-              <p class="mt-1 font-display text-3xl font-bold tracking-tight">
-                R$19,90<span class="text-base font-normal text-gray-500">/mês</span>
-              </p>
-              <ul class="mt-5 space-y-3 text-sm">
-                <li v-for="f in premiumFeatures" :key="f" class="flex items-start gap-2.5">
-                  <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-primary-500" aria-hidden="true" />
-                  <span class="text-gray-600 dark:text-gray-400">{{ f }}</span>
-                </li>
-              </ul>
-              <UButton to="/register" block class="mt-6">
-                Experimentar o Premium
-              </UButton>
+            <div class="bg-brand-gradient rounded-2xl p-[1.5px] shadow-xl shadow-indigo-500/15">
+              <div class="rounded-[calc(1rem-1.5px)] bg-white p-6 dark:bg-gray-900">
+                <p class="text-sm font-medium text-primary-600 dark:text-primary-400">Premium</p>
+                <p class="mt-1 font-display text-3xl font-bold tracking-tight">
+                  R$19,90<span class="text-base font-normal text-gray-500">/mês</span>
+                </p>
+                <ul class="mt-5 space-y-3 text-sm">
+                  <li v-for="f in premiumFeatures" :key="f" class="flex items-start gap-2.5">
+                    <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-primary-500" aria-hidden="true" />
+                    <span class="text-gray-600 dark:text-gray-400">{{ f }}</span>
+                  </li>
+                </ul>
+                <UButton
+                  to="/register"
+                  block
+                  class="mt-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/25 transition hover:opacity-90"
+                >
+                  Experimentar o Premium
+                </UButton>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
       <!-- FAQ -->
-      <section aria-labelledby="faq-heading" class="mx-auto max-w-3xl px-5 py-16 sm:py-20">
-        <h2 id="faq-heading" class="text-center font-display text-3xl font-bold tracking-tight sm:text-4xl">
-          Perguntas frequentes
-        </h2>
-        <p class="mx-auto mt-3 max-w-2xl text-center text-gray-600 dark:text-gray-400">
-          Ainda com dúvidas sobre a LinkLand? Talvez a resposta esteja aqui.
-        </p>
+      <section aria-labelledby="faq-heading" class="mx-auto max-w-3xl px-5 py-16 sm:py-24">
+        <div v-reveal class="text-center">
+          <span
+            class="inline-flex items-center gap-1.5 rounded-full border border-primary-200/70 bg-primary-50 px-3 py-1 text-xs font-semibold text-primary-600 dark:border-primary-800/60 dark:bg-primary-950/50 dark:text-primary-300"
+          >
+            <UIcon name="i-lucide-message-circle-question" class="size-3.5" aria-hidden="true" />
+            Dúvidas
+          </span>
+          <h2 id="faq-heading" class="mt-4 font-display text-3xl font-bold tracking-tight sm:text-4xl">
+            Perguntas frequentes
+          </h2>
+          <p class="mx-auto mt-3 max-w-2xl text-gray-600 dark:text-gray-400">
+            Ainda com dúvidas sobre a LinkLand? Talvez a resposta esteja aqui.
+          </p>
+        </div>
 
-        <UAccordion :items="faqs" type="multiple" class="mt-10" />
+        <div
+          v-reveal
+          class="mt-10 rounded-2xl border border-gray-200/80 bg-white px-5 py-2 shadow-sm sm:px-6 dark:border-white/5 dark:bg-gray-900"
+        >
+          <UAccordion :items="faqs" type="multiple" />
+        </div>
       </section>
 
       <!-- CTA final -->
       <section class="px-5 pb-20" aria-labelledby="cta-final-heading">
         <div
-          class="bg-brand-gradient mx-auto max-w-5xl rounded-3xl px-5 py-10 text-center text-white shadow-xl sm:px-8 sm:py-14"
+          v-reveal
+          class="bg-brand-gradient relative mx-auto max-w-5xl overflow-hidden rounded-3xl px-5 py-12 text-center text-white shadow-2xl shadow-indigo-500/25 sm:px-8 sm:py-16"
         >
-          <h2 id="cta-final-heading" class="font-display text-3xl font-bold tracking-tight sm:text-4xl">
-            Crie a sua página de links em minutos
-          </h2>
-          <p class="mx-auto mt-3 max-w-xl text-white/85">
-            Sem complicação e sem cartão de crédito. Monte, escolha o template e
-            publique — sua bio nunca mais vai ser só uma linha de texto.
-          </p>
-          <UButton
-            to="/register"
-            size="xl"
-            color="neutral"
-            variant="solid"
-            class="mt-8"
-            trailing-icon="i-lucide-arrow-right"
-          >
-            Começar agora, é grátis
-          </UButton>
+          <!-- Textura de profundidade dentro do CTA -->
+          <div
+            aria-hidden="true"
+            class="pointer-events-none absolute -right-20 -top-24 size-72 rounded-full bg-white/15 blur-3xl"
+          />
+          <div
+            aria-hidden="true"
+            class="pointer-events-none absolute -bottom-28 -left-16 size-72 rounded-full bg-white/10 blur-3xl"
+          />
+          <div class="relative">
+            <h2 id="cta-final-heading" class="font-display text-3xl font-bold tracking-tight sm:text-4xl">
+              Crie a sua página de links em minutos
+            </h2>
+            <p class="mx-auto mt-3 max-w-xl text-white/85">
+              Sem complicação e sem cartão de crédito. Monte, escolha o template e
+              publique — sua bio nunca mais vai ser só uma linha de texto.
+            </p>
+            <UButton
+              to="/register"
+              size="xl"
+              color="neutral"
+              variant="solid"
+              class="mt-8 shadow-lg transition hover:-translate-y-0.5"
+              trailing-icon="i-lucide-arrow-right"
+            >
+              Começar agora, é grátis
+            </UButton>
+          </div>
         </div>
       </section>
 
@@ -492,39 +603,75 @@ useHead({
 
     <!-- Footer -->
     <footer class="border-t border-gray-200 dark:border-gray-800">
-      <div
-        class="mx-auto flex max-w-6xl flex-col items-center justify-between gap-3 px-5 py-8 text-sm text-gray-500 sm:flex-row"
-      >
-        <Logo to="/" sm />
-        <nav aria-label="Links institucionais" class="flex items-center gap-4">
-          <NuxtLink to="/termos" class="transition hover:text-gray-900 dark:hover:text-gray-100">
-            Termos de Uso
-          </NuxtLink>
-          <NuxtLink to="/privacidade" class="transition hover:text-gray-900 dark:hover:text-gray-100">
-            Privacidade
-          </NuxtLink>
-        </nav>
-        <a
-          href="https://trackpath.com.br"
-          target="_blank"
-          rel="noopener noreferrer"
-          aria-label="Rastreado por TrackPath"
-          data-gtm-category="rodape"
-          data-gtm-action="click_rodape"
-          data-gtm-label="TrackPath"
-          class="inline-flex items-center gap-1.5 transition hover:text-gray-900 dark:hover:text-gray-100"
+      <div class="mx-auto max-w-6xl px-5 py-10">
+        <div class="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
+          <div class="max-w-xs">
+            <Logo to="/" sm />
+            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
+              Todos os seus links numa página só — bonita, rápida e brasileira.
+            </p>
+          </div>
+
+          <div class="flex gap-14 text-sm">
+            <nav aria-label="Produto">
+              <p class="font-semibold text-gray-900 dark:text-gray-100">Produto</p>
+              <ul class="mt-3 space-y-2 text-gray-500 dark:text-gray-400">
+                <li>
+                  <NuxtLink to="/register" class="transition hover:text-gray-900 dark:hover:text-gray-100">
+                    Criar conta
+                  </NuxtLink>
+                </li>
+                <li>
+                  <NuxtLink to="/login" class="transition hover:text-gray-900 dark:hover:text-gray-100">
+                    Entrar
+                  </NuxtLink>
+                </li>
+              </ul>
+            </nav>
+            <nav aria-label="Links institucionais">
+              <p class="font-semibold text-gray-900 dark:text-gray-100">Legal</p>
+              <ul class="mt-3 space-y-2 text-gray-500 dark:text-gray-400">
+                <li>
+                  <NuxtLink to="/termos" class="transition hover:text-gray-900 dark:hover:text-gray-100">
+                    Termos de Uso
+                  </NuxtLink>
+                </li>
+                <li>
+                  <NuxtLink to="/privacidade" class="transition hover:text-gray-900 dark:hover:text-gray-100">
+                    Privacidade
+                  </NuxtLink>
+                </li>
+              </ul>
+            </nav>
+          </div>
+        </div>
+
+        <div
+          class="mt-8 flex flex-col items-center justify-between gap-3 border-t border-gray-100 pt-6 text-sm text-gray-500 sm:flex-row dark:border-gray-800/80"
         >
-          <img
-            src="https://trackpath.com.br/assets/logo/favicon.png"
-            alt="TrackPath"
-            width="16"
-            height="16"
-            loading="lazy"
-            decoding="async"
-            class="size-4"
-          />
-          Rastreado por TrackPath
-        </a>
+          <span>© {{ new Date().getFullYear() }} LinkLand</span>
+          <a
+            href="https://trackpath.com.br"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="Rastreado por TrackPath"
+            data-gtm-category="rodape"
+            data-gtm-action="click_rodape"
+            data-gtm-label="TrackPath"
+            class="inline-flex items-center gap-1.5 transition hover:text-gray-900 dark:hover:text-gray-100"
+          >
+            <img
+              src="https://trackpath.com.br/assets/logo/favicon.png"
+              alt="TrackPath"
+              width="16"
+              height="16"
+              loading="lazy"
+              decoding="async"
+              class="size-4"
+            />
+            Rastreado por TrackPath
+          </a>
+        </div>
       </div>
     </footer>
   </div>

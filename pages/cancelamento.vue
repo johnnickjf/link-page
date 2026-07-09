@@ -7,6 +7,7 @@ useHead({
 
 const auth = useAuthStore()
 const { fetchMe } = useAuth()
+const { createRequest } = useSupport()
 const toast = useToast()
 
 const selected = ref<string | null>(null)
@@ -39,13 +40,32 @@ onMounted(async () => {
 })
 
 async function onSubmit(): Promise<void> {
+  if (!selected.value) return
   submitting.value = true
-  // Aqui você pode enviar o feedback para um endpoint de analytics/CRM.
-  // Por ora, simula uma chamada e exibe confirmação.
-  await new Promise((r) => setTimeout(r, 600))
-  submitted.value = true
-  submitting.value = false
-  toast.add({ title: 'Feedback enviado. Obrigado!', color: 'success' })
+  try {
+    // Persiste como solicitação de suporte (type=billing) — aparece no
+    // painel /admin/support junto com as demais, sem infra nova.
+    const reason = reasons.find((r) => r.value === selected.value)
+    const detail =
+      selected.value === 'other' && otherFeedback.value.trim()
+        ? `\n\nDetalhes: ${otherFeedback.value.trim()}`
+        : ''
+    await createRequest({
+      type: 'billing',
+      email: auth.user?.email ?? '',
+      message: `[Feedback de cancelamento] Motivo: ${reason?.label ?? selected.value}${detail}`,
+    })
+    submitted.value = true
+    toast.add({ title: 'Feedback enviado. Obrigado!', color: 'success' })
+  } catch (e) {
+    toast.add({
+      title: 'Não foi possível enviar o feedback',
+      description: getApiErrorMessage(e),
+      color: 'error',
+    })
+  } finally {
+    submitting.value = false
+  }
 }
 </script>
 

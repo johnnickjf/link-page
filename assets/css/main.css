@@ -80,3 +80,73 @@ body {
   outline-offset: 3px;
   border-radius: 4px;
 }
+
+/* ---------------------------------------------------------------------------
+   Landing & auth: ambiente, profundidade e micromovimento (CSS puro).
+   Usado por index.vue, AuthShell e telas de entrada — nada disso vaza para
+   os templates da página pública.
+   --------------------------------------------------------------------------- */
+
+/* Padrão de pontos sutil (profundidade sem peso visual). */
+.bg-dots {
+  background-image: radial-gradient(rgb(99 102 241 / 0.16) 1px, transparent 1px);
+  background-size: 22px 22px;
+}
+.dark .bg-dots {
+  background-image: radial-gradient(rgb(139 92 246 / 0.12) 1px, transparent 1px);
+}
+
+/* v-reveal (plugins/reveal.client.ts): estado inicial + revelado. */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  transition:
+    opacity 0.6s cubic-bezier(0.22, 0.8, 0.35, 1),
+    transform 0.6s cubic-bezier(0.22, 0.8, 0.35, 1);
+}
+.reveal-in {
+  opacity: 1;
+  transform: none;
+}
+
+/* Entrada única no load (hero/auth) — roda no paint, sem depender de JS. */
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: none; }
+}
+.animate-rise {
+  animation: rise-in 0.6s cubic-bezier(0.22, 0.8, 0.35, 1) both;
+}
+
+/* Flutuação lenta (mockup do celular no hero). */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+.animate-float {
+  animation: float-y 7s ease-in-out infinite;
+}
+
+/* Pontinho "ao vivo" do badge do hero. */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.35; }
+}
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
+
+/* Hover-lift consistente para cards da landing. */
+.card-lift {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 16px 40px rgb(79 70 229 / 0.12);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  .animate-rise, .animate-float, .animate-pulse-dot { animation: none; }
+  .card-lift, .card-lift:hover { transition: none; transform: none; }
+}

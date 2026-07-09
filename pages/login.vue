@@ -91,6 +91,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
           <UInput
             v-model="state.email"
             type="email"
+            size="lg"
             autocomplete="email"
             placeholder="voce@email.com"
             class="w-full"
@@ -101,6 +102,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
           <UInput
             v-model="state.password"
             :type="showPassword ? 'text' : 'password'"
+            size="lg"
             autocomplete="current-password"
             placeholder="••••••••"
             class="w-full"
@@ -127,7 +129,15 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
           </NuxtLink>
         </div>
 
-        <UButton type="submit" block :loading="loading">Entrar</UButton>
+        <UButton
+          type="submit"
+          block
+          size="lg"
+          :loading="loading"
+          class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/25 transition hover:opacity-90"
+        >
+          Entrar
+        </UButton>
       </UForm>
     </div>
 
