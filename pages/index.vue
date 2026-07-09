@@ -478,7 +478,10 @@ useHead({
               <div class="rounded-[calc(1rem-1.5px)] bg-white p-6 dark:bg-gray-900">
                 <p class="text-sm font-medium text-primary-600 dark:text-primary-400">Premium</p>
                 <p class="mt-1 font-display text-3xl font-bold tracking-tight">
-                  R$19,90<span class="text-base font-normal text-gray-500">/mês</span>
+                  R$1,99<span class="text-base font-normal text-gray-500"> no primeiro mês</span>
+                </p>
+                <p class="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                  R$19,90/mês nos meses seguintes · cancele quando quiser
                 </p>
                 <ul class="mt-5 space-y-3 text-sm">
                   <li v-for="f in premiumFeatures" :key="f" class="flex items-start gap-2.5">
@@ -486,8 +489,10 @@ useHead({
                     <span class="text-gray-600 dark:text-gray-400">{{ f }}</span>
                   </li>
                 </ul>
+                <!-- O ?referral_code é capturado pelo watcher global (app.vue) e
+                     salvo no localStorage — o cadastro já nasce com o cupom. -->
                 <UButton
-                  to="/register"
+                  to="/register?referral_code=DESCONTO"
                   block
                   class="mt-6 bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/25 transition hover:opacity-90"
                 >
