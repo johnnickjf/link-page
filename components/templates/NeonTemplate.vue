@@ -80,11 +80,13 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, initials, showBranding, ro
 </template>
 
 <style scoped>
-/* Template "neon": fundo escuro com brilho de neon contido. */
+/* Template "neon": fundo escuro com brilho de neon visível — os glows dao a
+   personalidade; a base continua quase preta para máximo contraste. */
 .neon-root {
   background:
-    radial-gradient(40% 30% at 15% 0%, rgb(34 211 238 / 0.18), transparent 70%),
-    radial-gradient(40% 30% at 85% 20%, rgb(217 70 239 / 0.16), transparent 70%),
+    radial-gradient(55% 40% at 12% 0%, rgb(34 211 238 / 0.32), transparent 72%),
+    radial-gradient(50% 38% at 88% 12%, rgb(217 70 239 / 0.28), transparent 72%),
+    radial-gradient(70% 45% at 50% 108%, rgb(34 211 238 / 0.14), transparent 70%),
     #050507;
   --lp-text: #fafafa;
   --lp-muted: #a1a1aa;
@@ -93,8 +95,32 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, initials, showBranding, ro
   --lp-link-border: var(--lp-accent);
   --lp-link-radius: 0.75rem;
 }
+/* Onde houver suporte, o glow inferior acompanha a cor de accent do usuário. */
+@supports (color: color-mix(in srgb, red 50%, blue)) {
+  .neon-root {
+    background:
+      radial-gradient(55% 40% at 12% 0%, rgb(34 211 238 / 0.32), transparent 72%),
+      radial-gradient(50% 38% at 88% 12%, rgb(217 70 239 / 0.28), transparent 72%),
+      radial-gradient(70% 45% at 50% 108%, color-mix(in srgb, var(--lp-accent) 18%, transparent), transparent 70%),
+      #050507;
+  }
+}
+
 .neon-title {
   color: var(--lp-text);
+  /* "Ignição" de letreiro neon: pisca 2x ao acender, uma única vez. */
+  animation: neon-ignite 1.3s linear 1;
+}
+@keyframes neon-ignite {
+  0% { opacity: 0; }
+  6% { opacity: 1; }
+  10% { opacity: 0.35; }
+  16% { opacity: 1; }
+  22% { opacity: 0.55; }
+  28%, 100% { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .neon-title { animation: none; }
 }
 .neon-root :deep(.lp-link) {
   box-shadow: 0 0 14px -2px var(--lp-accent);

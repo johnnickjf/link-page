@@ -81,7 +81,9 @@ body {
   padding: 0.5rem;
   margin: -0.5rem;
   border-radius: 9999px;
-  color: var(--lp-muted, #6b7280);
+  /* --lp-social-fg: setada quando o usuário personaliza a cor do botão
+     (ícones sociais acompanham). Sem override, cai no muted do template. */
+  color: var(--lp-social-fg, var(--lp-muted, #6b7280));
   -webkit-tap-highlight-color: transparent;
   transition: color 0.2s ease, transform 0.2s ease;
 }
