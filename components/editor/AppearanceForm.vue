@@ -69,7 +69,10 @@ const FONTS = [
 <template>
   <UCard>
     <template #header>
-      <h2 class="font-display font-semibold">Aparência</h2>
+      <div class="flex items-center gap-2">
+        <UIcon name="i-lucide-palette" class="size-4 text-gray-500" />
+        <h2 class="font-display font-semibold">Aparência</h2>
+      </div>
     </template>
 
     <div class="space-y-5">

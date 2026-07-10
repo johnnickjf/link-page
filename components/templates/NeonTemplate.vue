@@ -20,7 +20,7 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, initials, showBranding, ro
     :class="preview ? 'relative min-h-full' : 'min-h-screen'"
     :style="rootStyle"
   >
-    <div class="relative mx-auto flex w-full max-w-[480px] flex-col">
+    <div class="lp-animate relative mx-auto flex w-full max-w-[480px] flex-col">
       <header class="flex flex-col items-center text-center">
         <img
           v-if="avatarUrl"
@@ -48,7 +48,11 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, initials, showBranding, ro
         >
           {{ title }}
         </h1>
-        <p v-if="bio" class="mt-2 max-w-sm text-sm leading-relaxed text-zinc-400">
+        <p
+          v-if="bio"
+          class="mt-2 max-w-sm text-sm leading-relaxed"
+          :style="{ color: 'var(--lp-muted)' }"
+        >
           {{ bio }}
         </p>
       </header>
@@ -95,8 +99,15 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, initials, showBranding, ro
 .neon-root :deep(.lp-link) {
   box-shadow: 0 0 14px -2px var(--lp-accent);
 }
-.neon-root :deep(.lp-link:hover) {
-  box-shadow: 0 0 22px 0 var(--lp-accent);
-  border-color: var(--lp-accent);
+@media (hover: hover) {
+  .neon-root :deep(.lp-link:hover) {
+    box-shadow: 0 0 22px 0 var(--lp-accent);
+    border-color: var(--lp-accent);
+  }
+  /* Ícones sociais ganham brilho neon no hover (só quando hover existe;
+     custo zero em repouso). */
+  .neon-root :deep(.lp-social:hover) {
+    filter: drop-shadow(0 0 6px var(--lp-accent));
+  }
 }
 </style>

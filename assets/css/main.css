@@ -48,19 +48,26 @@ body {
   padding: 1rem 1.25rem;
   font-weight: 500;
   text-align: center;
+  /* Labels longos (ex.: URLs sem espaço) quebram em vez de estourar o botão. */
+  overflow-wrap: anywhere;
   background: var(--lp-link-bg, #ffffff);
   color: var(--lp-link-fg, #111827);
   border: 1px solid var(--lp-link-border, #e5e7eb);
   border-radius: var(--lp-link-radius, 0.9rem);
+  -webkit-tap-highlight-color: transparent;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }
-.lp-link:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--lp-link-shadow, 0 10px 25px rgb(0 0 0 / 0.08));
-  border-color: var(--lp-accent, #4f46e5);
+/* Hover só onde hover existe de verdade — em touch, o estado não "gruda"
+   após o toque (o feedback tátil fica por conta do :active). */
+@media (hover: hover) {
+  .lp-link:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--lp-link-shadow, 0 10px 25px rgb(0 0 0 / 0.08));
+    border-color: var(--lp-accent, #4f46e5);
+  }
 }
 .lp-link:active {
-  transform: translateY(0);
+  transform: translateY(0) scale(0.98);
 }
 .lp-link:focus-visible {
   outline: 2px solid var(--lp-accent, #4f46e5);
@@ -68,17 +75,49 @@ body {
 }
 
 .lp-social {
+  /* Padding + margem negativa: área de toque de ~40px sem alterar o layout
+     visual (o espaçamento icône-a-ícone dos templates continua idêntico). */
+  display: inline-flex;
+  padding: 0.5rem;
+  margin: -0.5rem;
+  border-radius: 9999px;
   color: var(--lp-muted, #6b7280);
+  -webkit-tap-highlight-color: transparent;
   transition: color 0.2s ease, transform 0.2s ease;
 }
-.lp-social:hover {
-  color: var(--lp-accent, #4f46e5);
-  transform: scale(1.12);
+@media (hover: hover) {
+  .lp-social:hover {
+    color: var(--lp-accent, #4f46e5);
+    transform: scale(1.12);
+  }
+}
+.lp-social:active {
+  transform: scale(0.95);
 }
 .lp-social:focus-visible {
   outline: 2px solid var(--lp-accent, #4f46e5);
-  outline-offset: 3px;
-  border-radius: 4px;
+  outline-offset: 0;
+}
+
+/* Entrada suave da página pública: filhos do container entram em cascata.
+   Roda uma vez no mount (barato); nada de animação infinita. */
+@keyframes lp-fade-up {
+  from { opacity: 0; transform: translateY(12px); }
+  to { opacity: 1; transform: none; }
+}
+.lp-animate > * {
+  animation: lp-fade-up 0.55s cubic-bezier(0.22, 0.8, 0.35, 1) both;
+}
+.lp-animate > *:nth-child(2) { animation-delay: 80ms; }
+.lp-animate > *:nth-child(3) { animation-delay: 160ms; }
+.lp-animate > *:nth-child(4) { animation-delay: 240ms; }
+.lp-animate > *:nth-child(5) { animation-delay: 320ms; }
+.lp-animate > *:nth-child(n + 6) { animation-delay: 400ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .lp-animate > * { animation: none; }
+  .lp-link, .lp-social { transition: none; }
+  .lp-link:active, .lp-social:active { transform: none; }
 }
 
 /* ---------------------------------------------------------------------------

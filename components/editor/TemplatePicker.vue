@@ -44,7 +44,10 @@ function select(t: Template): void {
 <template>
   <UCard>
     <template #header>
-      <h2 class="font-display font-semibold">Template</h2>
+      <div class="flex items-center gap-2">
+        <UIcon name="i-lucide-layout-template" class="size-4 text-gray-500" />
+        <h2 class="font-display font-semibold">Template</h2>
+      </div>
     </template>
 
     <div v-if="loading" class="grid grid-cols-2 gap-3">
@@ -72,12 +75,12 @@ function select(t: Template): void {
         type="button"
         role="radio"
         :aria-checked="model === t.id"
-        class="relative rounded-lg border p-3 text-left transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+        class="relative rounded-lg border p-3 text-left transition duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
         :class="[
           model === t.id
             ? 'border-primary-500 ring-2 ring-primary-500/30'
-            : 'border-gray-200 hover:border-gray-300 dark:border-gray-700',
-          t.premium && !auth.canUseTemplate(t.id) ? 'cursor-not-allowed opacity-60' : '',
+            : 'border-gray-200 hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-sm dark:border-gray-700 dark:hover:border-gray-600',
+          t.premium && !auth.canUseTemplate(t.id) ? 'opacity-60' : '',
         ]"
         @click="select(t)"
       >

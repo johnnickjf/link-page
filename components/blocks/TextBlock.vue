@@ -6,7 +6,7 @@ defineProps<{ config: TextConfig }>()
 
 <template>
   <p
-    class="whitespace-pre-line text-center leading-relaxed"
+    class="whitespace-pre-line break-words text-center leading-relaxed"
     :style="{ color: 'var(--lp-text, #111827)' }"
   >
     {{ config.content }}

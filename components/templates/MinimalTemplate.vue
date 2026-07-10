@@ -20,7 +20,7 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, initials, showBranding, ro
     :class="preview ? 'relative min-h-full' : 'min-h-screen'"
     :style="rootStyle"
   >
-    <div class="mx-auto flex w-full max-w-[480px] flex-col">
+    <div class="lp-animate mx-auto flex w-full max-w-[480px] flex-col">
       <header class="flex flex-col items-center text-center">
         <img
           v-if="avatarUrl"

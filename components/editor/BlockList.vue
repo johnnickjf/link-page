@@ -12,6 +12,7 @@ const emit = defineEmits<{
   remove: [block: Block]
   toggle: [block: Block]
   duplicate: [block: Block]
+  add: []
 }>()
 
 const listEl = ref<HTMLElement | null>(null)
@@ -87,22 +88,33 @@ function menuItems(block: Block): DropdownMenuItem[][] {
   <div>
     <div
       v-if="blocks.length === 0"
-      class="rounded-lg border border-dashed border-gray-300 p-6 text-center text-sm text-gray-500 dark:border-gray-700"
+      class="flex flex-col items-center gap-3 rounded-lg border border-dashed border-gray-300 p-8 text-center dark:border-gray-700"
     >
-      Nenhum bloco ainda. Adicione o primeiro acima.
+      <div
+        class="flex size-11 items-center justify-center rounded-xl bg-primary-50 text-primary-500 dark:bg-primary-950/60 dark:text-primary-300"
+      >
+        <UIcon name="i-lucide-blocks" class="size-6" />
+      </div>
+      <p class="text-sm text-gray-500 dark:text-gray-400">
+        Sua página ainda não tem blocos.<br />
+        Comece adicionando um link, rede social ou WhatsApp.
+      </p>
+      <UButton size="sm" icon="i-lucide-plus" variant="subtle" @click="emit('add')">
+        Adicionar primeiro bloco
+      </UButton>
     </div>
 
     <div ref="listEl" class="space-y-2 overflow-hidden">
       <div
         v-for="block in blocks"
         :key="block.id"
-        class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white p-3 dark:border-gray-800 dark:bg-gray-900"
+        class="flex items-center gap-2 rounded-lg border border-gray-200 bg-white p-3 transition-colors hover:border-gray-300 dark:border-gray-800 dark:bg-gray-900 dark:hover:border-gray-700"
         :class="{ 'opacity-50': !block.is_active }"
       >
-        <!-- Drag handle -->
+        <!-- Drag handle (touch-none: evita conflito entre arrastar e rolar) -->
         <button
           type="button"
-          class="drag-handle shrink-0 cursor-grab text-gray-400 hover:text-gray-600 active:cursor-grabbing"
+          class="drag-handle shrink-0 cursor-grab touch-none text-gray-400 hover:text-gray-600 active:cursor-grabbing dark:hover:text-gray-300"
           aria-label="Arrastar para reordenar"
         >
           <UIcon name="i-lucide-grip-vertical" class="size-5" />

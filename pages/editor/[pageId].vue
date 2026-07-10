@@ -472,7 +472,13 @@ async function copyPublicUrl(): Promise<void> {
           <UCard>
             <template #header>
               <div class="flex items-center justify-between">
-                <h2 class="font-display font-semibold">Blocos</h2>
+                <div class="flex items-center gap-2">
+                  <UIcon name="i-lucide-blocks" class="size-4 text-gray-500" />
+                  <h2 class="font-display font-semibold">Blocos</h2>
+                  <UBadge v-if="blocks.length" color="neutral" variant="subtle" size="sm" class="tabular-nums">
+                    {{ blocks.length }}
+                  </UBadge>
+                </div>
                 <UButton icon="i-lucide-plus" size="sm" @click="addBlock">
                   Adicionar
                 </UButton>
@@ -485,6 +491,7 @@ async function copyPublicUrl(): Promise<void> {
               @remove="(b) => (blockToDelete = b)"
               @toggle="toggleBlock"
               @duplicate="duplicateBlock"
+              @add="addBlock"
             />
           </UCard>
 
@@ -497,7 +504,10 @@ async function copyPublicUrl(): Promise<void> {
           <!-- QR Code -->
           <UCard v-if="canQr">
             <template #header>
-              <h2 class="font-display font-semibold">QR Code</h2>
+              <div class="flex items-center gap-2">
+                <UIcon name="i-lucide-qr-code" class="size-4 text-gray-500" />
+                <h2 class="font-display font-semibold">QR Code</h2>
+              </div>
             </template>
             <div class="space-y-3">
               <template v-if="published">
@@ -534,6 +544,7 @@ async function copyPublicUrl(): Promise<void> {
           <UCard v-else class="cursor-pointer" @click="openPremiumUpsell">
             <template #header>
               <div class="flex items-center gap-2">
+                <UIcon name="i-lucide-qr-code" class="size-4 text-gray-500" />
                 <h2 class="font-display font-semibold">QR Code</h2>
                 <UBadge color="primary" variant="subtle" size="sm">Premium</UBadge>
               </div>
@@ -547,9 +558,9 @@ async function copyPublicUrl(): Promise<void> {
         <!-- Preview -->
         <div class="min-w-0" :class="mobileTab !== 'preview' ? 'hidden lg:block' : ''">
           <div class="lg:sticky lg:top-6">
-            <p class="mb-2 text-center text-xs text-gray-500">Pré-visualização</p>
+            <p class="mb-2 text-center text-xs font-medium text-gray-500">Pré-visualização</p>
             <div
-              class="mx-auto h-[500px] w-full max-w-[380px] overflow-y-auto rounded-[2rem] border-4 border-gray-200 shadow-xl dark:border-gray-800 sm:h-[640px]"
+              class="mx-auto h-[500px] w-full max-w-[380px] overflow-y-auto rounded-[2.25rem] border-[6px] border-gray-900 bg-white shadow-2xl shadow-gray-900/20 ring-1 ring-gray-900/10 dark:border-gray-700 dark:ring-white/10 sm:h-[640px]"
             >
               <TemplateRenderer
                 :template="template"
@@ -561,6 +572,9 @@ async function copyPublicUrl(): Promise<void> {
                 preview
               />
             </div>
+            <p class="mx-auto mt-2.5 max-w-[380px] truncate text-center text-xs text-gray-400 dark:text-gray-500">
+              {{ publicUrl }}
+            </p>
           </div>
         </div>
       </div>

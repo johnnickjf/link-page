@@ -16,7 +16,10 @@ const uploadAvatar = (file: File) => store.uploadAvatar(props.pageId, file)
 <template>
   <UCard>
     <template #header>
-      <h2 class="font-display font-semibold">Cabeçalho</h2>
+      <div class="flex items-center gap-2">
+        <UIcon name="i-lucide-circle-user-round" class="size-4 text-gray-500" />
+        <h2 class="font-display font-semibold">Cabeçalho</h2>
+      </div>
     </template>
 
     <div class="space-y-4">

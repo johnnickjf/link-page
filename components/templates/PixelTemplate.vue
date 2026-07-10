@@ -24,7 +24,7 @@ useHead({
     :class="preview ? 'relative min-h-full' : 'min-h-screen'"
     :style="rootStyle"
   >
-    <div class="mx-auto flex w-full max-w-[480px] flex-col items-center pixel-content">
+    <div class="lp-animate pixel-content mx-auto flex w-full max-w-[480px] flex-col items-center">
 
       <!-- Avatar quadrado -->
       <div class="pixel-avatar">
@@ -117,7 +117,23 @@ useHead({
   font-size: clamp(0.6rem, 3.5vw, 0.875rem);
   line-height: 1.9;
   letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
   text-shadow: 2px 2px 0 rgba(0, 0, 0, 0.7);
+}
+
+/* Cursor retrô piscante — identidade de terminal/game clássico. Anima só
+   visibility num glifo minúsculo (custo de paint desprezível). */
+.pixel-title::after {
+  content: '▌';
+  margin-left: 0.3em;
+  color: var(--lp-accent);
+  animation: pixel-blink 1.1s steps(2, start) infinite;
+}
+@keyframes pixel-blink {
+  to { visibility: hidden; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .pixel-title::after { animation: none; }
 }
 
 /* ── Bio ── */
@@ -166,18 +182,20 @@ useHead({
   box-shadow: 4px 4px 0 #000;
   transition: box-shadow 0.06s steps(1), transform 0.06s steps(1);
 }
-.pixel-root :deep(.lp-link:hover) {
-  transform: none;
-  box-shadow: 6px 6px 0 #000;
+@media (hover: hover) {
+  .pixel-root :deep(.lp-link:hover) {
+    transform: none;
+    box-shadow: 6px 6px 0 #000;
+  }
+  /* ── Social: sem scale, apenas cor ── */
+  .pixel-root :deep(.lp-social:hover) {
+    transform: none;
+    color: var(--lp-text);
+  }
 }
+/* "Pressionar" pixelado funciona também no toque (fora do media query). */
 .pixel-root :deep(.lp-link:active) {
   transform: translate(4px, 4px);
   box-shadow: none;
-}
-
-/* ── Social: sem scale, apenas cor ── */
-.pixel-root :deep(.lp-social:hover) {
-  transform: none;
-  color: var(--lp-text);
 }
 </style>

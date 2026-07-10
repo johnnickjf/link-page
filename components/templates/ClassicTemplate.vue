@@ -20,18 +20,18 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, initials, showBranding, ro
     :class="preview ? 'relative min-h-full' : 'min-h-screen'"
     :style="rootStyle"
   >
-    <div class="mx-auto flex w-full max-w-[460px] flex-col">
+    <div class="lp-animate mx-auto flex w-full max-w-[460px] flex-col">
       <header class="flex flex-col items-center text-center">
         <img
           v-if="avatarUrl"
           :src="avatarUrl"
           :alt="title"
-          class="size-24 rounded-full object-cover ring-1 ring-stone-300"
+          class="size-24 rounded-full object-cover shadow-sm ring-1 ring-stone-300"
           fetchpriority="high"
         />
         <div
           v-else
-          class="flex size-24 items-center justify-center rounded-full text-3xl text-white"
+          class="flex size-24 items-center justify-center rounded-full text-3xl text-white shadow-sm"
           :style="{ background: accent, fontFamily: 'Playfair Display, serif' }"
         >
           {{ initials }}
@@ -43,7 +43,8 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, initials, showBranding, ro
         <div class="mt-3 h-px w-10 bg-stone-300" />
         <p
           v-if="bio"
-          class="mt-3 max-w-sm text-sm italic leading-relaxed text-stone-500"
+          class="mt-3 max-w-sm text-sm italic leading-relaxed"
+          :style="{ color: 'var(--lp-muted)' }"
         >
           {{ bio }}
         </p>
