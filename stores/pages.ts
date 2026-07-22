@@ -3,11 +3,14 @@ import type {
   Block,
   CreateBlockPayload,
   CreatePagePayload,
+  CreateTabPayload,
   ID,
   Page,
+  PageTab,
   Template,
   UpdateBlockPayload,
   UpdatePagePayload,
+  UpdateTabPayload,
 } from '~/types/api'
 
 /**
@@ -145,12 +148,40 @@ export const usePagesStore = defineStore('pages', () => {
     await request(`/block/${blockId}`, { method: 'DELETE' })
   }
 
-  async function reorderBlocks(pageId: ID, order: ID[]): Promise<void> {
+  async function reorderBlocks(
+    pageId: ID,
+    order: ID[],
+    tabId: ID | null = null,
+  ): Promise<void> {
     const { request } = useApi()
     await request('/block/reorder', {
       method: 'PATCH',
-      body: { page_id: pageId, order },
+      body: { page_id: pageId, order, tab_id: tabId },
     })
+  }
+
+  // -------- Seções (abas) --------
+  function fetchTabs(pageId: ID): Promise<PageTab[]> {
+    const { request } = useApi()
+    return request<PageTab[]>(`/page/${pageId}/tab`)
+  }
+
+  function createTab(pageId: ID, payload: CreateTabPayload): Promise<PageTab> {
+    const { request } = useApi()
+    return request<PageTab>(`/page/${pageId}/tab`, {
+      method: 'POST',
+      body: payload,
+    })
+  }
+
+  function updateTab(tabId: ID, payload: UpdateTabPayload): Promise<PageTab> {
+    const { request } = useApi()
+    return request<PageTab>(`/tab/${tabId}`, { method: 'PUT', body: payload })
+  }
+
+  async function deleteTab(tabId: ID): Promise<void> {
+    const { request } = useApi()
+    await request(`/tab/${tabId}`, { method: 'DELETE' })
   }
 
   return {
@@ -174,5 +205,9 @@ export const usePagesStore = defineStore('pages', () => {
     updateBlock,
     deleteBlock,
     reorderBlocks,
+    fetchTabs,
+    createTab,
+    updateTab,
+    deleteTab,
   }
 })

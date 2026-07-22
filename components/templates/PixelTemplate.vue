@@ -55,6 +55,8 @@ useHead({
         {{ bio }}
       </p>
 
+      <slot name="tabs" />
+
       <!-- Redes sociais -->
       <div v-if="socialBlocks.length" class="mt-6 flex flex-wrap justify-center gap-5">
         <SocialBlock

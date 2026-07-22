@@ -36,6 +36,7 @@ export interface CustomFeatures {
   custom_font: boolean
   hide_branding: boolean
   qr_code: boolean
+  multi_tab: boolean
 }
 
 /** GET /user/me — inclui `plan`, `email_verified` e os limites (aninhados). */
@@ -147,6 +148,8 @@ export type Block = {
   [K in BlockType]: {
     id: ID
     page_id: ID
+    /** Seção à qual o bloco pertence. null = página sem seções (legado/atual). */
+    tab_id: ID | null
     type: K
     config: BlockConfigByType[K]
     position: number
@@ -168,6 +171,8 @@ export interface CreateBlockPayload<K extends BlockType = BlockType> {
   config: BlockConfigByType[K]
   position?: number
   is_active?: boolean
+  /** Seção destino. Omitido = página sem seções (comportamento atual). */
+  tab_id?: ID | null
 }
 
 export interface UpdateBlockPayload {
@@ -178,6 +183,40 @@ export interface UpdateBlockPayload {
 export interface ReorderBlocksPayload {
   page_id: ID
   order: ID[]
+  /** Reordena dentro de uma seção. Omitido = página sem seções. */
+  tab_id?: ID | null
+}
+
+// ---------------------------------------------------------------------------
+// Seções (páginas internas / abas) — feature premium
+// ---------------------------------------------------------------------------
+
+export interface PageTab {
+  id: ID
+  page_id: ID
+  name: string
+  icon?: string | null
+  position: number
+  created_at?: string
+  updated_at?: string
+}
+
+export interface CreateTabPayload {
+  name: string
+  icon?: string | null
+}
+
+export interface UpdateTabPayload {
+  name?: string
+  icon?: string | null
+}
+
+/** Seção no shape público (com seus blocos já filtrados). */
+export interface PublicTab {
+  id: ID
+  name: string
+  icon?: string | null
+  blocks: PublicBlock[]
 }
 
 // ---------------------------------------------------------------------------
@@ -262,6 +301,8 @@ export interface PublicPage {
   template: string
   theme?: Theme | null
   blocks: PublicBlock[]
+  /** Vazio quando a página não usa seções. Toggle só aparece com 2+. */
+  tabs?: PublicTab[]
 }
 
 // ---------------------------------------------------------------------------

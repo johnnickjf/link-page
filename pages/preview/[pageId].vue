@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Block, Page, PublicBlock, Theme } from '~/types/api'
+import type { Block, ID, Page, PageTab, PublicBlock, Theme } from '~/types/api'
 
 definePageMeta({ middleware: 'auth', layout: 'public' })
 
@@ -9,17 +9,22 @@ const pageId = computed(() => String(route.params.pageId))
 
 const page = ref<Page | null>(null)
 const blocks = ref<Block[]>([])
+const tabs = ref<PageTab[]>([])
+const activeTabId = ref<ID | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
 
 onMounted(async () => {
   try {
-    const [p, blks] = await Promise.all([
+    const [p, blks, tbs] = await Promise.all([
       store.getPage(pageId.value),
       store.fetchBlocks(pageId.value),
+      store.fetchTabs(pageId.value),
     ])
     page.value = p
-    blocks.value = [...blks].sort((a, b) => a.position - b.position)
+    blocks.value = [...blks]
+    tabs.value = [...tbs]
+    activeTabId.value = tabs.value[0]?.id ?? null
   } catch (e) {
     error.value = getApiErrorMessage(e)
   } finally {
@@ -32,8 +37,20 @@ useHead(() => ({
   meta: [{ name: 'robots', content: 'noindex, nofollow' }],
 }))
 
+// Seções: toggle só com 2+; sem seções, mostra os blocos soltos (tab_id null).
+const hasTabs = computed(() => tabs.value.length >= 2)
+const publicTabs = computed(() =>
+  tabs.value.map((t) => ({
+    id: t.id,
+    name: t.name,
+    icon: t.icon,
+    blocks: [] as PublicBlock[],
+  })),
+)
 const previewBlocks = computed<PublicBlock[]>(() =>
-  blocks.value.filter((b) => b.is_active),
+  blocks.value
+    .filter((b) => b.tab_id === activeTabId.value && b.is_active)
+    .sort((a, b) => a.position - b.position),
 )
 </script>
 
@@ -87,7 +104,15 @@ const previewBlocks = computed<PublicBlock[]>(() =>
         :avatar-url="page.avatar_url"
         :theme="(page.theme as Theme)"
         :blocks="previewBlocks"
-      />
+      >
+        <template v-if="hasTabs" #tabs>
+          <PageTabsToggle
+            :model-value="activeTabId ?? ''"
+            :tabs="publicTabs"
+            @update:model-value="(id: string) => (activeTabId = id)"
+          />
+        </template>
+      </TemplateRenderer>
     </div>
   </div>
 </template>

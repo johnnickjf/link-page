@@ -46,6 +46,7 @@ const customFeatures = reactive<CustomFeatures>({
   custom_font: false,
   hide_branding: false,
   qr_code: false,
+  multi_tab: false,
 })
 const savingPlan = ref(false)
 
@@ -62,6 +63,7 @@ function syncPlanForm(u: AdminUser): void {
     customFeatures.custom_font = u.custom_features.custom_font ?? false
     customFeatures.hide_branding = u.custom_features.hide_branding ?? false
     customFeatures.qr_code = u.custom_features.qr_code ?? false
+    customFeatures.multi_tab = u.custom_features.multi_tab ?? false
   } else {
     customFeatures.max_pages = null
     customFeatures.max_blocks_per_page = null
@@ -71,6 +73,7 @@ function syncPlanForm(u: AdminUser): void {
     customFeatures.custom_font = false
     customFeatures.hide_branding = false
     customFeatures.qr_code = false
+    customFeatures.multi_tab = false
   }
 }
 
@@ -457,6 +460,10 @@ async function confirmDelete(): Promise<void> {
                       <div class="flex items-center justify-between gap-3">
                         <span class="text-sm">QR Code</span>
                         <USwitch v-model="customFeatures.qr_code" />
+                      </div>
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-sm">Seções (múltiplas abas)</span>
+                        <USwitch v-model="customFeatures.multi_tab" />
                       </div>
                     </div>
                   </div>

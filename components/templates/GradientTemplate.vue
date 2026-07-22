@@ -51,6 +51,8 @@ const { inlineBlocks, socialBlocks, whatsapp, initials, showBranding, rootStyle 
         </p>
       </header>
 
+      <slot name="tabs" />
+
       <div
         v-if="socialBlocks.length"
         class="mt-6 flex flex-wrap justify-center gap-5"

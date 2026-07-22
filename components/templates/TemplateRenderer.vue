@@ -47,5 +47,9 @@ const component = computed<Component>(
     :theme="theme"
     :blocks="blocks"
     :preview="preview"
-  />
+  >
+    <!-- Toggle de seções (opcional): repassado ao template, que o coloca
+         logo após o cabeçalho. Sem seções, nada é passado = zero mudança. -->
+    <template #tabs><slot name="tabs" /></template>
+  </component>
 </template>

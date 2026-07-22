@@ -39,6 +39,7 @@ export default defineNuxtConfig({
       '/admin/**',
       '/preview/**',
       '/cancelamento',
+      '/support',
       '/forgot-password',
       '/reset-password',
       '/verify-email',

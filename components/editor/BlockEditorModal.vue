@@ -16,6 +16,8 @@ const props = defineProps<{
   pageId: ID
   block?: Block | null
   nextPosition?: number
+  /** Seção destino ao criar (null = página sem seções). */
+  tabId?: ID | null
 }>()
 const open = defineModel<boolean>('open', { required: true })
 const emit = defineEmits<{ saved: [block: Block] }>()
@@ -179,6 +181,7 @@ async function submit(): Promise<void> {
           config: buildConfig(),
           position: props.nextPosition,
           is_active: form.is_active,
+          tab_id: props.tabId ?? null,
         } as CreateBlockPayload)
     emit('saved', result)
     toast.add({

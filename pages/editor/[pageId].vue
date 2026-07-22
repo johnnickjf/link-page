@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Block, PublicBlock, Theme } from '~/types/api'
+import type { Block, ID, PageTab, PublicBlock, Theme } from '~/types/api'
 
 definePageMeta({ middleware: 'auth' })
 
@@ -13,6 +13,7 @@ const { open: openPremiumUpsell } = usePremiumUpsell()
 const origin = useRequestURL().origin
 const pageId = computed(() => String(route.params.pageId))
 const canQr = computed(() => auth.canUseFeature('qr_code'))
+const canTabs = computed(() => auth.canUseFeature('multi_tab'))
 
 // Estado editável — alimenta o preview ao vivo.
 const title = ref('')
@@ -22,8 +23,42 @@ const template = ref('minimal')
 const previousTemplate = ref('minimal')
 const slug = ref('')
 const published = ref(false)
-const blocks = ref<Block[]>([])
 const theme = ref<Theme>({})
+
+// `blocks` = pool mestre (todos os blocos da página). `activeBlocks` = conjunto
+// de trabalho da SEÇÃO ativa (mesmos objetos, filtrados) — é o que a BlockList
+// edita. Sem seções, activeTabId=null e activeBlocks = todos os blocos (que têm
+// tab_id null): idêntico ao comportamento atual.
+const blocks = ref<Block[]>([])
+const tabs = ref<PageTab[]>([])
+const activeTabId = ref<ID | null>(null)
+const activeBlocks = ref<Block[]>([])
+
+function refreshActiveBlocks(): void {
+  activeBlocks.value = blocks.value
+    .filter((b) => b.tab_id === activeTabId.value)
+    .sort((a, b) => a.position - b.position)
+}
+
+function switchTab(id: ID): void {
+  activeTabId.value = id
+  refreshActiveBlocks()
+}
+
+// Chamado após criar/renomear/excluir seção: recarrega seções + blocos (criar a
+// 1ª seção reatribui os blocos soltos; excluir remove os blocos da seção).
+async function onSectionsChanged(): Promise<void> {
+  const [tbs, blks] = await Promise.all([
+    store.fetchTabs(pageId.value),
+    store.fetchBlocks(pageId.value),
+  ])
+  tabs.value = [...tbs]
+  blocks.value = [...blks]
+  if (!tabs.value.some((t) => t.id === activeTabId.value)) {
+    activeTabId.value = tabs.value[0]?.id ?? null
+  }
+  refreshActiveBlocks()
+}
 
 // Snapshot do último estado salvo — usado para detectar dirty e reverter.
 const savedTitle = ref('')
@@ -72,9 +107,10 @@ async function load(): Promise<void> {
   loading.value = true
   error.value = null
   try {
-    const [page, blks] = await Promise.all([
+    const [page, blks, tbs] = await Promise.all([
       store.getPage(pageId.value),
       store.fetchBlocks(pageId.value),
+      store.fetchTabs(pageId.value),
     ])
     title.value = page.title
     bio.value = page.bio ?? ''
@@ -84,7 +120,10 @@ async function load(): Promise<void> {
     slug.value = page.slug
     published.value = page.is_published
     theme.value = { ...(page.theme ?? {}) }
-    blocks.value = [...blks].sort((a, b) => a.position - b.position)
+    blocks.value = [...blks]
+    tabs.value = [...tbs]
+    activeTabId.value = tabs.value[0]?.id ?? null
+    refreshActiveBlocks()
     syncSnapshot()
   } catch (e) {
     error.value = getApiErrorMessage(e)
@@ -94,8 +133,9 @@ async function load(): Promise<void> {
 }
 onMounted(load)
 
+// Preview mostra a SEÇÃO ativa (opção A: tudo troca por seção).
 const previewBlocks = computed<PublicBlock[]>(() =>
-  blocks.value.filter((b) => b.is_active),
+  activeBlocks.value.filter((b) => b.is_active),
 )
 const publicUrl = computed(() => `${origin}/${slug.value}`)
 
@@ -225,26 +265,30 @@ function onBlockSaved(block: Block): void {
   const i = blocks.value.findIndex((b) => b.id === block.id)
   if (i >= 0) blocks.value[i] = block
   else blocks.value.push(block)
+  refreshActiveBlocks()
 }
 
 async function persistOrder(): Promise<void> {
   try {
+    // Reordena só dentro da seção ativa (activeTabId null = página sem seções).
     await store.reorderBlocks(
       pageId.value,
-      blocks.value.map((b) => b.id),
+      activeBlocks.value.map((b) => b.id),
+      activeTabId.value,
     )
-    blocks.value.forEach((b, i) => (b.position = i))
+    // activeBlocks compartilha os objetos com o pool mestre — atualizar a
+    // posição aqui reflete no mestre; refreshActiveBlocks ordena por position.
+    activeBlocks.value.forEach((b, i) => (b.position = i))
   } catch (e) {
     toast.add({
       title: 'Erro ao reordenar',
       description: getApiErrorMessage(e),
       color: 'error',
     })
-    // Resincroniza só os blocos (não a página inteira) — do contrário,
-    // edições não salvas no cabeçalho/aparência seriam perdidas silenciosamente.
     try {
       const blks = await store.fetchBlocks(pageId.value)
-      blocks.value = [...blks].sort((a, b) => a.position - b.position)
+      blocks.value = [...blks]
+      refreshActiveBlocks()
     } catch {
       // Mantém a ordem local se o resync também falhar.
     }
@@ -274,9 +318,11 @@ async function duplicateBlock(block: Block): Promise<void> {
     const created = await store.createBlock(pageId.value, {
       type: block.type,
       config: { ...block.config } as never,
-      position: blocks.value.length,
+      position: activeBlocks.value.length,
+      tab_id: activeTabId.value,
     })
     blocks.value.push(created)
+    refreshActiveBlocks()
     toast.add({ title: 'Bloco duplicado', color: 'success' })
   } catch (e) {
     toast.add({
@@ -298,6 +344,7 @@ async function confirmDeleteBlock(): Promise<void> {
   try {
     await store.deleteBlock(target.id)
     blocks.value = blocks.value.filter((b) => b.id !== target.id)
+    refreshActiveBlocks()
     blockToDelete.value = null
     toast.add({ title: 'Bloco excluído', color: 'success' })
   } catch (e) {
@@ -475,8 +522,8 @@ async function copyPublicUrl(): Promise<void> {
                 <div class="flex items-center gap-2">
                   <UIcon name="i-lucide-blocks" class="size-4 text-gray-500" />
                   <h2 class="font-display font-semibold">Blocos</h2>
-                  <UBadge v-if="blocks.length" color="neutral" variant="subtle" size="sm" class="tabular-nums">
-                    {{ blocks.length }}
+                  <UBadge v-if="activeBlocks.length" color="neutral" variant="subtle" size="sm" class="tabular-nums">
+                    {{ activeBlocks.length }}
                   </UBadge>
                 </div>
                 <UButton icon="i-lucide-plus" size="sm" @click="addBlock">
@@ -484,8 +531,21 @@ async function copyPublicUrl(): Promise<void> {
                 </UButton>
               </div>
             </template>
+
+            <!-- Seções (premium): troca qual conjunto de blocos está sendo
+                 editado. Não-premium: teaser travado -> upsell. -->
+            <SectionsBar
+              :page-id="pageId"
+              :tabs="tabs"
+              :active-tab-id="activeTabId"
+              :can-use="canTabs"
+              @switch="switchTab"
+              @changed="onSectionsChanged"
+              @upsell="openPremiumUpsell"
+            />
+
             <BlockList
-              v-model="blocks"
+              v-model="activeBlocks"
               @reorder="persistOrder"
               @edit="editBlock"
               @remove="(b) => (blockToDelete = b)"
@@ -616,7 +676,8 @@ async function copyPublicUrl(): Promise<void> {
       v-model:open="blockModalOpen"
       :page-id="pageId"
       :block="editingBlock"
-      :next-position="blocks.length"
+      :next-position="activeBlocks.length"
+      :tab-id="activeTabId"
       @saved="onBlockSaved"
     />
 

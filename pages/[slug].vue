@@ -32,6 +32,17 @@ if (!page.value) {
   })
 }
 
+// Seções: só há toggle com 2+. Sem seções (tabs vazio), renderiza os blocos
+// planos como sempre — caminho legado intocado.
+const tabs = computed(() => page.value?.tabs ?? [])
+const hasTabs = computed(() => tabs.value.length >= 2)
+const activeTabId = ref(tabs.value[0]?.id ?? '')
+const activeBlocks = computed(() => {
+  if (tabs.value.length === 0) return page.value?.blocks ?? []
+  const active = tabs.value.find((t) => t.id === activeTabId.value) ?? tabs.value[0]
+  return active?.blocks ?? []
+})
+
 useHead(() => ({
   link: [{ rel: 'canonical', href: url.href }],
 }))
@@ -60,6 +71,10 @@ useSeoMeta({
     :bio="page.bio"
     :avatar-url="page.avatar_url"
     :theme="page.theme"
-    :blocks="page.blocks"
-  />
+    :blocks="activeBlocks"
+  >
+    <template v-if="hasTabs" #tabs>
+      <PageTabsToggle v-model="activeTabId" :tabs="tabs" />
+    </template>
+  </TemplateRenderer>
 </template>
