@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
-import type { AdminUser, CustomFeatures, Plan, UpdatePlanPayload } from '~/types/api'
+import type { AdminPage, AdminUser, CustomFeatures, Plan, UpdatePlanPayload } from '~/types/api'
 
 definePageMeta({ layout: 'admin', middleware: 'superadmin' })
 
@@ -8,10 +8,17 @@ const route = useRoute()
 const id = computed(() => String(route.params.id))
 const admin = useAdminApi()
 const toast = useToast()
+const origin = useRequestURL().origin
 
 const user = ref<AdminUser | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
+
+const pages = ref<AdminPage[]>([])
+const pagesLoading = ref(true)
+function publicUrl(slug: string): string {
+  return `${origin}/${slug}`
+}
 
 useHead(() => ({
   title: `${user.value?.name || 'Usuário'} · Admin · LinkLand`,
@@ -91,7 +98,22 @@ async function load(): Promise<void> {
     loading.value = false
   }
 }
-onMounted(load)
+
+async function loadPages(): Promise<void> {
+  pagesLoading.value = true
+  try {
+    pages.value = await admin.listUserPages(id.value)
+  } catch (e) {
+    toast.add({ title: 'Erro ao carregar páginas', description: getApiErrorMessage(e), color: 'error' })
+  } finally {
+    pagesLoading.value = false
+  }
+}
+
+onMounted(() => {
+  load()
+  loadPages()
+})
 
 function toggleBlockType(type: string): void {
   const idx = customFeatures.block_types.indexOf(type)
@@ -544,6 +566,49 @@ async function confirmDelete(): Promise<void> {
               </UButton>
             </div>
           </div>
+        </UCard>
+
+        <!-- Páginas -->
+        <UCard>
+          <template #header>
+            <div class="flex items-center gap-2">
+              <UIcon name="i-lucide-file-text" class="size-4 text-gray-500" />
+              <h3 class="font-display font-semibold">Páginas</h3>
+            </div>
+          </template>
+          <div v-if="pagesLoading" class="space-y-2">
+            <USkeleton v-for="i in 2" :key="i" class="h-14 w-full rounded-lg" />
+          </div>
+          <p v-else-if="!pages.length" class="text-sm text-gray-500 dark:text-gray-400">
+            Este usuário ainda não criou nenhuma página.
+          </p>
+          <ul v-else class="space-y-2">
+            <li
+              v-for="p in pages"
+              :key="p.id"
+              class="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-gray-100 p-3 dark:border-gray-800"
+            >
+              <div class="min-w-0">
+                <div class="flex items-center gap-2">
+                  <p class="truncate text-sm font-medium">{{ p.title }}</p>
+                  <UBadge :color="p.is_published ? 'success' : 'neutral'" variant="subtle">
+                    {{ p.is_published ? 'Publicado' : 'Rascunho' }}
+                  </UBadge>
+                </div>
+                <p class="truncate text-xs text-gray-500 dark:text-gray-400">/{{ p.slug }} · {{ p.template }}</p>
+              </div>
+              <UButton
+                :href="publicUrl(p.slug)"
+                target="_blank"
+                icon="i-lucide-external-link"
+                size="sm"
+                variant="subtle"
+                color="neutral"
+              >
+                Ir
+              </UButton>
+            </li>
+          </ul>
         </UCard>
 
         <!-- Status e verificação -->

@@ -337,6 +337,16 @@ export interface AdminUser {
   updated_at?: string
 }
 
+/** GET /system/users/{id}/pages — gestão simples: link + status. */
+export interface AdminPage {
+  id: ID
+  slug: string
+  title: string
+  template: string
+  is_published: boolean
+  created_at: string
+}
+
 export interface AdminDashboard {
   total_users: number
   active_users: number

@@ -1,5 +1,6 @@
 import type {
   AdminDashboard,
+  AdminPage,
   AdminSupportDetail,
   AdminSupportListItem,
   AdminSupportListParams,
@@ -66,6 +67,10 @@ export function useAdminApi() {
     })
   }
 
+  function listUserPages(id: ID) {
+    return request<AdminPage[]>(`/system/users/${id}/pages`)
+  }
+
   function deleteUser(id: ID) {
     return request<MessageResponse>(`/system/users/${id}`, { method: 'DELETE' })
   }
@@ -105,6 +110,7 @@ export function useAdminApi() {
     deleteUser,
     sendPremiumInvite,
     setReferralCode,
+    listUserPages,
     listSupportRequests,
     getSupportRequest,
     replySupportRequest,
