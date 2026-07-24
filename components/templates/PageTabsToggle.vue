@@ -51,7 +51,10 @@ const model = defineModel<string>({ required: true })
   border-radius: 9999px;
   font-size: 0.875rem;
   font-weight: 600;
-  color: var(--lp-text, #111827);
+  /* Ambas as pílulas sentam sobre --lp-link-bg (container), então precisam
+     da mesma variável de contraste que a ativa usa — --lp-text é a cor do
+     título/bio, sem relação com esse fundo. */
+  color: var(--lp-link-fg, #111827);
   opacity: 0.6;
   transition: opacity 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
   -webkit-tap-highlight-color: transparent;

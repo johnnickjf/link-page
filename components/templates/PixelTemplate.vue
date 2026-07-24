@@ -10,7 +10,7 @@ const props = defineProps<{
   preview?: boolean
 }>()
 
-const { inlineBlocks, socialBlocks, whatsapp, accent, initials, showBranding, rootStyle } =
+const { inlineBlocks, socialBlocks, whatsapp, accent, iconMode, initials, showBranding, rootStyle } =
   useTemplateLayout(props, '#22c55e')
 
 useHead({
@@ -23,6 +23,7 @@ useHead({
     class="pixel-root px-5 py-14"
     :class="preview ? 'relative min-h-full' : 'min-h-screen'"
     :style="rootStyle"
+    :data-icon-mode="iconMode"
   >
     <div class="lp-animate pixel-content mx-auto flex w-full max-w-[480px] flex-col items-center">
 

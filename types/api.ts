@@ -235,6 +235,10 @@ export interface Theme {
   button_color?: string
   /** Cor do texto do botão (hex). */
   button_text_color?: string
+  /** Posição do ícone no botão. Default: 'inline' (ao lado do texto). */
+  button_icon_position?: 'inline' | 'fixed'
+  /** Alinhamento do texto do botão. Default: 'center'. */
+  button_text_align?: 'left' | 'center' | 'right'
   /** Cor do texto (título/bio) (hex). */
   text_color?: string
   /** Tipo de fundo da página. */

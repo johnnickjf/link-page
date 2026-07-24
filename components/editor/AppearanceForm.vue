@@ -19,6 +19,17 @@ const buttonStyles = [
   { value: 'pill', label: 'Pílula' },
 ] as const
 
+const iconPositions = [
+  { value: 'inline', label: 'Ao lado do texto' },
+  { value: 'fixed', label: 'Fixo no início' },
+] as const
+
+const textAligns = [
+  { value: 'left', label: 'Esquerda', icon: 'i-lucide-align-left' },
+  { value: 'center', label: 'Centro', icon: 'i-lucide-align-center' },
+  { value: 'right', label: 'Direita', icon: 'i-lucide-align-right' },
+] as const
+
 const backgroundTypes = [
   { value: 'color', label: 'Cor' },
   { value: 'gradient', label: 'Gradiente' },
@@ -97,6 +108,42 @@ const FONTS = [
         <ColorField v-model="theme.button_color" label="Cor do botão" />
         <ColorField v-model="theme.button_text_color" label="Texto do botão" />
         <ColorField v-model="theme.text_color" label="Cor do texto" />
+      </div>
+
+      <!-- Ícone do botão -->
+      <div>
+        <p class="mb-2 text-sm font-medium">Ícone do botão</p>
+        <div class="flex flex-wrap gap-2">
+          <UButton
+            v-for="o in iconPositions"
+            :key="o.value"
+            size="sm"
+            :variant="(theme.button_icon_position || 'inline') === o.value ? 'solid' : 'subtle'"
+            :color="(theme.button_icon_position || 'inline') === o.value ? 'primary' : 'neutral'"
+            @click="theme.button_icon_position = o.value"
+          >
+            {{ o.label }}
+          </UButton>
+        </div>
+      </div>
+
+      <!-- Alinhamento do texto -->
+      <div>
+        <p class="mb-2 text-sm font-medium">Alinhamento do texto</p>
+        <div class="flex flex-wrap gap-2">
+          <UButton
+            v-for="a in textAligns"
+            :key="a.value"
+            size="sm"
+            :icon="a.icon"
+            :aria-label="a.label"
+            :variant="(theme.button_text_align || 'center') === a.value ? 'solid' : 'subtle'"
+            :color="(theme.button_text_align || 'center') === a.value ? 'primary' : 'neutral'"
+            @click="theme.button_text_align = a.value"
+          >
+            {{ a.label }}
+          </UButton>
+        </div>
       </div>
 
       <!-- Fundo (premium) -->

@@ -42,7 +42,7 @@ body {
 .lp-link {
   display: flex;
   align-items: center;
-  justify-content: center;
+  justify-content: var(--lp-link-justify, center);
   gap: 0.75rem;
   width: 100%;
   padding: 1rem 1.25rem;
@@ -56,6 +56,27 @@ body {
   border-radius: var(--lp-link-radius, 0.9rem);
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+/* Ícone fixo no início do botão: some do fluxo (position: absolute) e o
+   texto ocupa a largura toda, alinhando-se independente do ícone. Só
+   reserva espaço pro ícone quando o botão de fato tem um (:has). Escopado
+   por [data-icon-mode] no root do template — nenhum bloco precisa saber
+   que essa opção existe. O <Icon>/<UIcon> renderiza como <span class="iconify">,
+   então ícone e rótulo (ambos <span>) se distinguem por essa classe, não pela tag. */
+[data-icon-mode='fixed'] .lp-link {
+  position: relative;
+}
+[data-icon-mode='fixed'] .lp-link > .iconify:first-child {
+  position: absolute;
+  left: 1.25rem;
+}
+[data-icon-mode='fixed'] .lp-link > span:not(.iconify) {
+  width: 100%;
+  text-align: var(--lp-link-text-align, center);
+}
+[data-icon-mode='fixed'] .lp-link:has(> .iconify:first-child) > span:not(.iconify) {
+  padding-left: 2rem;
 }
 /* Hover só onde hover existe de verdade — em touch, o estado não "gruda"
    após o toque (o feedback tátil fica por conta do :active). */

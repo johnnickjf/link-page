@@ -40,6 +40,12 @@ function readableOn(bg: string): string {
   return yiq >= 150 ? '#111827' : '#ffffff'
 }
 
+const JUSTIFY_MAP: Record<string, string> = {
+  left: 'flex-start',
+  center: 'center',
+  right: 'flex-end',
+}
+
 /** Converte hex em rgba() com a opacidade dada (p/ texto secundário). */
 function withAlpha(hex: string, alpha: number): string {
   const rgb = hexToRgb(hex)
@@ -91,6 +97,10 @@ export function useTemplateLayout(props: TemplateInput, defaultAccent = '#4f46e5
   )
 
   const accent = computed(() => props.theme?.button_color || defaultAccent)
+  /** 'fixed' = ícone destacado no início do botão, texto alinha independente. */
+  const iconMode = computed(() =>
+    props.theme?.button_icon_position === 'fixed' ? 'fixed' : 'inline',
+  )
   const initials = computed(
     () => props.title?.trim().charAt(0).toUpperCase() || '?',
   )
@@ -123,6 +133,13 @@ export function useTemplateLayout(props: TemplateInput, defaultAccent = '#4f46e5
       style['--lp-social-fg'] = t.button_color
     }
     if (t.button_text_color) style['--lp-link-fg'] = t.button_text_color
+    if (t.button_text_align) {
+      // Modo inline: alinha o grupo ícone+texto (justify-content). Modo
+      // fixed: só o texto alinha (text-align), o ícone já está fixo à
+      // esquerda — os dois casos consomem a mesma escolha do usuário.
+      style['--lp-link-justify'] = JUSTIFY_MAP[t.button_text_align] || 'center'
+      style['--lp-link-text-align'] = t.button_text_align
+    }
     if (t.button_style && RADIUS[t.button_style]) {
       style['--lp-link-radius'] = RADIUS[t.button_style]
     }
@@ -144,6 +161,7 @@ export function useTemplateLayout(props: TemplateInput, defaultAccent = '#4f46e5
     socialBlocks,
     whatsapp,
     accent,
+    iconMode,
     initials,
     showBranding,
     rootStyle,
