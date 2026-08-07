@@ -96,7 +96,7 @@ export interface ChangePasswordResponse {
 // Blocos
 // ---------------------------------------------------------------------------
 
-export type BlockType = 'link' | 'social' | 'whatsapp' | 'email' | 'text' | 'image'
+export type BlockType = 'link' | 'social' | 'whatsapp' | 'email' | 'text' | 'image' | 'map'
 
 export interface LinkConfig {
   label: string
@@ -133,6 +133,12 @@ export interface ImageConfig {
   link?: string
 }
 
+export interface MapConfig {
+  /** Endereço/CEP em texto livre, ou "lat,lng" já normalizado pelo backend. */
+  address: string
+  label?: string
+}
+
 /** Mapa type -> config correspondente. */
 export interface BlockConfigByType {
   link: LinkConfig
@@ -141,6 +147,7 @@ export interface BlockConfigByType {
   email: EmailConfig
   text: TextConfig
   image: ImageConfig
+  map: MapConfig
 }
 
 /** Bloco completo (rotas autenticadas), união discriminada por `type`. */

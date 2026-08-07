@@ -79,7 +79,12 @@ export function useTemplateLayout(props: TemplateInput, defaultAccent = '#4f46e5
 
   const inlineBlocks = computed(() =>
     sorted.value.filter(
-      (b) => b.type === 'link' || b.type === 'email' || b.type === 'text' || b.type === 'image',
+      (b) =>
+        b.type === 'link' ||
+        b.type === 'email' ||
+        b.type === 'text' ||
+        b.type === 'image' ||
+        b.type === 'map',
     ),
   )
 

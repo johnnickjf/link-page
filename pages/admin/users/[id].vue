@@ -35,6 +35,7 @@ const planChips: { value: Plan; label: string }[] = [
 const PREMIUM_BLOCK_TYPES = [
   { value: 'text', label: 'Texto' },
   { value: 'image', label: 'Imagem' },
+  { value: 'map', label: 'Mapa' },
 ]
 
 const PREMIUM_TEMPLATES = [

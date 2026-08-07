@@ -7,6 +7,7 @@ import type {
   ID,
   ImageConfig,
   LinkConfig,
+  MapConfig,
   SocialConfig,
   TextConfig,
   WhatsappConfig,
@@ -29,7 +30,7 @@ const auth = useAuthStore()
 const { open: openPremiumUpsell } = usePremiumUpsell()
 const isEdit = computed(() => Boolean(props.block))
 
-const PREMIUM_BLOCK_TYPES = new Set<BlockType>(['text', 'image'])
+const PREMIUM_BLOCK_TYPES = new Set<BlockType>(['text', 'image', 'map'])
 
 const TYPES: { value: BlockType; label: string; icon: string }[] = [
   { value: 'link', label: 'Link', icon: 'i-lucide-link' },
@@ -38,6 +39,7 @@ const TYPES: { value: BlockType; label: string; icon: string }[] = [
   { value: 'email', label: 'E-mail', icon: 'i-lucide-mail' },
   { value: 'text', label: 'Texto', icon: 'i-lucide-type' },
   { value: 'image', label: 'Imagem', icon: 'i-lucide-image' },
+  { value: 'map', label: 'Mapa', icon: 'i-lucide-map-pin' },
 ]
 const NETWORKS = [
   'instagram', 'tiktok', 'youtube', 'x', 'facebook', 'linkedin',
@@ -79,6 +81,7 @@ function blankForm() {
     email: { email: '', label: '', subject: '' } as EmailConfig,
     text: { content: '' } as TextConfig,
     image: { url: '', alt: '', link: '' } as ImageConfig,
+    map: { address: '', label: '' } as MapConfig,
   }
 }
 const form = reactive(blankForm())
@@ -99,6 +102,7 @@ watch(open, (isOpen) => {
   else if (b.type === 'email') Object.assign(form.email, b.config)
   else if (b.type === 'text') Object.assign(form.text, b.config)
   else if (b.type === 'image') Object.assign(form.image, b.config)
+  else if (b.type === 'map') Object.assign(form.map, b.config)
 })
 
 function buildConfig() {
@@ -133,6 +137,11 @@ function buildConfig() {
       if (form.image.link?.trim()) c.link = form.image.link.trim()
       return c
     }
+    case 'map': {
+      const c: MapConfig = { address: form.map.address.trim() }
+      if (form.map.label?.trim()) c.label = form.map.label.trim()
+      return c
+    }
   }
 }
 
@@ -157,6 +166,9 @@ function validate(): string | null {
       break
     case 'image':
       if (!form.image.url.trim()) return 'Informe a URL da imagem'
+      break
+    case 'map':
+      if (!form.map.address.trim()) return 'Informe um endereço ou link do Google Maps'
       break
   }
   return null
@@ -372,6 +384,23 @@ async function submit(): Promise<void> {
           </UFormField>
           <UFormField label="Link ao clicar (opcional)">
             <UInput v-model="form.image.link" placeholder="https://…" class="w-full" />
+          </UFormField>
+        </template>
+
+        <template v-else-if="form.type === 'map'">
+          <UFormField
+            label="Endereço"
+            hint="Endereço, CEP, ou cole um link do Google Maps"
+          >
+            <UTextarea
+              v-model="form.map.address"
+              :rows="2"
+              placeholder="Av. Paulista, 1578, São Paulo — ou cole o link do Google Maps"
+              class="w-full"
+            />
+          </UFormField>
+          <UFormField label="Legenda (opcional)">
+            <UInput v-model="form.map.label" placeholder="Nossa loja física" class="w-full" />
           </UFormField>
         </template>
 

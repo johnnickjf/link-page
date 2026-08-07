@@ -34,6 +34,7 @@ const ICONS: Record<Block['type'], string> = {
   email: 'i-lucide-mail',
   text: 'i-lucide-type',
   image: 'i-lucide-image',
+  map: 'i-lucide-map-pin',
 }
 
 function blockTitle(b: Block): string {
@@ -44,6 +45,7 @@ function blockTitle(b: Block): string {
     case 'email': return b.config.label || 'E-mail'
     case 'text': return b.config.content || 'Texto'
     case 'image': return b.config.alt || 'Imagem'
+    case 'map': return b.config.label || 'Mapa'
   }
 }
 
@@ -55,6 +57,7 @@ function blockSubtitle(b: Block): string {
     case 'email': return b.config.email
     case 'text': return 'Texto'
     case 'image': return b.config.url
+    case 'map': return b.config.address
   }
 }
 

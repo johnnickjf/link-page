@@ -1,8 +1,9 @@
 <script setup lang="ts">
 import type { PublicBlock } from '~/types/api'
 
-// Despacha blocos "em linha" (link / texto / imagem). Social e WhatsApp são
-// tratados separadamente pelo template (linha de ícones / botão flutuante).
+// Despacha blocos "em linha" (link / texto / imagem / mapa). Social e
+// WhatsApp são tratados separadamente pelo template (linha de ícones / botão
+// flutuante).
 defineProps<{ block: PublicBlock }>()
 </script>
 
@@ -11,4 +12,5 @@ defineProps<{ block: PublicBlock }>()
   <EmailBlock v-else-if="block.type === 'email'" :config="block.config" />
   <TextBlock v-else-if="block.type === 'text'" :config="block.config" />
   <ImageBlock v-else-if="block.type === 'image'" :config="block.config" />
+  <MapBlock v-else-if="block.type === 'map'" :config="block.config" />
 </template>
