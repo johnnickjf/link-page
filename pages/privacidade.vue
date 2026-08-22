@@ -21,7 +21,7 @@ useHead({ title: 'Política de Privacidade · LinkLand' })
       <div class="prose prose-gray dark:prose-invert max-w-none">
         <h1>Política de Privacidade</h1>
         <p class="lead">
-          Última atualização: 30 de junho de 2026
+          Última atualização: 21 de agosto de 2026
         </p>
         <p>
           Esta Política de Privacidade descreve como o <strong>LinkLand</strong> coleta, usa, armazena e
@@ -129,6 +129,11 @@ useHead({ title: 'Política de Privacidade · LinkLand' })
               <td>Envio de e-mails transacionais</td>
               <td>EUA</td>
             </tr>
+            <tr>
+              <td><strong>Google (Tag Manager)</strong></td>
+              <td>Medição de audiência e mensuração de campanhas publicitárias</td>
+              <td>EUA</td>
+            </tr>
           </tbody>
         </table>
         <p>
@@ -167,14 +172,26 @@ useHead({ title: 'Política de Privacidade · LinkLand' })
         </p>
 
         <h2>6. Cookies</h2>
-        <p>Utilizamos apenas <strong>cookies essenciais</strong> para:</p>
+        <p>Utilizamos <strong>cookies essenciais</strong> para:</p>
         <ul>
           <li>Manter sua sessão autenticada (token JWT armazenado localmente);</li>
           <li>Lembrar preferências básicas de interface.</li>
         </ul>
         <p>
-          <strong>Não utilizamos</strong> cookies de rastreamento, publicidade ou de terceiros (como
-          Google Analytics ou Meta Pixel).
+          Também utilizamos o <strong>Google Tag Manager</strong> nas páginas do site para medir a
+          audiência e a eficácia das nossas campanhas de divulgação. Essas tags podem gravar cookies de
+          terceiros do Google e coletar dados de navegação (páginas visitadas, origem do acesso,
+          endereço IP e informações do dispositivo).
+        </p>
+        <p>
+          <strong>Não vendemos</strong> esses dados nem os utilizamos para criar perfis fora dessa
+          finalidade. Você pode bloquear cookies de terceiros nas configurações do seu navegador ou usar
+          o <a href="https://tools.google.com/dlpage/gaoptout" target="_blank" rel="noopener noreferrer">complemento
+          de desativação do Google</a> — a página continuará funcionando normalmente.
+        </p>
+        <p>
+          As <strong>páginas públicas de links dos nossos usuários</strong> (linkland.me/seu-nome) também
+          carregam essas tags, sob responsabilidade da LinkLand como controladora.
         </p>
 
         <h2>7. Segurança</h2>

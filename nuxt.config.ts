@@ -1,4 +1,9 @@
 // https://nuxt.com/docs/api/configuration/nuxt-config
+
+// Container do Google Tag Manager. Sobrescrevível por ambiente para que
+// staging/preview não polua as métricas de produção; string vazia desliga.
+const GTM_ID = process.env.NUXT_PUBLIC_GTM_ID ?? 'GTM-P7TQPQV8'
+
 export default defineNuxtConfig({
   compatibilityDate: '2025-01-01',
   devtools: { enabled: true },
@@ -59,6 +64,32 @@ export default defineNuxtConfig({
         { name: 'theme-color', content: '#6366f1' },
         { name: 'robots', content: 'index, follow' },
       ],
+      // Google Tag Manager — o snippet precisa ser o mais alto possível no
+      // <head>, por isso `tagPriority` negativo, e o fallback <noscript>
+      // imediatamente após a abertura do <body>.
+      script: GTM_ID
+        ? [
+            {
+              key: 'gtm',
+              tagPosition: 'head',
+              tagPriority: -20,
+              innerHTML: `(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,'script','dataLayer','${GTM_ID}');`,
+            },
+          ]
+        : [],
+      noscript: GTM_ID
+        ? [
+            {
+              key: 'gtm-noscript',
+              tagPosition: 'bodyOpen',
+              innerHTML: `<iframe src="https://www.googletagmanager.com/ns.html?id=${GTM_ID}" height="0" width="0" style="display:none;visibility:hidden"></iframe>`,
+            },
+          ]
+        : [],
       link: [
         { rel: 'icon', type: 'image/svg+xml', href: '/favicon.svg' },
         { rel: 'icon', type: 'image/png', sizes: '32x32', href: '/favicon-32x32.png' },
