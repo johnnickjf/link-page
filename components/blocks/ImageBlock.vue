@@ -14,7 +14,7 @@ const href = computed(() => safeUrl(props.config.link))
     :target="href ? '_blank' : undefined"
     :rel="href ? 'noopener noreferrer' : undefined"
     class="block overflow-hidden bg-gray-100 dark:bg-gray-800"
-    :style="{ borderRadius: 'var(--lp-link-radius, 0.9rem)' }"
+    :style="{ borderRadius: 'var(--lp-media-radius)' }"
   >
     <img
       :src="config.url"

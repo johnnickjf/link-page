@@ -14,7 +14,7 @@ const props = defineProps<{
 <template>
   <TemplateShell
     v-bind="props"
-    root-class="minimal-root bg-white px-5 py-14"
+    root-class="minimal-root px-5 py-14"
     content-class="mx-auto flex w-full max-w-[480px] flex-col"
     default-accent="#4f46e5"
   >
@@ -24,19 +24,19 @@ const props = defineProps<{
           v-if="avatarUrl"
           :src="avatarUrl"
           :alt="title"
-          class="size-24 rounded-full object-cover shadow-md"
+          class="size-24 rounded-full object-cover ring-1 ring-black/5 ring-offset-4 ring-offset-white"
           fetchpriority="high"
         />
         <div
           v-else
-          class="flex size-24 items-center justify-center rounded-full text-3xl font-bold text-white shadow-md"
+          class="flex size-24 items-center justify-center rounded-full text-3xl font-bold text-white"
           :style="{ background: accent }"
         >
           {{ initials }}
         </div>
 
         <h1
-          class="mt-4 font-display text-2xl font-bold tracking-tight"
+          class="mt-5 font-display text-[1.65rem] font-bold leading-tight tracking-tight"
           :style="{ color: 'var(--lp-text)' }"
         >
           {{ title }}
@@ -56,14 +56,16 @@ const props = defineProps<{
 </template>
 
 <style scoped>
-/* Template "minimal": limpo, claro, uma cor de destaque. */
+/* Template "minimal": papel branco e tinta preta. A única cor é a do usuário. */
 .minimal-root {
-  --lp-text: #111827;
-  --lp-muted: #6b7280;
+  background: #ffffff;
+  --lp-text: #0f172a;
+  --lp-muted: #526071;
   --lp-link-bg: #ffffff;
-  --lp-link-fg: #111827;
-  --lp-link-border: #e5e7eb;
+  --lp-link-fg: #0f172a;
+  --lp-link-border: #e2e8f0;
   --lp-link-radius: 0.9rem;
-  --lp-link-shadow: 0 10px 25px rgb(0 0 0 / 0.08);
+  --lp-link-rest-shadow: 0 1px 2px rgb(15 23 42 / 0.05);
+  --lp-link-shadow: 0 12px 28px -8px rgb(15 23 42 / 0.16);
 }
 </style>

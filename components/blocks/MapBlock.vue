@@ -19,7 +19,7 @@ const openUrl = computed(
   <div>
     <div
       class="relative h-40 w-full overflow-hidden"
-      :style="{ borderRadius: 'var(--lp-link-radius, 0.9rem)', border: '1px solid var(--lp-link-border, #e5e7eb)' }"
+      :style="{ borderRadius: 'var(--lp-media-radius)', border: '1px solid var(--lp-link-border, #e5e7eb)' }"
     >
       <iframe
         :src="embedUrl"

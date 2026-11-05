@@ -8,6 +8,20 @@ const auth = useAuthStore()
 const pagesStore = usePagesStore()
 const { open: openPremiumUpsell } = usePremiumUpsell()
 
+// Miniatura de cada template: dá para escolher pelo olho, sem ler descrição.
+const SWATCHES: Record<string, { bg: string, bar: string, ring?: string }> = {
+  minimal: { bg: '#ffffff', bar: '#e2e8f0', ring: '#e2e8f0' },
+  classic: { bg: '#f8f5ee', bar: '#d6d3d1', ring: '#e7e5e4' },
+  dark: { bg: '#18181b', bar: '#3f3f46' },
+  gradient: { bg: 'linear-gradient(160deg, #4338ca, #7e22ce 48%, #be185d)', bar: 'rgb(255 255 255 / 0.3)' },
+  neon: { bg: '#050507', bar: '#22d3ee' },
+  pixel: { bg: '#0a0a16', bar: '#22c55e' },
+}
+const FALLBACK_SWATCH = { bg: '#f1f5f9', bar: '#cbd5e1' }
+function swatch(id: string) {
+  return SWATCHES[id] ?? FALLBACK_SWATCH
+}
+
 const templates = ref<Template[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -84,6 +98,14 @@ function select(t: Template): void {
         ]"
         @click="select(t)"
       >
+        <div
+          class="mb-2.5 flex h-14 flex-col justify-end gap-1 rounded-md p-1.5"
+          :style="{ background: swatch(t.id).bg, boxShadow: swatch(t.id).ring ? `inset 0 0 0 1px ${swatch(t.id).ring}` : undefined }"
+          aria-hidden="true"
+        >
+          <span class="block h-1.5 rounded-sm" :style="{ background: swatch(t.id).bar }" />
+          <span class="block h-1.5 rounded-sm" :style="{ background: swatch(t.id).bar }" />
+        </div>
         <div class="flex items-center justify-between gap-1">
           <span class="font-medium">{{ t.name }}</span>
           <div class="flex shrink-0 items-center gap-1">

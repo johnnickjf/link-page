@@ -35,13 +35,13 @@ const props = defineProps<{
           {{ initials }}
         </div>
 
-        <h1 class="classic-title mt-5 text-3xl font-semibold tracking-tight">
+        <h1 class="classic-title mt-6 text-[2rem] font-semibold leading-tight tracking-tight">
           {{ title }}
         </h1>
-        <div class="mt-3 h-px w-10 bg-stone-300" />
+        <div class="classic-ornament mt-4" aria-hidden="true" />
         <p
           v-if="bio"
-          class="mt-3 max-w-sm text-sm italic leading-relaxed"
+          class="classic-bio mt-4 max-w-sm leading-relaxed"
           :style="{ color: 'var(--lp-muted)' }"
         >
           {{ bio }}
@@ -54,23 +54,60 @@ const props = defineProps<{
 </template>
 
 <style scoped>
-/* Template "classic": papel quente, tipografia serifada, sóbrio. */
+/* Template "classic": impresso de tipografia. Papel com textura, serifa e botões
+   com filete interno, como um convite. */
 .classic-root {
-  background: #faf8f4;
+  background-color: #f8f5ee;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 .35 0 0 0 0 .3 0 0 0 0 .22 0 0 0 .07 0'/%3E%3C/filter%3E%3Crect width='180' height='180' filter='url(%23n)'/%3E%3C/svg%3E");
   --lp-text: #1c1917;
-  --lp-muted: #78716c;
+  --lp-muted: #635b54;
   --lp-link-bg: #ffffff;
   --lp-link-fg: #1c1917;
   --lp-link-border: #d6d3d1;
   --lp-link-radius: 0.5rem;
-  --lp-link-shadow: 0 6px 18px rgb(28 25 23 / 0.08);
+  --lp-link-shadow: 0 8px 22px -6px rgb(28 25 23 / 0.2);
 }
 .classic-title {
   font-family: 'Playfair Display', Georgia, serif;
   color: var(--lp-text);
 }
+.classic-bio {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: 0.95rem;
+  font-style: italic;
+}
+/* Fio com losango central. */
+.classic-ornament {
+  position: relative;
+  width: 4.5rem;
+  height: 1px;
+  background: currentColor;
+  color: var(--lp-link-border);
+}
+.classic-ornament::after {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 7px;
+  height: 7px;
+  background: var(--lp-muted);
+  transform: translate(-50%, -50%) rotate(45deg);
+}
+/* Filete interno: acompanha as cores escolhidas pelo usuário. */
 .classic-root :deep(.lp-link) {
   font-weight: 500;
   letter-spacing: 0.01em;
+  box-shadow:
+    inset 0 0 0 3px var(--lp-link-bg),
+    inset 0 0 0 4px var(--lp-link-border);
+}
+@media (hover: hover) {
+  .classic-root :deep(.lp-link:hover) {
+    box-shadow:
+      inset 0 0 0 3px var(--lp-link-bg),
+      inset 0 0 0 4px var(--lp-accent),
+      var(--lp-link-shadow);
+  }
 }
 </style>

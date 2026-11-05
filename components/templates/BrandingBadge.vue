@@ -5,7 +5,7 @@ const gradId = useId()
 <template>
   <a
     href="/"
-    class="mt-12 flex flex-col items-center gap-1.5 text-center text-xs opacity-80 transition-opacity hover:opacity-100"
+    class="mt-12 flex flex-col items-center gap-1.5 text-center text-xs opacity-90 transition-opacity hover:opacity-100"
     style="color: var(--lp-text)"
     aria-label="Criado com LinkLand — crie sua conta gratuitamente"
   >

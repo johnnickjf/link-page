@@ -15,6 +15,17 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  // @nuxt/fonts baixa as fontes no build e as serve do próprio site. Sem os pesos
+  // listados, o navegador sintetiza o negrito a partir do 400.
+  fonts: {
+    defaults: { weights: [400, 500, 600, 700, 800], styles: ['normal', 'italic'] },
+  },
+
+  // Cookie em vez de localStorage: com "bloquear todos os cookies" o acesso a
+  // window.localStorage lança erro no script do módulo e derrubava a página
+  // pública. O site não tem seletor de tema, então nenhuma preferência se perde.
+  colorMode: { storage: 'cookie' },
+
   // Nomes de componente sem prefixo de pasta (ex.: <LinkBlock>, <MinimalTemplate>),
   // como na estrutura da seção 3.
   components: [{ path: '~/components', pathPrefix: false }],

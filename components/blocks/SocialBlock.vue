@@ -19,6 +19,17 @@ const ICONS: Record<string, string> = {
   spotify: 'i-simple-icons-spotify',
   threads: 'i-simple-icons-threads',
   pinterest: 'i-simple-icons-pinterest',
+  discord: 'i-simple-icons-discord',
+  kick: 'i-simple-icons-kick',
+  steam: 'i-simple-icons-steam',
+  playstation: 'i-simple-icons-playstation',
+  psn: 'i-simple-icons-playstation',
+  xbox: 'i-simple-icons-xbox',
+  nintendo: 'i-simple-icons-nintendo',
+  riot: 'i-simple-icons-riotgames',
+  epic: 'i-simple-icons-epicgames',
+  battlenet: 'i-simple-icons-battledotnet',
+  roblox: 'i-simple-icons-roblox',
 }
 
 const iconName = computed(

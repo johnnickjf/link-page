@@ -70,7 +70,7 @@ const props = defineProps<{
     radial-gradient(70% 45% at 50% 108%, rgb(34 211 238 / 0.14), transparent 70%),
     #050507;
   --lp-text: #fafafa;
-  --lp-muted: #a1a1aa;
+  --lp-muted: #b9b9c6;
   --lp-link-bg: rgb(255 255 255 / 0.03);
   --lp-link-fg: #fafafa;
   --lp-link-border: var(--lp-accent);
@@ -103,12 +103,17 @@ const props = defineProps<{
 @media (prefers-reduced-motion: reduce) {
   .neon-title { animation: none; }
 }
+/* Tubo de neon: brilho por fora e um halo fraco por dentro. */
 .neon-root :deep(.lp-link) {
-  box-shadow: 0 0 14px -2px var(--lp-accent);
+  box-shadow:
+    0 0 14px -2px var(--lp-accent),
+    inset 0 0 14px -6px var(--lp-accent);
 }
 @media (hover: hover) {
   .neon-root :deep(.lp-link:hover) {
-    box-shadow: 0 0 22px 0 var(--lp-accent);
+    box-shadow:
+      0 0 24px 0 var(--lp-accent),
+      inset 0 0 18px -6px var(--lp-accent);
     border-color: var(--lp-accent);
   }
   /* Ícones sociais ganham brilho neon no hover (só quando hover existe;

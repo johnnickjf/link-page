@@ -17,7 +17,7 @@ function goHome(): void {
 
 <template>
   <div
-    class="flex min-h-screen flex-col items-center justify-center bg-gray-50 p-6 text-center text-gray-900 dark:bg-gray-950 dark:text-gray-100"
+    class="app-surface flex min-h-screen flex-col items-center justify-center bg-gray-50 p-6 text-center text-gray-900 dark:bg-gray-950 dark:text-gray-100"
   >
     <div class="mb-10">
       <Logo />

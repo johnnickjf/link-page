@@ -26,7 +26,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
 
 <template>
   <div
-    class="flex min-h-screen flex-col bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100"
+    class="app-surface flex min-h-screen flex-col bg-gray-50 text-gray-900 dark:bg-gray-950 dark:text-gray-100"
   >
     <header
       class="sticky top-0 z-40 border-b border-gray-200/80 bg-white/85 backdrop-blur-md dark:border-gray-800 dark:bg-gray-900/85"

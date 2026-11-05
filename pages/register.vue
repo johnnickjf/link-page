@@ -187,11 +187,11 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
         Criar conta
       </UButton>
 
-      <p class="text-center text-xs text-gray-400 dark:text-gray-500">
+      <p class="text-center text-xs text-gray-600 dark:text-gray-400">
         Ao criar sua conta, você concorda com os
-        <NuxtLink to="/termos" target="_blank" class="underline hover:text-gray-600 dark:hover:text-gray-300">Termos de Uso</NuxtLink>
+        <NuxtLink to="/termos" target="_blank" class="underline hover:text-gray-800 dark:hover:text-gray-200">Termos de Uso</NuxtLink>
         e a
-        <NuxtLink to="/privacidade" target="_blank" class="underline hover:text-gray-600 dark:hover:text-gray-300">Política de Privacidade</NuxtLink>.
+        <NuxtLink to="/privacidade" target="_blank" class="underline hover:text-gray-800 dark:hover:text-gray-200">Política de Privacidade</NuxtLink>.
       </p>
     </UForm>
 
@@ -202,14 +202,14 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
       >
         <NuxtLink
           to="/resend-verification"
-          class="text-primary-500 hover:underline"
+          class="text-primary-600 underline underline-offset-2 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300"
         >
           Não recebi o e-mail
         </NuxtLink>
       </p>
       <p v-else class="text-sm text-center text-gray-500 dark:text-gray-400">
         Já tem conta?
-        <NuxtLink to="/login" class="text-primary-500 hover:underline">Entrar</NuxtLink>
+        <NuxtLink to="/login" class="text-primary-600 underline underline-offset-2 hover:text-primary-700 dark:text-primary-400 dark:hover:text-primary-300">Entrar</NuxtLink>
       </p>
     </template>
   </AuthShell>

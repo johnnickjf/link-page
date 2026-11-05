@@ -30,7 +30,7 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, iconMode, initials, showBr
 
 <template>
   <div
-    :class="[rootClass, preview ? 'relative min-h-full' : 'min-h-screen']"
+:class="['lp-root', rootClass, preview ? 'relative min-h-full' : 'min-h-screen', whatsapp && !preview ? 'pb-28' : '']"
     :style="rootStyle"
     :data-icon-mode="iconMode"
   >

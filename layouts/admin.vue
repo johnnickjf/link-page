@@ -23,7 +23,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
 </script>
 
 <template>
-  <div class="min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+  <div class="app-surface min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
     <!-- Admin Header -->
     <header class="sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
       <div class="mx-auto flex max-w-7xl items-center gap-4 px-5 py-0">

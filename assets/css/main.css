@@ -6,12 +6,28 @@
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-display: "Sora", "Inter", ui-sans-serif, system-ui, sans-serif;
+  /* Voz da marca (landing e app). As páginas públicas mantêm a própria. */
+  --font-headline: "Bricolage Grotesque", "Sora", ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Tokens de design neutros (raio/sombra) reaproveitados pelos templates. */
 :root {
   --lp-radius: 1rem;
   --lp-shadow: 0 8px 30px rgb(0 0 0 / 0.08);
+}
+
+/* Raiz de todo template: reafirma a tipografia das páginas públicas, para a
+   prévia dentro do app/landing ficar igual à página publicada. Imagem e mapa
+   seguem o raio do botão com teto: no estilo pílula (9999px) ficariam ovais. */
+.lp-root {
+  --font-display: "Sora", "Inter", ui-sans-serif, system-ui, sans-serif;
+  --lp-media-radius: min(var(--lp-link-radius, 0.9rem), 1.25rem);
+}
+.lp-root h1 {
+  text-wrap: balance;
+}
+.lp-root header p {
+  text-wrap: pretty;
 }
 
 html,
@@ -34,6 +50,28 @@ body {
   color: transparent;
 }
 
+/* Superfícies da marca: títulos do app usam a voz da marca, e a raiz dos
+   templates (.lp-root) devolve a tipografia das páginas públicas. */
+.app-surface {
+  --font-display: var(--font-headline);
+}
+
+/* Palco: fundo de tinta, luz da marca e grão, usado no hero e nas chamadas. */
+.stage-bg {
+  background-color: #0d0b14;
+  background-image:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
+    radial-gradient(46% 62% at 78% 42%, rgb(139 92 246 / 0.34), transparent 72%),
+    radial-gradient(34% 46% at 94% 84%, rgb(217 70 239 / 0.24), transparent 72%),
+    radial-gradient(30% 40% at 56% 4%, rgb(99 102 241 / 0.26), transparent 72%);
+  color: #fff;
+}
+/* Sobre tinta, o gradiente da marca precisa de tons mais claros para ter contraste. */
+.on-ink .text-brand-gradient,
+.stage-bg .text-brand-gradient {
+  background-image: linear-gradient(100deg, #a5b4fc 0%, #c4b5fd 45%, #f0abfc 100%);
+}
+
 /* ---------------------------------------------------------------------------
    Sistema de blocos (compartilhado entre preview do editor e página pública).
    Cada TEMPLATE define as variáveis --lp-* no seu root; os blocos consomem.
@@ -45,8 +83,10 @@ body {
   justify-content: var(--lp-link-justify, center);
   gap: 0.75rem;
   width: 100%;
-  padding: 1rem 1.25rem;
+  min-height: 3.5rem;
+  padding: 0.9rem 1.25rem;
   font-weight: 500;
+  line-height: 1.3;
   text-align: center;
   /* Labels longos (ex.: URLs sem espaço) quebram em vez de estourar o botão. */
   overflow-wrap: anywhere;
@@ -54,6 +94,7 @@ body {
   color: var(--lp-link-fg, #111827);
   border: 1px solid var(--lp-link-border, #e5e7eb);
   border-radius: var(--lp-link-radius, 0.9rem);
+  box-shadow: var(--lp-link-rest-shadow, none);
   -webkit-tap-highlight-color: transparent;
   transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
 }

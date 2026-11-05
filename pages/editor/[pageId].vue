@@ -15,6 +15,14 @@ const pageId = computed(() => String(route.params.pageId))
 const canQr = computed(() => auth.canUseFeature('qr_code'))
 const canTabs = computed(() => auth.canUseFeature('multi_tab'))
 
+// ---- Abas do editor ----
+const EDITOR_TABS = [
+  { value: 'content', label: 'Conteúdo', icon: 'i-lucide-blocks' },
+  { value: 'look', label: 'Visual', icon: 'i-lucide-palette' },
+  { value: 'share', label: 'Compartilhar', icon: 'i-lucide-share-2' },
+] as const
+const editorTab = ref<(typeof EDITOR_TABS)[number]['value']>('content')
+
 // Estado editável — alimenta o preview ao vivo.
 const title = ref('')
 const bio = ref('')
@@ -505,6 +513,26 @@ async function copyPublicUrl(): Promise<void> {
           class="min-w-0 space-y-6"
           :class="[mobileTab !== 'edit' ? 'hidden lg:block' : '', isDirty ? 'pb-24 sm:pb-6' : '']"
         >
+          <div class="flex gap-1 rounded-xl bg-gray-100 p-1 dark:bg-white/5" role="tablist" aria-label="Partes do editor">
+            <button
+              v-for="tab in EDITOR_TABS"
+              :key="tab.value"
+              type="button"
+              role="tab"
+              :aria-selected="editorTab === tab.value"
+              class="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              :class="editorTab === tab.value
+                ? 'bg-white text-gray-900 shadow-sm dark:bg-gray-800 dark:text-gray-100'
+                : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'"
+              @click="editorTab = tab.value"
+            >
+              <UIcon :name="tab.icon" class="size-4" aria-hidden="true" />
+              {{ tab.label }}
+            </button>
+          </div>
+
+          <!-- v-show: alternar não perde o que ainda não foi salvo. -->
+          <div v-show="editorTab === 'content'" class="space-y-6">
           <PageHeaderForm
             v-model:title="title"
             v-model:bio="bio"
@@ -513,8 +541,6 @@ async function copyPublicUrl(): Promise<void> {
             :saving="savingHeader"
             @save="saveHeader"
           />
-
-          <TemplatePicker v-model="template" @change="saveTemplate" />
 
           <UCard>
             <template #header>
@@ -555,12 +581,20 @@ async function copyPublicUrl(): Promise<void> {
             />
           </UCard>
 
+          </div>
+
+          <div v-show="editorTab === 'look'" class="space-y-6">
+          <TemplatePicker v-model="template" @change="saveTemplate" />
+
           <AppearanceForm
             v-model="theme"
             :saving="savingAppearance"
             @save="saveAppearance"
           />
 
+          </div>
+
+          <div v-show="editorTab === 'share'" class="space-y-6">
           <!-- QR Code -->
           <UCard v-if="canQr">
             <template #header>
@@ -613,6 +647,7 @@ async function copyPublicUrl(): Promise<void> {
               Gere e baixe o QR Code da sua página no plano Premium.
             </p>
           </UCard>
+          </div>
         </div>
 
         <!-- Preview -->

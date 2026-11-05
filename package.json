@@ -32,6 +32,7 @@
     "vue": "^3.5.39"
   },
   "devDependencies": {
+    "@axe-core/playwright": "^4.13.0",
     "@iconify-json/lucide": "^1.2.114",
     "@iconify-json/simple-icons": "^1.2.87",
     "@playwright/test": "^1.64.1",

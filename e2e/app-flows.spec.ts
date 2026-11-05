@@ -89,11 +89,47 @@ test('editor: prévia ao vivo reage ao título e ao tema', async ({ page }, test
   await expect(page.getByRole('heading', { level: 1, name: 'Prévia ao vivo' })).toBeVisible()
 })
 
+test('editor: trocar de aba não perde o que não foi salvo', async ({ page }) => {
+  await skipOnboarding(page)
+  await login(page, 'premium@example.com')
+  await expect(page).toHaveURL(/\/dashboard$/)
+  await page.getByRole('link', { name: /Editar/ }).first().click()
+  const title = page.getByPlaceholder('Seu nome ou marca')
+  await title.fill('Rascunho não salvo')
+  await page.getByRole('tab', { name: 'Visual' }).click()
+  await expect(title).toBeHidden()
+  await expect(page.getByRole('radio', { name: /Neon/ })).toBeVisible()
+  await page.getByRole('tab', { name: 'Compartilhar' }).click()
+  await expect(page.getByText('QR Code').first()).toBeVisible()
+  await page.getByRole('tab', { name: 'Conteúdo' }).click()
+  await expect(title).toHaveValue('Rascunho não salvo')
+  await expect(page.getByText('Alterações não salvas')).toBeVisible()
+})
+
+test('landing: vitrine troca entre os templates reais', async ({ page, consoleErrors }) => {
+  await page.goto('/')
+  const stage = page.getByTestId('template-stage')
+  await stage.getByRole('button', { name: 'Pixel' }).click()
+  await expect(stage.getByRole('button', { name: 'Pixel' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(stage.locator('[data-offset="0"] .pixel-root')).toBeAttached()
+  await stage.getByRole('button', { name: 'Classic' }).click()
+  await expect(stage.locator('[data-offset="0"] .classic-root')).toBeAttached()
+  expect(consoleErrors).toEqual([])
+})
+
+test('landing: páginas de exemplo não entram no HTML indexado', async ({ request }) => {
+  const html = await (await request.get('/')).text()
+  expect(html).toContain('Um link para')
+  expect(html).not.toContain('Kai Beats')
+  expect((html.match(/<h1/g) ?? []).length).toBe(1)
+})
+
 test('free: template premium bloqueado abre upsell e não troca', async ({ page }) => {
   await skipOnboarding(page)
   await login(page, 'free@example.com')
   await expect(page).toHaveURL(/\/dashboard$/)
   await page.getByRole('link', { name: /Editar/ }).first().click()
+  await page.getByRole('tab', { name: 'Visual' }).click()
   const neon = page.getByRole('radio', { name: /Neon/ })
   await expect(neon).toBeVisible()
   await expect(neon).toHaveAttribute('aria-checked', 'false')
@@ -151,6 +187,7 @@ test('gamer: tem tudo do premium no painel e no editor', async ({ page, consoleE
   await page.getByRole('link', { name: /Editar/ }).first().click()
 
   // Template premium: nenhum bloqueio nem upsell.
+  await page.getByRole('tab', { name: 'Visual' }).click()
   const neon = page.getByRole('radio', { name: /Neon/ })
   await expect(neon).toBeVisible()
   await expect(neon).not.toContainText('Premium')
@@ -188,16 +225,13 @@ test('admin: filtro por plano Gamer', async ({ page, consoleErrors }) => {
   expect(consoleErrors).toEqual([])
 })
 
-test('BUG CONHECIDO: conta acima do limite de páginas gera erro no console', async ({ page, consoleErrors }) => {
+test('conta acima do limite de páginas abre o painel sem erro', async ({ page, consoleErrors }) => {
   // Cenário real: Premium cancelado volta para Free mantendo várias páginas.
-  // O UProgress recebe value > max e o reka-ui loga erro. Corrigir na fase
-  // de upgrade visual; quando corrigido este teste passa a "passar
-  // inesperadamente" e o test.fail deve ser removido.
-  test.fail()
   await skipOnboarding(page)
   await login(page, 'over@example.com')
   await expect(page).toHaveURL(/\/dashboard$/)
   await expect(page.getByText('Antiga 0').first()).toBeVisible()
+  await expect(page.getByText('3 de 1')).toBeVisible()
   expect(consoleErrors).toEqual([])
 })
 
@@ -214,6 +248,7 @@ test('superadmin cai no /admin; usuário comum é barrado', async ({ page }) => 
 
 test('cadastro cria conta e pede confirmação de e-mail', async ({ page, consoleErrors }) => {
   await page.goto('/register')
+  await page.waitForLoadState('networkidle')
   const email = `novo${Date.now()}@example.com`
   await page.getByPlaceholder('Seu nome').fill('Novo Usuário')
   await page.getByPlaceholder('voce@email.com').fill(email)

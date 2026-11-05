@@ -44,6 +44,8 @@ export { expect }
 
 export async function login(page: Page, email: string, password = PASSWORD): Promise<void> {
   await page.goto('/login')
+  // Formulário só responde depois da hidratação do Vue.
+  await page.waitForLoadState('networkidle')
   await page.getByPlaceholder('voce@email.com').fill(email)
   await page.getByPlaceholder('••••••••').fill(password)
   await page.getByRole('button', { name: 'Entrar', exact: true }).click()

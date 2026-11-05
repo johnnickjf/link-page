@@ -139,7 +139,7 @@ test('com a contagem fora do ar, a página funciona normalmente', async ({ page,
 
 test('localStorage falhando não impede a contagem nem a página', async ({ page, request, consoleErrors }) => {
   await page.addInitScript(() => {
-    // Só a chave da contagem: o resto é o caso do BUG CONHECIDO abaixo.
+    // Só a chave da contagem: o caso geral está no teste seguinte.
     const { getItem, setItem } = Storage.prototype
     Storage.prototype.getItem = function (key: string) {
       if (key === 'll_seen') throw new Error('bloqueado')
@@ -159,19 +159,21 @@ test('localStorage falhando não impede a contagem nem a página', async ({ page
   expect(consoleErrors.filter((e) => e.startsWith('pageerror'))).toEqual([])
 })
 
-test('BUG CONHECIDO: navegador com armazenamento bloqueado derruba a página', async ({ page }) => {
-  // O script do @nuxtjs/color-mode acessa window.localStorage sem proteção: com
-  // "bloquear todos os cookies" no Chrome o acesso lança erro e o app cai em
-  // "Algo deu errado". Já existia antes do update. Corrigir na fase visual e
-  // remover o test.fail.
-  test.fail()
+test('navegador com armazenamento bloqueado abre a página', async ({ page, request, consoleErrors }) => {
+  // Com "bloquear todos os cookies", só acessar window.localStorage lança erro.
   await page.addInitScript(() => {
     Object.defineProperty(window, 'localStorage', {
       get() { throw new Error('bloqueado') },
     })
   })
-  await page.goto('/tpl-minimal')
-  await expect(page.getByRole('heading', { level: 1 })).toHaveText('Template Minimal', { timeout: 3000 })
+  const before = (await statsOf(request, 'free@example.com', 'free-page')).views
+  const hit = page.waitForResponse((r) => isHit(r.url()))
+  await page.goto('/free-page')
+  expect((await hit).status()).toBe(204)
+  await expect(page.getByRole('heading', { level: 1 })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Primeiro link' })).toBeVisible()
+  expect((await statsOf(request, 'free@example.com', 'free-page')).views).toBe(before + 1)
+  expect(consoleErrors.filter((e) => e.startsWith('pageerror'))).toEqual([])
 })
 
 test('prévia do editor não conta visita', async ({ page, request }) => {

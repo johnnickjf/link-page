@@ -57,17 +57,21 @@ const props = defineProps<{
 </template>
 
 <style scoped>
-/* Template "dark": fundo escuro elegante, acento suave. */
+/* Template "dark": grafite com a luz vindo de cima, na cor do usuário. */
 .dark-root {
   background:
-    radial-gradient(60% 40% at 50% 0%, rgb(255 255 255 / 0.06), transparent 70%),
+    radial-gradient(70% 38% at 50% -6%, color-mix(in srgb, var(--lp-accent) 26%, transparent), transparent 72%),
     #09090b;
   --lp-text: #fafafa;
-  --lp-muted: #a1a1aa;
+  --lp-muted: #b1b1b9;
   --lp-link-bg: #18181b;
   --lp-link-fg: #fafafa;
   --lp-link-border: #27272a;
   --lp-link-radius: 0.9rem;
-  --lp-link-shadow: 0 12px 30px rgb(0 0 0 / 0.5);
+  --lp-link-rest-shadow: inset 0 1px 0 rgb(255 255 255 / 0.06);
+  --lp-link-shadow: inset 0 1px 0 rgb(255 255 255 / 0.08), 0 14px 34px -10px color-mix(in srgb, var(--lp-accent) 45%, transparent);
+}
+.dark-root :deep(.lp-link) {
+  background-image: linear-gradient(180deg, rgb(255 255 255 / 0.05), transparent);
 }
 </style>

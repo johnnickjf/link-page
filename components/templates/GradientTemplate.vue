@@ -55,19 +55,21 @@ const props = defineProps<{
 </template>
 
 <style scoped>
-/* Template "gradient": fundo vibrante + cards translúcidos (glass). */
+/* Template "gradient": gradiente profundo + vidro. Os tons foram escurecidos
+   para o texto branco ficar legível em toda a página, não só no topo. */
 .gradient-root {
   position: relative;
   overflow: hidden;
-  background: linear-gradient(160deg, #6366f1 0%, #a855f7 45%, #ec4899 100%);
+  background: linear-gradient(160deg, #4338ca 0%, #7e22ce 48%, #be185d 100%);
   --lp-accent: #ffffff;
   --lp-text: #ffffff;
-  --lp-muted: rgb(255 255 255 / 0.8);
-  --lp-link-bg: rgb(255 255 255 / 0.15);
+  --lp-muted: rgb(255 255 255 / 0.86);
+  --lp-link-bg: rgb(255 255 255 / 0.14);
   --lp-link-fg: #ffffff;
   --lp-link-border: rgb(255 255 255 / 0.3);
   --lp-link-radius: 1rem;
-  --lp-link-shadow: 0 10px 30px rgb(0 0 0 / 0.18);
+  --lp-link-rest-shadow: inset 0 1px 0 rgb(255 255 255 / 0.22);
+  --lp-link-shadow: inset 0 1px 0 rgb(255 255 255 / 0.3), 0 14px 32px -8px rgb(0 0 0 / 0.35);
 }
 
 /* Brilho suave em movimento lento (premium). Anima só `transform`, que roda

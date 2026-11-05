@@ -260,7 +260,7 @@ async function confirmDelete(): Promise<void> {
         </div>
         <div v-if="maxPages !== null" class="w-full sm:w-56">
           <UProgress
-            :model-value="usedPages"
+            :model-value="Math.min(usedPages, maxPages)"
             :max="maxPages"
             :color="usedPages >= maxPages ? 'error' : usedPages / maxPages >= 0.8 ? 'warning' : undefined"
           />

@@ -1,42 +1,45 @@
 <script setup lang="ts">
-// Card centralizado compartilhado pelas telas de auth (login, cadastro,
-// recuperação). Ambiente com glows da marca + entrada animada — o mesmo
-// acabamento da landing, para a primeira impressão não cair ao sair dela.
+// Telas de auth (login, cadastro, recuperação): formulário de um lado e, no
+// desktop, o palco da landing com um template real do outro. No celular a vitrine
+// nem é carregada: quem está ali quer entrar rápido.
 defineProps<{ title: string; subtitle?: string }>()
+
+const isDesktop = useMediaQuery('(min-width: 1024px)')
 </script>
 
 <template>
-  <div
-    class="relative flex min-h-screen flex-col items-center justify-center overflow-hidden bg-gray-50 px-4 py-10 text-gray-900 dark:bg-gray-950 dark:text-gray-100"
-  >
-    <!-- Ambiente: glow da paleta da marca + pontos sutis -->
-    <div
-      aria-hidden="true"
-      class="pointer-events-none absolute -top-44 left-1/2 h-[30rem] w-[46rem] max-w-none -translate-x-1/2 rounded-full bg-gradient-to-br from-indigo-400/25 via-purple-400/15 to-fuchsia-400/20 blur-3xl dark:from-indigo-600/20 dark:via-purple-600/10 dark:to-fuchsia-600/15"
-    />
-    <div aria-hidden="true" class="bg-dots pointer-events-none absolute inset-0 opacity-50 dark:opacity-30" />
+  <div class="app-surface flex min-h-screen bg-[#faf9f6] text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+    <div class="flex min-w-0 flex-1 flex-col items-center justify-center px-4 py-10">
+      <div class="animate-rise flex w-full max-w-sm flex-col gap-6">
+        <Logo to="/" />
 
-    <div class="animate-rise relative z-10 flex w-full max-w-sm flex-col items-center gap-6">
-      <Logo to="/" />
-
-      <UCard
-        class="w-full border-gray-200/80 bg-white/90 shadow-xl shadow-indigo-500/5 backdrop-blur-sm dark:border-white/10 dark:bg-gray-900/85"
-      >
-        <div class="mb-5 space-y-1">
-          <h1 class="font-display text-2xl font-semibold tracking-tight">
+        <div>
+          <h1 class="font-headline text-4xl font-bold tracking-tight">
             {{ title }}
           </h1>
-          <p v-if="subtitle" class="text-sm text-gray-500 dark:text-gray-400">
+          <p v-if="subtitle" class="mt-2 text-gray-600 dark:text-gray-400">
             {{ subtitle }}
           </p>
         </div>
 
         <slot />
 
-        <template v-if="$slots.footer" #footer>
+        <div v-if="$slots.footer" class="border-t border-gray-200 pt-4 dark:border-white/10">
           <slot name="footer" />
-        </template>
-      </UCard>
+        </div>
+      </div>
     </div>
+
+    <aside
+      class="stage-bg hidden w-[46%] shrink-0 flex-col items-center justify-center gap-10 overflow-hidden px-10 py-10 lg:flex"
+      aria-hidden="true"
+    >
+      <p class="max-w-sm text-balance text-center font-headline text-3xl font-bold leading-tight tracking-tight">
+        Um link para <span class="text-brand-gradient">tudo</span> o que você faz.
+      </p>
+      <ClientOnly>
+        <TemplateStage v-if="isDesktop" compact :start="3" />
+      </ClientOnly>
+    </aside>
   </div>
 </template>

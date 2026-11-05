@@ -24,7 +24,7 @@ const href = computed(() => {
     target="_blank"
     rel="noopener noreferrer"
     :aria-label="config.label || 'WhatsApp'"
-    class="bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-white shadow-lg transition-transform hover:scale-105 active:scale-100"
+    class="bottom-5 right-5 z-50 flex items-center gap-2 rounded-full bg-[#25D366] px-4 py-3 text-[#052e16] shadow-lg transition-transform hover:scale-105 active:scale-100"
     :class="fixed ? 'fixed' : 'absolute'"
   >
     <UIcon name="i-simple-icons-whatsapp" class="size-6 shrink-0" />

@@ -38,10 +38,3 @@ Pré-requisito: o backend em `../link-land` com `poetry install` feito.
 customizado), seções, landing e páginas estáticas. Se um teste visual
 falhar, compare no relatório HTML; só rode `test:e2e:update` se a mudança
 for intencional.
-
-## Bugs conhecidos registrados como `test.fail`
-
-- Conta acima do limite de páginas → erro de console no dashboard
-  (`UProgress` com value > max).
-- Navegador com armazenamento bloqueado → script do `@nuxtjs/color-mode` lança
-  erro e a página cai em "Algo deu errado".

@@ -10,9 +10,6 @@ const props = defineProps<{
   preview?: boolean
 }>()
 
-useHead({
-  link: [{ rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap' }],
-})
 </script>
 
 <template>
@@ -67,7 +64,7 @@ useHead({
   background-color: #0a0a16;
 
   --lp-text:        #f0f0f0;
-  --lp-muted:       #7070a0;
+  --lp-muted:       #a3a3cc;
   --lp-link-bg:     #0f0f28;
   --lp-link-fg:     var(--lp-accent);
   --lp-link-border: var(--lp-accent);
@@ -97,7 +94,8 @@ useHead({
 /* ── Título ── */
 .pixel-title {
   font-family: 'Press Start 2P', monospace;
-  font-size: clamp(0.6rem, 3.5vw, 0.875rem);
+  /* Antes chegava a 0.6rem no celular: ilegível. */
+  font-size: clamp(0.85rem, 4vw, 1.05rem);
   line-height: 1.9;
   letter-spacing: 0.04em;
   overflow-wrap: anywhere;
@@ -121,8 +119,9 @@ useHead({
 
 /* ── Bio ── */
 .pixel-bio {
-  font-size: 0.75rem;
-  line-height: 1.65;
+  font-family: 'VT323', ui-monospace, monospace;
+  font-size: 1.2rem;
+  line-height: 1.25;
 }
 
 /* ── Avatar quadrado ── */
@@ -155,7 +154,8 @@ useHead({
 /* ── Botões: pixel shadow + sem translateY ── */
 .pixel-root :deep(.lp-link) {
   border-width: 2px;
-  font-size: 0.65rem;
+  font-size: 0.72rem;
+  line-height: 1.6;
   font-family: 'Press Start 2P', monospace;
   letter-spacing: 0.04em;
   text-transform: uppercase;
