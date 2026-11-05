@@ -68,7 +68,7 @@ function sendAnother(): void {
 <template>
   <div class="mx-auto max-w-2xl space-y-6">
     <div class="flex items-center gap-3">
-      <UButton to="/dashboard" icon="i-lucide-arrow-left" variant="ghost" color="neutral" size="sm" />
+      <UButton to="/dashboard" aria-label="Voltar ao painel" icon="i-lucide-arrow-left" variant="ghost" color="neutral" size="sm" />
       <h1 class="font-display text-2xl font-bold tracking-tight">Suporte</h1>
     </div>
 

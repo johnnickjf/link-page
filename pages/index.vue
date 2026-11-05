@@ -237,7 +237,7 @@ useHead({
 </script>
 
 <template>
-  <div class="app-surface min-h-screen bg-[#faf9f6] text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+  <div class="app-surface min-h-screen bg-white text-gray-950 dark:bg-[#0c0a1f] dark:text-white">
     <!-- Skip link: acessibilidade para navegação por teclado/leitor de tela -->
     <a
       href="#conteudo-principal"
@@ -246,13 +246,13 @@ useHead({
       Pular para o conteúdo
     </a>
 
-    <header class="on-ink sticky top-0 z-40 border-b border-white/10 bg-[#0d0b14]/85 text-white backdrop-blur-md">
+    <header class="on-ink site-header sticky top-0 z-40 backdrop-blur-md">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
         <Logo to="/" />
         <nav aria-label="Principal" class="flex items-center gap-1">
           <UButton to="/gamer" variant="ghost" color="neutral" class="hidden text-white hover:bg-white/10 active:bg-white/10 sm:inline-flex">Para gamers</UButton>
           <UButton to="/login" variant="ghost" color="neutral" class="text-white hover:bg-white/10 active:bg-white/10">Entrar</UButton>
-          <UButton to="/register" color="neutral" class="bg-white text-gray-950 hover:bg-white/90 active:bg-white/90">
+          <UButton to="/register" color="neutral" class="btn-accent font-semibold">
             Criar conta
           </UButton>
         </nav>
@@ -264,20 +264,20 @@ useHead({
       <section aria-labelledby="hero-heading" class="stage-bg overflow-hidden">
         <div class="mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 sm:py-20 lg:grid-cols-[1.08fr_1fr] lg:gap-6">
           <div class="text-center lg:text-left">
-            <p class="animate-rise text-sm font-medium tracking-wide text-white/65">
+            <p class="animate-rise text-sm font-medium tracking-wide text-white/90">
               A alternativa brasileira ao Linktree
             </p>
 
             <h1
               id="hero-heading"
-              class="animate-rise mt-4 font-headline text-[clamp(2.9rem,7.4vw,5.5rem)] font-extrabold leading-[0.98] tracking-[-0.035em] [animation-delay:80ms]"
+              class="animate-rise mt-4 font-headline text-[clamp(2.9rem,7.4vw,5.5rem)] font-extrabold leading-[0.98] tracking-[-0.03em] [animation-delay:80ms]"
             >
               Um link para
               <span class="text-brand-gradient">tudo</span>
               o que você faz.
             </h1>
 
-            <p class="animate-rise mx-auto mt-6 max-w-xl text-pretty text-lg leading-relaxed text-white/75 [animation-delay:160ms] lg:mx-0">
+            <p class="animate-rise mx-auto mt-6 max-w-xl text-pretty text-lg leading-relaxed text-white/95 [animation-delay:160ms] lg:mx-0">
               Crie sua página de links grátis: reúna redes sociais, WhatsApp e
               todo o seu conteúdo num único link para a bio do Instagram e do
               TikTok. Bonita, rápida e no ar em minutos.
@@ -289,7 +289,7 @@ useHead({
                 size="xl"
                 color="neutral"
                 trailing-icon="i-lucide-arrow-right"
-                class="bg-white font-semibold text-gray-950 transition hover:-translate-y-0.5 hover:bg-white active:bg-white"
+                class="btn-accent font-semibold transition hover:-translate-y-0.5"
               >
                 Criar minha página grátis
               </UButton>
@@ -298,9 +298,9 @@ useHead({
               </UButton>
             </div>
 
-            <ul class="animate-rise mx-auto mt-6 flex max-w-xl flex-wrap justify-center gap-x-5 gap-y-1.5 text-sm text-white/65 [animation-delay:320ms] lg:mx-0 lg:justify-start">
+            <ul class="animate-rise mx-auto mt-6 flex max-w-xl flex-wrap justify-center gap-x-5 gap-y-1.5 text-sm text-white/90 [animation-delay:320ms] lg:mx-0 lg:justify-start">
               <li v-for="item in ['Grátis para sempre', 'Sem cartão de crédito', 'Pronta em minutos']" :key="item" class="flex items-center gap-1.5">
-                <UIcon name="i-lucide-check" class="size-4 text-emerald-400" aria-hidden="true" />
+                <UIcon name="i-lucide-check" class="size-4 stage-check" aria-hidden="true" />
                 {{ item }}
               </li>
             </ul>
@@ -316,7 +316,7 @@ useHead({
           <h2 id="como-funciona-heading" class="font-headline text-4xl font-bold tracking-tight sm:text-5xl">
             Como funciona
           </h2>
-          <p class="mt-4 max-w-sm text-lg text-gray-600 dark:text-gray-400">
+          <p class="mt-4 max-w-sm text-lg text-gray-700 dark:text-gray-200">
             Três passos entre você e sua página de links no ar.
           </p>
         </div>
@@ -328,25 +328,25 @@ useHead({
             v-reveal="i * 100"
             class="grid grid-cols-[3.5rem_1fr] gap-x-4 border-b border-gray-200 py-7 sm:grid-cols-[5.5rem_1fr] dark:border-white/10"
           >
-            <span class="font-headline text-4xl font-bold leading-none text-primary-500 tabular-nums sm:text-6xl" aria-hidden="true">
+            <span class="font-headline text-4xl font-bold leading-none text-primary-600 dark:text-primary-400 tabular-nums sm:text-6xl" aria-hidden="true">
               {{ i + 1 }}
             </span>
             <div>
               <h3 class="font-headline text-xl font-semibold sm:text-2xl">{{ step.title }}</h3>
-              <p class="mt-2 max-w-lg text-pretty leading-relaxed text-gray-600 dark:text-gray-400">{{ step.text }}</p>
+              <p class="mt-2 max-w-lg text-pretty leading-relaxed text-gray-700 dark:text-gray-200">{{ step.text }}</p>
             </div>
           </li>
         </ol>
       </section>
 
       <!-- Por que escolher a LinkLand -->
-      <section aria-labelledby="recursos-heading" class="bg-white py-20 sm:py-28 dark:bg-gray-900/40">
+      <section aria-labelledby="recursos-heading" class="bg-[#f1edff] py-20 sm:py-28 dark:bg-[#17123a]">
         <div class="mx-auto max-w-6xl px-5">
           <div v-reveal class="max-w-2xl">
             <h2 id="recursos-heading" class="font-headline text-4xl font-bold tracking-tight sm:text-5xl">
               Por que escolher a LinkLand
             </h2>
-            <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">
+            <p class="mt-4 text-lg text-gray-700 dark:text-gray-200">
               A alternativa 100% brasileira ao Linktree, para criadores, empresas
               e profissionais que querem uma bio bonita e fácil de manter.
             </p>
@@ -355,29 +355,29 @@ useHead({
           <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
             <div v-reveal class="stage-bg overflow-hidden rounded-3xl p-7 sm:col-span-2 lg:col-span-3 lg:row-span-2">
               <h3 class="font-headline text-2xl font-semibold sm:text-3xl">{{ highlights[0]!.title }}</h3>
-              <p class="mt-3 max-w-md leading-relaxed text-white/75">{{ highlights[0]!.text }}</p>
+              <p class="mt-3 max-w-md leading-relaxed text-white/95">{{ highlights[0]!.text }}</p>
               <ul class="mt-8 grid grid-cols-3 gap-2.5" aria-hidden="true">
                 <li v-for="t in showcaseSwatches" :key="t.name">
                   <div class="flex h-24 flex-col justify-end gap-1 rounded-xl p-2 sm:h-32" :style="{ background: t.bg, boxShadow: 'inset 0 0 0 1px rgb(255 255 255 / 0.12)' }">
                     <span class="block h-2 rounded-sm" :style="{ background: t.bar }" />
                     <span class="block h-2 rounded-sm" :style="{ background: t.bar }" />
                   </div>
-                  <span class="mt-1.5 block text-xs text-white/65">{{ t.name }}</span>
+                  <span class="mt-1.5 block text-xs text-white/90">{{ t.name }}</span>
                 </li>
               </ul>
             </div>
 
-            <div v-reveal="60" class="rounded-3xl border border-gray-200 p-7 lg:col-span-3 dark:border-white/10">
+            <div v-reveal="60" class="rounded-3xl border border-gray-200 bg-white p-7 lg:col-span-3 dark:border-white/10 dark:bg-[#17123a]">
               <h3 class="font-headline text-xl font-semibold">{{ highlights[1]!.title }}</h3>
-              <p class="mt-2 leading-relaxed text-gray-600 dark:text-gray-400">{{ highlights[1]!.text }}</p>
+              <p class="mt-2 leading-relaxed text-gray-700 dark:text-gray-200">{{ highlights[1]!.text }}</p>
               <ul class="mt-4 flex flex-wrap gap-1.5 text-xs font-medium text-gray-600 dark:text-gray-300" aria-hidden="true">
                 <li v-for="b in ['Link', 'Rede social', 'WhatsApp', 'E-mail', 'Texto', 'Imagem', 'Mapa']" :key="b" class="rounded-full bg-gray-100 px-2.5 py-1 dark:bg-white/10">{{ b }}</li>
               </ul>
             </div>
 
-            <div v-reveal="120" class="rounded-3xl border border-gray-200 p-7 lg:col-span-3 dark:border-white/10">
+            <div v-reveal="120" class="rounded-3xl border border-gray-200 bg-white p-7 lg:col-span-3 dark:border-white/10 dark:bg-[#17123a]">
               <h3 class="font-headline text-xl font-semibold">Visitas e cliques</h3>
-              <p class="mt-2 leading-relaxed text-gray-600 dark:text-gray-400">
+              <p class="mt-2 leading-relaxed text-gray-700 dark:text-gray-200">
                 Veja quantas pessoas abriram sua página e em quais links clicaram, com contagem anônima.
               </p>
               <div class="mt-4 flex h-12 items-end gap-1" aria-hidden="true">
@@ -385,14 +385,14 @@ useHead({
               </div>
             </div>
 
-            <div v-reveal="60" class="rounded-3xl border border-gray-200 p-7 lg:col-span-3 dark:border-white/10">
+            <div v-reveal="60" class="rounded-3xl border border-gray-200 bg-white p-7 lg:col-span-3 dark:border-white/10 dark:bg-[#17123a]">
               <h3 class="font-headline text-xl font-semibold">{{ highlights[2]!.title }}</h3>
-              <p class="mt-2 leading-relaxed text-gray-600 dark:text-gray-400">{{ highlights[2]!.text }}</p>
+              <p class="mt-2 leading-relaxed text-gray-700 dark:text-gray-200">{{ highlights[2]!.text }}</p>
             </div>
 
-            <div v-reveal="120" class="rounded-3xl border border-gray-200 p-7 lg:col-span-3 dark:border-white/10">
+            <div v-reveal="120" class="rounded-3xl border border-gray-200 bg-white p-7 lg:col-span-3 dark:border-white/10 dark:bg-[#17123a]">
               <h3 class="font-headline text-xl font-semibold">{{ highlights[3]!.title }}</h3>
-              <p class="mt-2 leading-relaxed text-gray-600 dark:text-gray-400">{{ highlights[3]!.text }}</p>
+              <p class="mt-2 leading-relaxed text-gray-700 dark:text-gray-200">{{ highlights[3]!.text }}</p>
             </div>
           </div>
         </div>
@@ -405,7 +405,7 @@ useHead({
             <h2 id="gamer-heading" class="font-headline text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl">
               Joga? Seu perfil de jogador também mora aqui.
             </h2>
-            <p class="mt-4 max-w-xl text-pretty text-lg text-white/75">
+            <p class="mt-4 max-w-xl text-pretty text-lg text-white/95">
               Reúna seus IDs da Steam, PSN, Xbox e Riot, os jogos que você mais joga,
               conquistas e seu canal, com temas feitos para isso.
             </p>
@@ -413,7 +413,7 @@ useHead({
               to="/gamer"
               size="xl"
               color="neutral"
-              class="mt-7 bg-white font-semibold text-gray-950 transition hover:-translate-y-0.5 hover:bg-white active:bg-white"
+              class="mt-7 btn-accent font-semibold transition hover:-translate-y-0.5"
               trailing-icon="i-lucide-arrow-right"
             >
               Ver o perfil gamer
@@ -433,20 +433,20 @@ useHead({
           <h2 id="planos-heading" class="font-headline text-4xl font-bold tracking-tight sm:text-5xl">
             Grátis para começar, Premium para ir além
           </h2>
-          <p class="mt-4 text-lg text-gray-600 dark:text-gray-400">
+          <p class="mt-4 text-lg text-gray-700 dark:text-gray-200">
             Comece sem gastar nada. Faça upgrade só quando fizer sentido para você.
           </p>
         </div>
 
         <div class="mt-12 grid items-stretch gap-4 lg:grid-cols-2">
           <!-- Free (no celular vem depois do Premium) -->
-          <div v-reveal="80" class="order-2 flex flex-col rounded-3xl border border-gray-200 bg-white p-8 dark:border-white/10 dark:bg-gray-900 lg:order-none">
-            <p class="font-medium text-gray-600 dark:text-gray-400">Free</p>
+          <div v-reveal="80" class="order-2 flex flex-col rounded-3xl border border-gray-200 bg-white p-8 dark:border-white/10 dark:bg-[#17123a] lg:order-none">
+            <p class="font-medium text-gray-700 dark:text-gray-200">Free</p>
             <p class="mt-1 font-headline text-5xl font-bold tracking-tight">R$0</p>
             <ul class="mt-6 flex-1 space-y-3">
               <li v-for="f in freeFeatures" :key="f" class="flex items-start gap-2.5">
-                <UIcon name="i-lucide-check" class="mt-1 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
-                <span class="text-gray-700 dark:text-gray-300">{{ f }}</span>
+                <UIcon name="i-lucide-check" class="mt-1 size-4 shrink-0 text-emerald-700 dark:text-emerald-300" aria-hidden="true" />
+                <span class="text-gray-800 dark:text-gray-100">{{ f }}</span>
               </li>
             </ul>
             <UButton to="/register" block size="lg" variant="subtle" color="neutral" class="mt-8">
@@ -457,19 +457,19 @@ useHead({
           <!-- Premium (aparece primeiro no celular) -->
           <div v-reveal class="stage-bg order-1 flex flex-col rounded-3xl p-8 lg:order-none">
             <div class="flex items-center justify-between gap-3">
-              <p class="font-medium text-white/75">Premium</p>
-              <span class="rounded-full bg-white px-2.5 py-0.5 text-xs font-semibold text-gray-950">Mais popular</span>
+              <p class="font-medium text-white/95">Premium</p>
+              <span class="btn-accent rounded-full px-2.5 py-0.5 text-xs font-semibold">Mais popular</span>
             </div>
             <p class="mt-1 font-headline text-5xl font-bold tracking-tight">
-              R$1,99<span class="font-sans text-base font-normal tracking-normal text-white/70"> no primeiro mês</span>
+              R$1,99<span class="font-sans text-base font-normal tracking-normal text-white/90"> no primeiro mês</span>
             </p>
-            <p class="mt-2 text-sm text-white/70">
+            <p class="mt-2 text-sm text-white/90">
               R$19,90/mês nos meses seguintes · cancele quando quiser
             </p>
             <ul class="mt-6 flex-1 space-y-3">
               <li v-for="f in premiumFeatures" :key="f" class="flex items-start gap-2.5">
-                <UIcon name="i-lucide-check" class="mt-1 size-4 shrink-0 text-emerald-400" aria-hidden="true" />
-                <span class="text-white/85">{{ f }}</span>
+                <UIcon name="i-lucide-check" class="mt-1 size-4 shrink-0 stage-check" aria-hidden="true" />
+                <span class="text-white">{{ f }}</span>
               </li>
             </ul>
             <!-- O ?referral_code é capturado pelo watcher global (app.vue) e
@@ -479,7 +479,7 @@ useHead({
               block
               size="lg"
               color="neutral"
-              class="mt-8 bg-white font-semibold text-gray-950 hover:bg-white/90 active:bg-white/90"
+              class="mt-8 btn-accent font-semibold"
             >
               Experimentar o Premium
             </UButton>
@@ -494,7 +494,7 @@ useHead({
             <h2 id="faq-heading" class="font-headline text-4xl font-bold tracking-tight sm:text-5xl">
               Perguntas frequentes
             </h2>
-            <p class="mt-4 max-w-sm text-lg text-gray-600 dark:text-gray-400">
+            <p class="mt-4 max-w-sm text-lg text-gray-700 dark:text-gray-200">
               Ainda com dúvidas sobre a LinkLand? Talvez a resposta esteja aqui.
             </p>
           </div>
@@ -510,7 +510,7 @@ useHead({
           <h2 id="cta-final-heading" class="max-w-3xl text-balance font-headline text-4xl font-bold leading-[1.05] tracking-tight sm:text-6xl">
             Crie a sua página de links em minutos
           </h2>
-          <p class="mt-5 max-w-xl text-pretty text-lg text-white/75">
+          <p class="mt-5 max-w-xl text-pretty text-lg text-white/95">
             Sem complicação e sem cartão de crédito. Monte, escolha o template e
             publique — sua bio nunca mais vai ser só uma linha de texto.
           </p>
@@ -518,7 +518,7 @@ useHead({
             to="/register"
             size="xl"
             color="neutral"
-            class="mt-8 bg-white font-semibold text-gray-950 transition hover:-translate-y-0.5 hover:bg-white active:bg-white"
+            class="mt-8 btn-accent font-semibold transition hover:-translate-y-0.5"
             trailing-icon="i-lucide-arrow-right"
           >
             Começar agora, é grátis
@@ -527,7 +527,7 @@ useHead({
       </section>
 
       <!-- TrackPath -->
-      <section class="border-t border-gray-100 bg-gray-50 px-5 py-10 dark:border-gray-800 dark:bg-gray-900/40">
+      <section class="border-t border-gray-100 bg-gray-50 px-5 py-10 dark:border-gray-800 dark:bg-[#17123a]/40">
         <div
           class="mx-auto flex max-w-5xl flex-col items-center justify-between gap-5 sm:flex-row"
         >

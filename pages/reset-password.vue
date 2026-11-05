@@ -76,7 +76,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
       <UButton block to="/forgot-password">Solicitar novo link</UButton>
     </div>
 
-    <UForm
+    <UForm action="javascript:void(0)"
       v-else
       :state="state"
       :validate="validate"
@@ -94,7 +94,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
           <template #trailing>
             <button
               type="button"
-              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              class="text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
               :aria-label="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
               @click="showPassword = !showPassword"
             >
@@ -116,7 +116,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
           <template #trailing>
             <button
               type="button"
-              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              class="text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
               :aria-label="showConfirm ? 'Ocultar senha' : 'Mostrar senha'"
               @click="showConfirm = !showConfirm"
             >

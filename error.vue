@@ -57,7 +57,7 @@ function goHome(): void {
       </div>
     </div>
 
-    <p class="mt-16 text-xs text-gray-400 dark:text-gray-600">
+    <p class="mt-16 text-xs text-gray-500 dark:text-gray-400">
       LinkLand · Seus links, sua identidade
     </p>
   </div>

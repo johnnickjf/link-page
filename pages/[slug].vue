@@ -76,7 +76,7 @@ useSeoMeta({
     :avatar-url="page.avatar_url"
     :theme="page.theme"
     :blocks="activeBlocks"
-    :profile-meta="page.profile_meta"
+    :profile-meta="page.kind === 'gamer' ? page.profile_meta : null"
     :progress="page.progress"
     @click.capture="onTrackedClick"
   >

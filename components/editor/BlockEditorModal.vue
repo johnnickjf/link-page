@@ -65,12 +65,7 @@ const TYPES: { value: BlockType; label: string; icon: string }[] = [
   { value: 'badges', label: 'Conquistas', icon: 'i-lucide-trophy' },
   { value: 'embed', label: 'Stream', icon: 'i-lucide-tv' },
 ]
-const NETWORKS = [
-  'instagram', 'tiktok', 'youtube', 'x', 'facebook', 'linkedin',
-  'github', 'twitch', 'telegram', 'spotify', 'threads', 'pinterest',
-  'discord', 'kick', 'steam', 'playstation', 'xbox', 'nintendo', 'riot', 'epic',
-  'battlenet', 'roblox',
-]
+const NETWORKS = Object.entries(NETWORK_LABELS).map(([value, label]) => ({ value, label }))
 
 // Ícones populares para o botão de link (Lucide + algumas marcas).
 const LINK_ICONS = [
@@ -416,14 +411,14 @@ async function submit(): Promise<void> {
                   href="https://lucide.dev/icons"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-primary-500 hover:underline"
+                  class="text-primary-600 dark:text-primary-400 hover:underline"
                 >Lucide</a>
                 (<code>i-lucide-nome</code>) ou marca do
                 <a
                   href="https://simpleicons.org"
                   target="_blank"
                   rel="noopener noreferrer"
-                  class="text-primary-500 hover:underline"
+                  class="text-primary-600 dark:text-primary-400 hover:underline"
                 >Simple Icons</a>
                 (<code>i-simple-icons-nome</code>).
               </p>

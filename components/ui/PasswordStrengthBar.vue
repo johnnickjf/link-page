@@ -31,7 +31,7 @@ const color = computed(() => {
 })
 
 const textColor = computed(() => {
-  if (!props.password) return 'text-gray-400'
+  if (!props.password) return 'text-gray-500'
   if (score.value <= 2) return 'text-red-500'
   if (score.value <= 3) return 'text-amber-500'
   return 'text-green-600 dark:text-green-400'

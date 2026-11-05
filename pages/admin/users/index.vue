@@ -133,7 +133,7 @@ function goTo(p: number): void {
     <!-- Vazio -->
     <div
       v-else-if="!data || data.items.length === 0"
-      class="mt-5 rounded-xl border border-dashed border-gray-300 p-10 text-center text-sm text-gray-500 dark:border-gray-700"
+      class="mt-5 rounded-xl border border-dashed border-gray-300 p-10 text-center text-sm text-gray-600 dark:border-gray-700"
     >
       Nenhum usuário encontrado para os filtros selecionados.
     </div>
@@ -142,7 +142,7 @@ function goTo(p: number): void {
     <template v-else>
       <div class="mt-5 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
         <!-- Header (só desktop) -->
-        <div class="hidden grid-cols-[2fr_2fr_1fr_1fr_1fr_auto] items-center gap-4 border-b border-gray-100 bg-gray-50 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:border-gray-800 dark:bg-gray-900/80 dark:text-gray-400 lg:grid">
+        <div class="hidden grid-cols-[2fr_2fr_1fr_1fr_1fr_auto] items-center gap-4 border-b border-gray-100 bg-gray-50 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:border-gray-800 dark:bg-gray-900/80 dark:text-gray-400 lg:grid">
           <span>Usuário</span>
           <span>E-mail</span>
           <span>Plano</span>
@@ -177,12 +177,12 @@ function goTo(p: number): void {
             </div>
 
             <!-- Email (desktop) -->
-            <p class="hidden truncate text-sm text-gray-500 dark:text-gray-400 lg:block">
+            <p class="hidden truncate text-sm text-gray-600 dark:text-gray-400 lg:block">
               {{ u.email }}
             </p>
 
             <!-- Email (mobile) -->
-            <p class="truncate text-xs text-gray-500 dark:text-gray-400 lg:hidden">
+            <p class="truncate text-xs text-gray-600 dark:text-gray-400 lg:hidden">
               {{ u.email }}
             </p>
 
@@ -209,7 +209,7 @@ function goTo(p: number): void {
             </div>
 
             <!-- Data -->
-            <p class="hidden text-xs text-gray-400 dark:text-gray-500 lg:block">
+            <p class="hidden text-xs text-gray-600 dark:text-gray-400 lg:block">
               {{ formatDate(u.created_at) }}
             </p>
 
@@ -235,7 +235,7 @@ function goTo(p: number): void {
         >
           Anterior
         </UButton>
-        <span class="text-sm text-gray-500 dark:text-gray-400">
+        <span class="text-sm text-gray-600 dark:text-gray-400">
           Página {{ page }} de {{ totalPages }}
         </span>
         <UButton

@@ -201,6 +201,7 @@ async function saveKind(): Promise<void> {
   try {
     await store.updatePage(pageId.value, { kind: kind.value })
   } catch (e) {
+    kind.value = kind.value === 'gamer' ? 'standard' : 'gamer'
     toast.add({ title: 'Não foi possível salvar', description: getApiErrorMessage(e), color: 'error' })
   }
 }
@@ -485,6 +486,7 @@ async function copyPublicUrl(): Promise<void> {
         <div class="flex items-center gap-2">
           <div class="flex items-center gap-2">
             <USwitch
+              aria-label="Página publicada"
               :model-value="published"
               :disabled="savingPublish"
               @update:model-value="togglePublish"
@@ -495,6 +497,7 @@ async function copyPublicUrl(): Promise<void> {
           </div>
           <UButton
             v-if="published"
+            aria-label="Copiar link da página"
             icon="i-lucide-copy"
             size="sm"
             variant="subtle"
@@ -507,6 +510,7 @@ async function copyPublicUrl(): Promise<void> {
             v-if="published"
             :href="publicUrl"
             target="_blank"
+            aria-label="Ver página publicada"
             icon="i-lucide-external-link"
             size="sm"
             variant="subtle"
@@ -518,6 +522,7 @@ async function copyPublicUrl(): Promise<void> {
             v-if="!published"
             :to="`/preview/${pageId}`"
             target="_blank"
+            aria-label="Pré-visualizar página"
             icon="i-lucide-eye"
             size="sm"
             variant="subtle"
@@ -718,7 +723,7 @@ async function copyPublicUrl(): Promise<void> {
                 preview
               />
             </div>
-            <p class="mx-auto mt-2.5 max-w-[380px] truncate text-center text-xs text-gray-400 dark:text-gray-500">
+            <p class="mx-auto mt-2.5 max-w-[380px] truncate text-center text-xs text-gray-500 dark:text-gray-400">
               {{ publicUrl }}
             </p>
           </div>

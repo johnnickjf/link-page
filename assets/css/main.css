@@ -7,7 +7,7 @@
   --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-display: "Sora", "Inter", ui-sans-serif, system-ui, sans-serif;
   /* Voz da marca (landing e app). As páginas públicas mantêm a própria. */
-  --font-headline: "Bricolage Grotesque", "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-headline: "Plus Jakarta Sans", "Sora", ui-sans-serif, system-ui, sans-serif;
 }
 
 /* Tokens de design neutros (raio/sombra) reaproveitados pelos templates. */
@@ -50,26 +50,105 @@ body {
   color: transparent;
 }
 
-/* Superfícies da marca: títulos do app usam a voz da marca, e a raiz dos
-   templates (.lp-root) devolve a tipografia das páginas públicas. */
-.app-surface {
-  --font-display: var(--font-headline);
+/* Tons do Nuxt UI com contraste AA sobre fundo claro e escuro. O padrão (500) fica
+   logo abaixo do mínimo em texto pequeno. Botões sólidos também ganham cor mais
+   cheia. */
+:root {
+  --ui-primary: var(--ui-color-primary-600);
+  --ui-error: var(--ui-color-error-700);
+  --ui-success: var(--ui-color-success-800);
+  --ui-warning: var(--ui-color-warning-800);
+  --ui-text-dimmed: var(--ui-color-neutral-500);
+  --ui-text-muted: var(--ui-color-neutral-600);
+}
+.dark {
+  --ui-primary: var(--ui-color-primary-400);
+  --ui-error: var(--ui-color-error-400);
+  --ui-success: var(--ui-color-success-400);
+  --ui-warning: var(--ui-color-warning-400);
+  --ui-text-dimmed: var(--ui-color-neutral-400);
+  --ui-text-muted: var(--ui-color-neutral-300);
 }
 
-/* Palco: fundo de tinta, luz da marca e grão, usado no hero e nas chamadas. */
+/* Superfícies da marca: títulos do app usam a voz da marca, e a raiz dos
+   templates (.lp-root) devolve a tipografia das páginas públicas.
+
+   PALETA: tudo sai destas variáveis. Para mudar a cor de destaque ou o fundo do
+   palco, basta mexer aqui. Os tons do palco foram escolhidos para o texto branco
+   manter contraste AA em qualquer ponto do gradiente. */
+.app-surface {
+  --font-display: var(--font-headline);
+  --stage-accent: #d4ff3f;
+  --stage-accent-hover: #e4ff7a;
+  --stage-accent-ink: #14170a;
+  --stage-header: rgb(38 16 176 / 0.94);
+  --stage-base: #2c12c8;
+  --stage-glow-1: #c8148c;
+  --stage-glow-2: #7a1fe8;
+  --stage-glow-3: #1d4bff;
+}
+
+/* Perfil gamer: preto azulado, neon ciano e magenta, destaque verde. */
+.gamer-surface {
+  --font-headline: "Oxanium", "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-headline);
+  --stage-accent: #3dff9e;
+  --stage-accent-hover: #7dffbd;
+  --stage-accent-ink: #04170d;
+  --stage-header: rgb(8 4 28 / 0.94);
+  --stage-base: #080420;
+  --stage-glow-1: #a4128f;
+  --stage-glow-2: #5a12d6;
+  --stage-glow-3: #00788f;
+}
+.gamer-surface .font-headline {
+  font-family: "Oxanium", "Sora", ui-sans-serif, system-ui, sans-serif;
+}
+
+/* A fonte de título tem o espaço entre palavras estreito: com as letras apertadas,
+   as palavras quase se encostam. */
+.app-surface .font-headline,
+.app-surface .font-display {
+  word-spacing: 0.09em;
+}
+.lp-root .font-display {
+  word-spacing: normal;
+}
+
+/* Palco: cor saturada de verdade, com grão fino para não parecer chapado. */
 .stage-bg {
-  background-color: #0d0b14;
+  background-color: var(--stage-base, #2c12c8);
   background-image:
     url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .05 0'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)'/%3E%3C/svg%3E"),
-    radial-gradient(46% 62% at 78% 42%, rgb(139 92 246 / 0.34), transparent 72%),
-    radial-gradient(34% 46% at 94% 84%, rgb(217 70 239 / 0.24), transparent 72%),
-    radial-gradient(30% 40% at 56% 4%, rgb(99 102 241 / 0.26), transparent 72%);
+    radial-gradient(52% 70% at 88% 30%, var(--stage-glow-1, #c8148c), transparent 72%),
+    radial-gradient(56% 70% at 62% 104%, var(--stage-glow-2, #7a1fe8), transparent 72%),
+    radial-gradient(44% 60% at 0% 0%, var(--stage-glow-3, #1d4bff), transparent 72%);
   color: #fff;
 }
-/* Sobre tinta, o gradiente da marca precisa de tons mais claros para ter contraste. */
+/* A palavra em destaque e o "Land" do logo usam a cor de destaque, chapada. */
 .on-ink .text-brand-gradient,
 .stage-bg .text-brand-gradient {
-  background-image: linear-gradient(100deg, #a5b4fc 0%, #c4b5fd 45%, #f0abfc 100%);
+  background-image: none;
+  color: var(--stage-accent, #d4ff3f);
+}
+.site-header {
+  background-color: var(--stage-header, rgb(38 16 176 / 0.94));
+  color: #fff;
+}
+/* Botão principal sobre o palco. Fora de @layer para vencer as classes do Nuxt UI. */
+.btn-accent {
+  background-color: var(--stage-accent, #d4ff3f);
+  color: var(--stage-accent-ink, #14170a);
+}
+.btn-accent:hover,
+.btn-accent:active {
+  background-color: var(--stage-accent-hover, #e4ff7a);
+}
+.btn-accent:disabled {
+  opacity: 0.75;
+}
+.stage-check {
+  color: var(--stage-accent, #d4ff3f);
 }
 
 /* ---------------------------------------------------------------------------

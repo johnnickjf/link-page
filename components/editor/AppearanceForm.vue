@@ -218,7 +218,7 @@ const FONTS = [
           </div>
         </div>
         </div>
-        <p v-if="!canBackground" class="mt-1.5 text-xs text-gray-400 dark:text-gray-500">
+        <p v-if="!canBackground" class="mt-1.5 text-xs text-gray-500 dark:text-gray-400">
           Personalize o fundo no plano Premium.
         </p>
       </div>
@@ -249,14 +249,14 @@ const FONTS = [
               @click="theme.font = theme.font === f.value ? undefined : f.value"
             >
               <span class="text-sm font-medium leading-tight">{{ f.label }}</span>
-              <span class="mt-0.5 text-xs text-gray-400 dark:text-gray-500">{{ f.hint }}</span>
+              <span class="mt-0.5 text-xs text-gray-500 dark:text-gray-400">{{ f.hint }}</span>
             </button>
           </div>
           <p v-if="theme.font" class="mt-2 text-xs text-gray-500 dark:text-gray-400">
             Ativa: <strong>{{ theme.font }}</strong>. Clique novamente para remover.
           </p>
         </template>
-        <p v-else class="text-xs text-gray-400 dark:text-gray-500">
+        <p v-else class="text-xs text-gray-500 dark:text-gray-400">
           Escolha entre 10 fontes do Google Fonts no plano Premium.
         </p>
       </div>

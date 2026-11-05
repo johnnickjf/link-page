@@ -8,7 +8,7 @@ const isDesktop = useMediaQuery('(min-width: 1024px)')
 </script>
 
 <template>
-  <div class="app-surface flex min-h-screen bg-[#faf9f6] text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+  <div class="app-surface flex min-h-screen bg-white text-gray-950 dark:bg-[#0c0a1f] dark:text-white">
     <div class="flex min-w-0 flex-1 flex-col items-center justify-center px-4 py-10">
       <div class="animate-rise flex w-full max-w-sm flex-col gap-6">
         <Logo to="/" />
@@ -17,7 +17,7 @@ const isDesktop = useMediaQuery('(min-width: 1024px)')
           <h1 class="font-headline text-4xl font-bold tracking-tight">
             {{ title }}
           </h1>
-          <p v-if="subtitle" class="mt-2 text-gray-600 dark:text-gray-400">
+          <p v-if="subtitle" class="mt-2 text-gray-700 dark:text-gray-200">
             {{ subtitle }}
           </p>
         </div>

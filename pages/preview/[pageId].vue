@@ -109,7 +109,7 @@ const previewBlocks = computed<PublicBlock[]>(() =>
         :avatar-url="page.avatar_url"
         :theme="(page.theme as Theme)"
         :blocks="previewBlocks"
-        :profile-meta="page.profile_meta"
+        :profile-meta="page.kind === 'gamer' ? page.profile_meta : null"
         :progress="progress"
       >
         <template v-if="hasTabs" #tabs>

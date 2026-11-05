@@ -55,7 +55,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
       />
     </div>
 
-    <UForm
+    <UForm action="javascript:void(0)"
       v-else
       :state="state"
       :validate="validate"

@@ -45,7 +45,14 @@ async function load(): Promise<void> {
     loading.value = false
   }
 }
-watch(() => props.page?.id, load, { immediate: true })
+watch(
+  () => props.page?.id,
+  () => {
+    stats.value = null
+    load()
+  },
+  { immediate: true },
+)
 watch(days, load)
 
 function shortDay(iso: string): string {
@@ -160,7 +167,7 @@ const maxBlockClicks = computed(() =>
                 </div>
 
                 <div class="flex items-stretch gap-2">
-                  <div class="flex w-7 shrink-0 flex-col justify-between text-right text-[10px] tabular-nums text-gray-400 dark:text-gray-500" aria-hidden="true">
+                  <div class="flex w-7 shrink-0 flex-col justify-between text-right text-[10px] tabular-nums text-gray-500 dark:text-gray-400" aria-hidden="true">
                     <span>{{ maxValue.toLocaleString('pt-BR') }}</span>
                     <span>0</span>
                   </div>
@@ -189,7 +196,7 @@ const maxBlockClicks = computed(() =>
                     </div>
                   </div>
                 </div>
-                <div class="ml-9 mt-1 flex justify-between text-[10px] tabular-nums text-gray-400 dark:text-gray-500" aria-hidden="true">
+                <div class="ml-9 mt-1 flex justify-between text-[10px] tabular-nums text-gray-500 dark:text-gray-400" aria-hidden="true">
                   <span>{{ series[0] ? shortDay(series[0].day) : '' }}</span>
                   <span>{{ series.length ? shortDay(series[series.length - 1]!.day) : '' }}</span>
                 </div>
@@ -237,7 +244,7 @@ const maxBlockClicks = computed(() =>
             </div>
           </template>
 
-          <p class="text-xs text-gray-400 dark:text-gray-500">
+          <p class="text-xs text-gray-500 dark:text-gray-400">
             Contagem anônima: cada pessoa conta uma vez por dia, e suas próprias visitas não entram.
           </p>
         </template>

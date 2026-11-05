@@ -95,7 +95,7 @@ async function onDeleteAccount(): Promise<void> {
 <template>
   <div class="mx-auto max-w-2xl space-y-8">
     <div class="flex items-center gap-3">
-      <UButton to="/dashboard" icon="i-lucide-arrow-left" variant="ghost" color="neutral" size="sm" />
+      <UButton to="/dashboard" aria-label="Voltar ao painel" icon="i-lucide-arrow-left" variant="ghost" color="neutral" size="sm" />
       <h1 class="font-display text-2xl font-bold tracking-tight">Minha conta</h1>
     </div>
 
@@ -126,7 +126,7 @@ async function onDeleteAccount(): Promise<void> {
             class="w-full"
           />
           <template #hint>
-            <span class="text-xs text-gray-400">O e-mail não pode ser alterado.</span>
+            <span class="text-xs text-gray-500">O e-mail não pode ser alterado.</span>
           </template>
         </UFormField>
 
@@ -162,7 +162,7 @@ async function onDeleteAccount(): Promise<void> {
             <template #trailing>
               <button
                 type="button"
-                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                class="text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                 :aria-label="showCurrentPw ? 'Ocultar senha' : 'Mostrar senha'"
                 @click="showCurrentPw = !showCurrentPw"
               >
@@ -183,7 +183,7 @@ async function onDeleteAccount(): Promise<void> {
             <template #trailing>
               <button
                 type="button"
-                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                class="text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                 :aria-label="showNewPw ? 'Ocultar senha' : 'Mostrar senha'"
                 @click="showNewPw = !showNewPw"
               >
@@ -205,7 +205,7 @@ async function onDeleteAccount(): Promise<void> {
             <template #trailing>
               <button
                 type="button"
-                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                class="text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                 :aria-label="showConfirmPw ? 'Ocultar senha' : 'Mostrar senha'"
                 @click="showConfirmPw = !showConfirmPw"
               >

@@ -193,7 +193,7 @@ const PREMIUM_FEATURES = [
               class="mt-0.5 size-4 shrink-0"
               :class="f.included ? 'text-green-500' : 'text-gray-300 dark:text-gray-600'"
             />
-            <span :class="f.included ? '' : 'text-gray-400 dark:text-gray-500'">
+            <span :class="f.included ? '' : 'text-gray-500 dark:text-gray-400'">
               {{ f.label }}
             </span>
           </li>
@@ -204,14 +204,14 @@ const PREMIUM_FEATURES = [
       <div class="order-1 relative lg:order-none">
         <div class="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap">
           <span
-            class="rounded-full bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-4 py-1 text-xs font-semibold text-white shadow"
+            class="rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 py-1 text-xs font-semibold text-white shadow"
           >
             Mais popular
           </span>
         </div>
 
         <div class="overflow-hidden rounded-xl shadow-lg ring-2 ring-indigo-500/50">
-          <div class="bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 px-6 py-6">
+          <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 px-6 py-6">
             <p class="text-sm font-semibold text-indigo-100">Premium</p>
             <div class="mt-2 flex items-end gap-1">
               <span class="font-display text-4xl font-bold tracking-tight text-white">{{ priceLabel }}</span>
@@ -228,7 +228,7 @@ const PREMIUM_FEATURES = [
           <div class="bg-white p-6 dark:bg-gray-900">
             <button
               type="button"
-              class="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+              class="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
               :disabled="isPremium || billing.loading.value"
               data-testid="buy-premium"
               @click="billing.checkout(interval)"
@@ -256,19 +256,19 @@ const PREMIUM_FEATURES = [
       </div>
 
       <!-- Gamer: tudo do Premium + exclusivos -->
-      <div class="order-1 stage-bg overflow-hidden rounded-xl p-6 lg:order-none" data-testid="plan-gamer">
-        <p class="text-sm font-semibold text-white/80">Gamer</p>
+      <div class="gamer-surface order-1 stage-bg overflow-hidden rounded-xl p-6 lg:order-none" data-testid="plan-gamer">
+        <p class="text-sm font-semibold text-white">Gamer</p>
         <div class="mt-2 flex items-end gap-1">
           <span class="font-display text-4xl font-bold tracking-tight">{{ gamerPriceLabel }}</span>
-          <span class="mb-1 text-sm text-white/70">{{ priceSuffix }}</span>
+          <span class="mb-1 text-sm text-white/90">{{ priceSuffix }}</span>
         </div>
-        <p class="mt-1.5 text-sm text-white/75">
+        <p class="mt-1.5 text-sm text-white/95">
           Tudo do Premium, mais o que um perfil de jogador precisa.
         </p>
 
         <button
           type="button"
-          class="mt-6 flex w-full items-center justify-center gap-2 rounded-lg bg-white px-4 py-2.5 text-sm font-semibold text-gray-950 transition hover:bg-white/90 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 disabled:cursor-not-allowed disabled:opacity-70"
+          class="mt-6 flex w-full items-center justify-center gap-2 btn-accent rounded-lg px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 disabled:cursor-not-allowed disabled:opacity-70"
           :disabled="isGamer || !!auth.user?.is_superadmin || billing.loading.value"
           data-testid="buy-gamer"
           @click="chooseGamer"
@@ -280,11 +280,11 @@ const PREMIUM_FEATURES = [
 
         <ul class="mt-6 space-y-3">
           <li class="flex items-start gap-3 text-sm font-medium">
-            <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-emerald-400" />
+            <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 stage-check" />
             Tudo do Premium
           </li>
-          <li v-for="f in GAMER_EXCLUSIVE_FEATURES" :key="f" class="flex items-start gap-3 text-sm text-white/85">
-            <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-emerald-400" />
+          <li v-for="f in GAMER_EXCLUSIVE_FEATURES" :key="f" class="flex items-start gap-3 text-sm text-white">
+            <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 stage-check" />
             {{ f }}
           </li>
         </ul>
@@ -311,7 +311,7 @@ const PREMIUM_FEATURES = [
       </template>
     </UModal>
 
-    <p class="mx-auto mt-10 max-w-sm text-center text-sm text-gray-400 dark:text-gray-500">
+    <p class="mx-auto mt-10 max-w-sm text-center text-sm text-gray-500 dark:text-gray-400">
       Cancele quando quiser, sem multa ou fidelidade.
     </p>
   </div>

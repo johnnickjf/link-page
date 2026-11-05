@@ -59,6 +59,7 @@ const props = defineProps<{
 <style scoped>
 /* Template "dark": grafite com a luz vindo de cima, na cor do usuário. */
 .dark-root {
+  background: #09090b;
   background:
     radial-gradient(70% 38% at 50% -6%, color-mix(in srgb, var(--lp-accent) 26%, transparent), transparent 72%),
     #09090b;

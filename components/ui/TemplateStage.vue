@@ -126,7 +126,7 @@ function select(i: number): void {
 .stage-phone[data-offset='-1'],
 .stage-phone[data-offset='1'] {
   z-index: 1;
-  opacity: 0.55;
+  opacity: 0.75;
 }
 .stage-phone[data-offset='-1'] {
   transform: translateX(-46%) translateY(26px) rotate(-7deg) scale(0.86);
@@ -159,20 +159,20 @@ function select(i: number): void {
 .stage-chip {
   padding: 0.3rem 0.75rem;
   border-radius: 9999px;
-  border: 1px solid rgb(255 255 255 / 0.18);
-  color: rgb(255 255 255 / 0.72);
+  border: 1px solid rgb(255 255 255 / 0.4);
+  color: #fff;
   font-size: 0.8125rem;
   font-weight: 500;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 .stage-chip:hover {
-  border-color: rgb(255 255 255 / 0.4);
-  color: #fff;
+  border-color: #fff;
+  background: rgb(255 255 255 / 0.12);
 }
 .stage-chip[aria-pressed='true'] {
-  border-color: #fff;
-  background: #fff;
-  color: #0d0b14;
+  border-color: var(--stage-accent, #d4ff3f);
+  background: var(--stage-accent, #d4ff3f);
+  color: var(--stage-accent-ink, #14170a);
 }
 .stage-chip:focus-visible {
   outline: 2px solid #fff;

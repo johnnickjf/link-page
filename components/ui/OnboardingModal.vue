@@ -108,7 +108,7 @@ const currentMeta = computed(() => stepMeta[step.value - 1]!)
           </span>
           <button
             type="button"
-            class="text-xs text-gray-400 underline-offset-2 hover:text-gray-600 hover:underline dark:hover:text-gray-300"
+            class="text-xs text-gray-500 underline-offset-2 hover:text-gray-600 hover:underline dark:hover:text-gray-300"
             @click="emit('done')"
           >
             Pular tutorial
@@ -245,7 +245,7 @@ const currentMeta = computed(() => stepMeta[step.value - 1]!)
           <div class="flex items-center gap-3 text-sm">
             <div class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm dark:bg-gray-900">
               <div class="h-4 w-7 rounded-full bg-gray-200 dark:bg-gray-600" />
-              <span class="text-gray-400">Rascunho</span>
+              <span class="text-gray-500">Rascunho</span>
             </div>
             <UIcon name="i-lucide-arrow-right" class="size-4 shrink-0 text-gray-400" />
             <div class="flex items-center gap-2 rounded-lg bg-white px-3 py-2 shadow-sm ring-2 ring-primary-500 dark:bg-gray-900">
@@ -280,7 +280,7 @@ const currentMeta = computed(() => stepMeta[step.value - 1]!)
           </span>
           <button
             type="button"
-            class="shrink-0 text-gray-400 hover:text-primary-500"
+            class="shrink-0 text-gray-500 hover:text-primary-600 dark:hover:text-primary-400"
             aria-label="Copiar link"
             @click="copyLink"
           >

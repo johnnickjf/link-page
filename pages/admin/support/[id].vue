@@ -61,8 +61,8 @@ async function submitReply(): Promise<void> {
 <template>
   <div>
     <!-- Breadcrumb -->
-    <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-      <NuxtLink to="/admin/support" class="hover:text-primary-500">Suporte</NuxtLink>
+    <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+      <NuxtLink to="/admin/support" class="hover:text-primary-600 dark:hover:text-primary-400">Suporte</NuxtLink>
       <UIcon name="i-lucide-chevron-right" class="size-3.5" />
       <span class="text-gray-900 dark:text-gray-100">
         {{ request ? supportTypeLabel[request.type] : '…' }}
@@ -109,8 +109,8 @@ async function submitReply(): Promise<void> {
                 {{ planLabel[request.user.plan] }}
               </UBadge>
             </div>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ request.user.email }}</p>
-            <p class="mt-1 text-xs text-gray-400 dark:text-gray-500">
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ request.user.email }}</p>
+            <p class="mt-1 text-xs text-gray-600 dark:text-gray-400">
               Cliente desde {{ formatDate(request.user.created_at ?? undefined, 'long') }}
             </p>
           </div>
@@ -127,21 +127,21 @@ async function submitReply(): Promise<void> {
         <UCard>
           <template #header>
             <div class="flex items-center gap-2">
-              <UIcon name="i-lucide-message-circle-question" class="size-4 text-gray-500" />
+              <UIcon name="i-lucide-message-circle-question" class="size-4 text-gray-600" />
               <h3 class="font-display font-semibold">Solicitação</h3>
             </div>
           </template>
           <div class="space-y-4 text-sm">
             <div>
-              <p class="text-xs font-medium uppercase tracking-wide text-gray-400">E-mail para resposta</p>
+              <p class="text-xs font-medium uppercase tracking-wide text-gray-600">E-mail para resposta</p>
               <p class="mt-0.5">{{ request.email }}</p>
             </div>
             <div>
-              <p class="text-xs font-medium uppercase tracking-wide text-gray-400">Enviada em</p>
+              <p class="text-xs font-medium uppercase tracking-wide text-gray-600">Enviada em</p>
               <p class="mt-0.5">{{ formatDate(request.created_at, 'long') }}</p>
             </div>
             <div>
-              <p class="text-xs font-medium uppercase tracking-wide text-gray-400">Mensagem</p>
+              <p class="text-xs font-medium uppercase tracking-wide text-gray-600">Mensagem</p>
               <p class="mt-1 whitespace-pre-line rounded-lg bg-gray-50 p-3 text-gray-700 dark:bg-gray-800/60 dark:text-gray-300">
                 {{ request.message }}
               </p>
@@ -153,27 +153,27 @@ async function submitReply(): Promise<void> {
         <UCard>
           <template #header>
             <div class="flex items-center gap-2">
-              <UIcon name="i-lucide-reply" class="size-4 text-gray-500" />
+              <UIcon name="i-lucide-reply" class="size-4 text-gray-600" />
               <h3 class="font-display font-semibold">Resposta</h3>
             </div>
           </template>
           <div v-if="request.reply_message" class="space-y-4 text-sm">
             <div>
-              <p class="text-xs font-medium uppercase tracking-wide text-gray-400">Respondida em</p>
+              <p class="text-xs font-medium uppercase tracking-wide text-gray-600">Respondida em</p>
               <p class="mt-0.5">{{ formatDate(request.replied_at ?? undefined, 'long') }}</p>
             </div>
             <div v-if="request.replied_by">
-              <p class="text-xs font-medium uppercase tracking-wide text-gray-400">Respondido por</p>
+              <p class="text-xs font-medium uppercase tracking-wide text-gray-600">Respondido por</p>
               <p class="mt-0.5">{{ request.replied_by.name }}</p>
             </div>
             <div>
-              <p class="text-xs font-medium uppercase tracking-wide text-gray-400">Mensagem enviada</p>
+              <p class="text-xs font-medium uppercase tracking-wide text-gray-600">Mensagem enviada</p>
               <p class="mt-1 whitespace-pre-line rounded-lg bg-gray-50 p-3 text-gray-700 dark:bg-gray-800/60 dark:text-gray-300">
                 {{ request.reply_message }}
               </p>
             </div>
           </div>
-          <p v-else class="py-2 text-center text-sm text-gray-500 dark:text-gray-400">
+          <p v-else class="py-2 text-center text-sm text-gray-600 dark:text-gray-400">
             Esta solicitação ainda não foi respondida.
           </p>
         </UCard>
@@ -194,7 +194,7 @@ async function submitReply(): Promise<void> {
             placeholder="Escreva sua resposta…"
             class="w-full"
           />
-          <p class="text-right text-xs text-gray-400">{{ replyMessage.length }}/{{ REPLY_MAX }}</p>
+          <p class="text-right text-xs text-gray-600">{{ replyMessage.length }}/{{ REPLY_MAX }}</p>
         </div>
       </template>
       <template #footer>

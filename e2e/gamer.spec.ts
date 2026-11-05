@@ -55,9 +55,12 @@ test('player só carrega depois do clique', async ({ page, consoleErrors }) => {
   await expect(players).toHaveCount(0)
 
   const clicked = page.waitForResponse((r) => /\/click\//.test(r.url()))
-  await page.getByRole('button', { name: /Assistir na Twitch/ }).click()
+  // O botão só responde depois da hidratação: repete o gesto até ela terminar.
+  await expect(async () => {
+    await page.getByRole('button', { name: /Assistir na Twitch/ }).click({ timeout: 500 })
+    await expect(players).toHaveCount(1, { timeout: 500 })
+  }).toPass()
   expect((await clicked).status()).toBe(204)
-  await expect(players).toHaveCount(1)
   const src = await players.getAttribute('src')
   expect(src).toMatch(/^https:\/\/player\.twitch\.tv\/\?channel=kai_canal&parent=127\.0\.0\.1/)
 

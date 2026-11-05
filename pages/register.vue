@@ -17,6 +17,7 @@ const registered = ref(false)
 const registeredEmail = ref('')
 const showPassword = ref(false)
 const state = reactive({ name: '', email: '', password: '', referral_code: '' })
+const isGamerSignup = computed(() => useRoute().query.kind === 'gamer')
 
 // Se veio de um link com ?referral_code=X (capturado em app.vue e salvo no
 // localStorage), preenche e já deixa o campo visível — a pessoa não precisa
@@ -76,7 +77,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
 <template>
   <AuthShell
     :title="registered ? 'Quase lá!' : 'Criar conta'"
-    :subtitle="registered ? undefined : 'Comece a montar sua página de links.'"
+    :subtitle="registered ? undefined : isGamerSignup ? 'Depois da confirmação, você já monta seu perfil gamer.' : 'Comece a montar sua página de links.'"
   >
     <UAlert
       v-if="registered"
@@ -87,7 +88,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
       :description="`Enviamos um link de confirmação para ${registeredEmail}. Acesse seu e-mail e clique no link para ativar sua conta.`"
     />
 
-    <UForm
+    <UForm action="javascript:void(0)"
       v-else
       :state="state"
       :validate="validate"
@@ -130,7 +131,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
           <template #trailing>
             <button
               type="button"
-              class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+              class="text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
               :aria-label="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
               @click="showPassword = !showPassword"
             >
@@ -182,7 +183,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
         block
         size="lg"
         :loading="loading"
-        class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/25 transition hover:opacity-90"
+        class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-md shadow-indigo-500/25 transition hover:opacity-90"
       >
         Criar conta
       </UButton>

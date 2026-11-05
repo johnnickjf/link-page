@@ -26,9 +26,9 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
   <div class="app-surface min-h-screen bg-gray-100 text-gray-900 dark:bg-gray-950 dark:text-gray-100">
     <!-- Admin Header -->
     <header class="sticky top-0 z-40 border-b border-gray-200 bg-white shadow-sm dark:border-gray-800 dark:bg-gray-900">
-      <div class="mx-auto flex max-w-7xl items-center gap-4 px-5 py-0">
+      <div class="mx-auto flex max-w-7xl items-center gap-2 px-3 py-0 sm:gap-4 sm:px-5">
         <!-- Logo + badge admin -->
-        <NuxtLink to="/admin" class="flex items-center gap-2 py-3 text-sm font-bold tracking-tight shrink-0">
+        <NuxtLink to="/admin" aria-label="Painel admin" class="flex items-center gap-2 py-3 text-sm font-bold tracking-tight shrink-0">
           <div class="flex size-7 items-center justify-center rounded-md bg-primary-600 text-white">
             <UIcon name="i-lucide-shield" class="size-4" />
           </div>
@@ -37,12 +37,13 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
         </NuxtLink>
 
         <!-- Nav -->
-        <nav class="flex flex-1 items-stretch gap-0.5">
+        <!-- No celular, os itens rolam na horizontal em vez de empurrar o menu para fora. -->
+        <nav aria-label="Seções do painel" class="flex min-w-0 flex-1 items-stretch gap-0.5 overflow-x-auto">
           <NuxtLink
             v-for="item in nav"
             :key="item.to"
             :to="item.to"
-            class="flex items-center gap-1.5 border-b-2 px-3 py-3.5 text-sm transition"
+            class="flex shrink-0 items-center gap-1.5 border-b-2 px-2 py-3.5 text-sm transition sm:px-3"
             :class="isActive(item.to)
               ? 'border-primary-600 font-semibold text-primary-600 dark:border-primary-400 dark:text-primary-400'
               : 'border-transparent text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'"
@@ -53,10 +54,11 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
         </nav>
 
         <!-- Ações direita -->
-        <div class="flex items-center gap-2">
+        <div class="flex shrink-0 items-center gap-1 sm:gap-2">
           <UTooltip text="Voltar ao app">
             <UButton
               to="/dashboard"
+              aria-label="Voltar ao app"
               icon="i-lucide-arrow-left"
               size="sm"
               variant="ghost"
@@ -67,7 +69,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
           </UTooltip>
 
           <UDropdownMenu :items="menuItems">
-            <UButton color="neutral" variant="ghost" size="sm" trailing-icon="i-lucide-chevron-down">
+            <UButton color="neutral" variant="ghost" size="sm" aria-label="Menu da conta" trailing-icon="i-lucide-chevron-down">
               <UAvatar icon="i-lucide-user" size="2xs" />
               <span class="hidden md:inline">{{ auth.user?.name || 'Admin' }}</span>
             </UButton>

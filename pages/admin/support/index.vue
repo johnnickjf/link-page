@@ -86,7 +86,12 @@ function goTo(p: number): void {
         placeholder="Buscar por nome ou e-mail…"
         class="w-full sm:max-w-xs"
       />
-      <USelect v-model="type" :items="typeChips" class="w-full sm:max-w-[200px]" />
+      <ClientOnly>
+        <USelect v-model="type" :items="typeChips" aria-label="Filtrar por tipo" class="w-full sm:max-w-[200px]" />
+        <template #fallback>
+          <USkeleton class="h-8 w-full sm:max-w-[200px]" />
+        </template>
+      </ClientOnly>
       <div class="flex flex-wrap gap-2">
         <UButton
           v-for="c in statusChips"
@@ -125,7 +130,7 @@ function goTo(p: number): void {
     <!-- Vazio -->
     <div
       v-else-if="!data || data.items.length === 0"
-      class="mt-5 rounded-xl border border-dashed border-gray-300 p-10 text-center text-sm text-gray-500 dark:border-gray-700"
+      class="mt-5 rounded-xl border border-dashed border-gray-300 p-10 text-center text-sm text-gray-600 dark:border-gray-700"
     >
       Nenhuma solicitação encontrada para os filtros selecionados.
     </div>
@@ -133,7 +138,7 @@ function goTo(p: number): void {
     <!-- Lista -->
     <template v-else>
       <div class="mt-5 overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900">
-        <div class="hidden grid-cols-[2fr_2fr_1fr_1fr_auto] items-center gap-4 border-b border-gray-100 bg-gray-50 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-gray-500 dark:border-gray-800 dark:bg-gray-900/80 dark:text-gray-400 lg:grid">
+        <div class="hidden grid-cols-[2fr_2fr_1fr_1fr_auto] items-center gap-4 border-b border-gray-100 bg-gray-50 px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-gray-600 dark:border-gray-800 dark:bg-gray-900/80 dark:text-gray-400 lg:grid">
           <span>Usuário</span>
           <span>E-mail</span>
           <span>Tipo</span>
@@ -155,7 +160,7 @@ function goTo(p: number): void {
               <p class="truncate text-sm font-semibold">{{ item.user.name }}</p>
             </div>
 
-            <p class="truncate text-sm text-gray-500 dark:text-gray-400">
+            <p class="truncate text-sm text-gray-600 dark:text-gray-400">
               {{ item.email }}
             </p>
 
@@ -172,7 +177,7 @@ function goTo(p: number): void {
             </div>
 
             <div class="flex items-center justify-between lg:justify-end lg:gap-3">
-              <p class="text-xs text-gray-400 dark:text-gray-500">
+              <p class="text-xs text-gray-600 dark:text-gray-400">
                 {{ formatDate(item.created_at) }}
               </p>
               <UIcon name="i-lucide-chevron-right" class="size-4 text-gray-400" />
@@ -192,7 +197,7 @@ function goTo(p: number): void {
         >
           Anterior
         </UButton>
-        <span class="text-sm text-gray-500 dark:text-gray-400">
+        <span class="text-sm text-gray-600 dark:text-gray-400">
           Página {{ page }} de {{ totalPages }}
         </span>
         <UButton

@@ -335,7 +335,7 @@ async function confirmDelete(): Promise<void> {
             <h3 class="truncate font-semibold">{{ page.title }}</h3>
             <button
               type="button"
-              class="mt-0.5 flex max-w-full items-center gap-1 rounded text-sm text-gray-500 transition hover:text-primary-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              class="mt-0.5 flex max-w-full items-center gap-1 rounded text-sm text-gray-500 transition hover:text-primary-600 dark:hover:text-primary-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
               @click="copyLink(page.slug)"
             >
               <span class="truncate">/{{ page.slug }}</span>
@@ -365,7 +365,7 @@ async function confirmDelete(): Promise<void> {
 
         <button
           type="button"
-          class="mt-3 flex w-fit items-center gap-3 rounded text-xs text-gray-500 transition hover:text-primary-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-gray-400"
+          class="mt-3 flex w-fit items-center gap-3 rounded text-xs text-gray-500 transition hover:text-primary-600 dark:hover:text-primary-400 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-gray-400"
           :aria-label="`Ver estatísticas de ${page.title}`"
           data-testid="page-stats-open"
           @click="statsPage = page"
@@ -380,7 +380,7 @@ async function confirmDelete(): Promise<void> {
             <span data-testid="page-clicks">{{ (statsByPage[page.id]?.clicks ?? 0).toLocaleString('pt-BR') }}</span>
             cliques
           </span>
-          <span class="text-gray-400 dark:text-gray-500">· 30 dias</span>
+          <span class="text-gray-500 dark:text-gray-400">· 30 dias</span>
         </button>
 
         <div class="mt-4 flex items-center gap-2">

@@ -11,7 +11,10 @@ export NUXT_PUBLIC_API_BASE="http://127.0.0.1:8765"
 export NUXT_PUBLIC_SITE_URL="http://127.0.0.1:3100"
 
 if [ "${E2E_SKIP_BUILD:-0}" != "1" ] || [ ! -f .output/server/index.mjs ]; then
-  npx nuxt build >/dev/null
+  # Sempre do zero, como na Railway: o `nuxt typecheck` deixa em .nuxt arquivos de
+  # dev que o build reaproveitaria (o endpoint de ícones passa a responder 500).
+  rm -rf .nuxt .output
+  NODE_ENV=production npx nuxt build >/dev/null
 fi
 export PORT=3100 HOST=127.0.0.1 NITRO_PORT=3100 NITRO_HOST=127.0.0.1
 exec node .output/server/index.mjs

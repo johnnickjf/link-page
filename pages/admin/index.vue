@@ -104,7 +104,7 @@ const planDistribution = computed(() => {
     <div class="flex items-center justify-between gap-4">
       <div>
         <h1 class="font-display text-2xl font-bold tracking-tight">Dashboard</h1>
-        <p class="mt-0.5 text-sm text-gray-500 dark:text-gray-400">Visão geral da plataforma</p>
+        <p class="mt-0.5 text-sm text-gray-600 dark:text-gray-400">Visão geral da plataforma</p>
       </div>
       <UButton icon="i-lucide-refresh-cw" variant="ghost" color="neutral" size="sm" :disabled="loading" @click="load">
         Atualizar
@@ -141,7 +141,7 @@ const planDistribution = computed(() => {
           <div class="min-w-0">
             <p class="text-2xl font-bold leading-none">{{ s.value }}</p>
             <p class="mt-0.5 truncate text-sm font-medium text-gray-700 dark:text-gray-300">{{ s.label }}</p>
-            <p class="truncate text-xs text-gray-500 dark:text-gray-500">{{ s.sub }}</p>
+            <p class="truncate text-xs text-gray-600 dark:text-gray-400">{{ s.sub }}</p>
           </div>
         </component>
       </div>
@@ -160,7 +160,7 @@ const planDistribution = computed(() => {
             <div v-for="item in planDistribution" :key="item.plan">
               <div class="mb-1 flex items-center justify-between text-sm">
                 <span class="font-medium">{{ item.label }}</span>
-                <span class="text-gray-500 dark:text-gray-400">{{ item.count }} ({{ item.pct }}%)</span>
+                <span class="text-gray-600 dark:text-gray-400">{{ item.count }} ({{ item.pct }}%)</span>
               </div>
               <div class="h-2 w-full overflow-hidden rounded-full bg-gray-100 dark:bg-gray-800">
                 <div
@@ -185,7 +185,7 @@ const planDistribution = computed(() => {
               <UIcon name="i-lucide-users" class="size-5 text-blue-500" />
               <div>
                 <p class="text-sm font-medium">Todos os usuários</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Ver e gerenciar todos</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400">Ver e gerenciar todos</p>
               </div>
               <UIcon name="i-lucide-chevron-right" class="ml-auto size-4 text-gray-400" />
             </NuxtLink>
@@ -193,10 +193,10 @@ const planDistribution = computed(() => {
               to="/admin/users?plan=free"
               class="flex items-center gap-3 rounded-lg border border-gray-200 p-3.5 transition hover:border-primary-300 hover:shadow-sm dark:border-gray-800 dark:hover:border-primary-700"
             >
-              <UIcon name="i-lucide-user" class="size-5 text-gray-500" />
+              <UIcon name="i-lucide-user" class="size-5 text-gray-600" />
               <div>
                 <p class="text-sm font-medium">Usuários Free</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Candidatos a upgrade</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400">Candidatos a upgrade</p>
               </div>
               <UIcon name="i-lucide-chevron-right" class="ml-auto size-4 text-gray-400" />
             </NuxtLink>
@@ -207,7 +207,7 @@ const planDistribution = computed(() => {
               <UIcon name="i-lucide-sparkles" class="size-5 text-amber-500" />
               <div>
                 <p class="text-sm font-medium">Usuários Premium</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Assinantes ativos</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400">Assinantes ativos</p>
               </div>
               <UIcon name="i-lucide-chevron-right" class="ml-auto size-4 text-gray-400" />
             </NuxtLink>
@@ -218,7 +218,7 @@ const planDistribution = computed(() => {
               <UIcon name="i-lucide-tag" class="size-5 text-orange-500" />
               <div>
                 <p class="text-sm font-medium">Com indicação</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">Usuários com código</p>
+                <p class="text-xs text-gray-600 dark:text-gray-400">Usuários com código</p>
               </div>
               <UIcon name="i-lucide-chevron-right" class="ml-auto size-4 text-gray-400" />
             </NuxtLink>
@@ -240,7 +240,7 @@ const planDistribution = computed(() => {
         <div v-if="loading" class="space-y-2">
           <USkeleton v-for="i in 5" :key="i" class="h-12 w-full rounded-lg" />
         </div>
-        <div v-else-if="recentUsers.length === 0" class="py-6 text-center text-sm text-gray-500 dark:text-gray-400">
+        <div v-else-if="recentUsers.length === 0" class="py-6 text-center text-sm text-gray-600 dark:text-gray-400">
           Nenhum usuário encontrado.
         </div>
         <div v-else class="divide-y divide-gray-100 dark:divide-gray-800">
@@ -255,7 +255,7 @@ const planDistribution = computed(() => {
             </div>
             <div class="min-w-0 flex-1">
               <p class="truncate text-sm font-medium">{{ u.name }}</p>
-              <p class="truncate text-xs text-gray-500 dark:text-gray-400">{{ u.email }}</p>
+              <p class="truncate text-xs text-gray-600 dark:text-gray-400">{{ u.email }}</p>
             </div>
             <div class="flex shrink-0 items-center gap-2">
               <UBadge

@@ -44,7 +44,7 @@ const ICONS: Record<Block['type'], string> = {
 function blockTitle(b: Block): string {
   switch (b.type) {
     case 'link': return b.config.label || 'Link'
-    case 'social': return b.config.network || 'Rede social'
+    case 'social': return networkLabel(b.config.network) || 'Rede social'
     case 'whatsapp': return b.config.label || 'WhatsApp'
     case 'email': return b.config.label || 'E-mail'
     case 'text': return b.config.content || 'Texto'
@@ -129,7 +129,7 @@ function menuItems(block: Block): DropdownMenuItem[][] {
         <!-- Drag handle (touch-none: evita conflito entre arrastar e rolar) -->
         <button
           type="button"
-          class="drag-handle shrink-0 cursor-grab touch-none text-gray-400 hover:text-gray-600 active:cursor-grabbing dark:hover:text-gray-300"
+          class="drag-handle shrink-0 cursor-grab touch-none text-gray-500 hover:text-gray-600 active:cursor-grabbing dark:hover:text-gray-300"
           aria-label="Arrastar para reordenar"
         >
           <UIcon name="i-lucide-grip-vertical" class="size-5" />

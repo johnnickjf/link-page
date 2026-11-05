@@ -49,7 +49,7 @@
         </div>
 
         <div
-          class="mt-8 flex flex-col items-center justify-between gap-3 border-t border-gray-100 pt-6 text-sm text-gray-500 sm:flex-row dark:border-gray-800/80"
+          class="mt-8 flex flex-col items-center justify-between gap-3 border-t border-gray-100 pt-6 text-sm text-gray-600 sm:flex-row dark:border-gray-800/80 dark:text-gray-300"
         >
           <span>© {{ new Date().getFullYear() }} LinkLand</span>
           <a

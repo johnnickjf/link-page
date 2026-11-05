@@ -40,6 +40,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
           <UButton
             v-if="auth.isSuperadmin"
             to="/admin"
+            aria-label="Painel admin"
             icon="i-lucide-shield"
             size="sm"
             variant="ghost"
@@ -51,9 +52,10 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
           <UButton
             v-if="auth.user?.plan === 'free'"
             to="/settings"
+            aria-label="Ver planos"
             size="sm"
             icon="i-lucide-sparkles"
-            class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white hover:opacity-90"
+            class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white hover:opacity-90"
           >
             <span class="hidden sm:inline">Premium</span>
           </UButton>
@@ -62,6 +64,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
             <UButton
               color="neutral"
               variant="ghost"
+              aria-label="Menu da conta"
               trailing-icon="i-lucide-chevron-down"
             >
               <UAvatar icon="i-lucide-user" size="2xs" />
@@ -77,7 +80,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
     </main>
 
     <footer class="border-t border-gray-100 py-4 dark:border-gray-800">
-      <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-5 text-xs text-gray-400 dark:text-gray-500">
+      <div class="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-5 text-xs text-gray-500 dark:text-gray-400">
         <span>© {{ new Date().getFullYear() }} LinkLand</span>
         <div class="flex gap-4">
           <NuxtLink to="/termos" class="hover:text-gray-600 dark:hover:text-gray-300">Termos de Uso</NuxtLink>

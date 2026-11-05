@@ -86,7 +86,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
         </UButton>
       </div>
 
-      <UForm :state="state" :validate="validate" class="space-y-4" @submit="onSubmit">
+      <UForm action="javascript:void(0)" :state="state" :validate="validate" class="space-y-4" @submit="onSubmit">
         <UFormField label="E-mail" name="email">
           <UInput
             v-model="state.email"
@@ -110,7 +110,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
             <template #trailing>
               <button
                 type="button"
-                class="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300"
+                class="text-gray-500 hover:text-gray-600 dark:hover:text-gray-300"
                 :aria-label="showPassword ? 'Ocultar senha' : 'Mostrar senha'"
                 @click="showPassword = !showPassword"
               >
@@ -134,7 +134,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
           block
           size="lg"
           :loading="loading"
-          class="bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500 text-white shadow-md shadow-indigo-500/25 transition hover:opacity-90"
+          class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-md shadow-indigo-500/25 transition hover:opacity-90"
         >
           Entrar
         </UButton>

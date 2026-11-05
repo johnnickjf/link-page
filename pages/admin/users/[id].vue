@@ -265,8 +265,8 @@ async function confirmDelete(): Promise<void> {
 <template>
   <div>
     <!-- Breadcrumb / volta -->
-    <div class="flex items-center gap-2 text-sm text-gray-500 dark:text-gray-400">
-      <NuxtLink to="/admin/users" class="hover:text-primary-500">Usuários</NuxtLink>
+    <div class="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400">
+      <NuxtLink to="/admin/users" class="hover:text-primary-600 dark:hover:text-primary-400">Usuários</NuxtLink>
       <UIcon name="i-lucide-chevron-right" class="size-3.5" />
       <span class="text-gray-900 dark:text-gray-100">{{ user?.name || '…' }}</span>
     </div>
@@ -316,8 +316,8 @@ async function confirmDelete(): Promise<void> {
                 {{ user.email_verified ? 'E-mail verificado' : 'E-mail pendente' }}
               </UBadge>
             </div>
-            <p class="mt-1 text-sm text-gray-500 dark:text-gray-400">{{ user.email }}</p>
-            <div class="mt-1 flex flex-wrap items-center gap-3 text-xs text-gray-400 dark:text-gray-500">
+            <p class="mt-1 text-sm text-gray-600 dark:text-gray-400">{{ user.email }}</p>
+            <div class="mt-1 flex flex-wrap items-center gap-3 text-xs text-gray-600 dark:text-gray-400">
               <span>Desde {{ formatDate(user.created_at, 'long') }}</span>
               <span v-if="user.referral_code" class="flex items-center gap-1">
                 <UIcon name="i-lucide-tag" class="size-3" />
@@ -401,7 +401,7 @@ async function confirmDelete(): Promise<void> {
 
             <!-- Free / Premium: override de limites opcional -->
             <template v-if="planForm.plan !== 'custom'">
-              <p class="text-xs text-gray-500 dark:text-gray-400">
+              <p class="text-xs text-gray-600 dark:text-gray-400">
                 <template v-if="planForm.plan === 'free'">Padrão: 1 página · 10 blocos por página.</template>
                 <template v-else>Padrão: 10 páginas · 100 blocos por página.</template>
               </p>
@@ -425,7 +425,7 @@ async function confirmDelete(): Promise<void> {
                 <div class="grid gap-6 sm:grid-cols-2">
                   <!-- Limites de quantidade -->
                   <div>
-                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Limites</p>
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400">Limites</p>
                     <div class="space-y-3">
                       <UFormField label="Máx. páginas (null = ilimitado)">
                         <UInput v-model.number="customFeatures.max_pages" type="number" min="1" placeholder="Ilimitado" class="w-full" />
@@ -438,7 +438,7 @@ async function confirmDelete(): Promise<void> {
 
                   <!-- Tipos de bloco premium -->
                   <div>
-                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Blocos premium</p>
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400">Blocos premium</p>
                     <div class="space-y-2">
                       <label
                         v-for="bt in PREMIUM_BLOCK_TYPES"
@@ -453,7 +453,7 @@ async function confirmDelete(): Promise<void> {
                       </label>
                     </div>
 
-                    <p class="mb-2 mt-4 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Templates premium</p>
+                    <p class="mb-2 mt-4 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400">Templates premium</p>
                     <div class="space-y-2">
                       <label
                         v-for="tpl in PREMIUM_TEMPLATES"
@@ -471,42 +471,42 @@ async function confirmDelete(): Promise<void> {
 
                   <!-- Personalização -->
                   <div>
-                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Personalização</p>
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400">Personalização</p>
                     <div class="space-y-3">
                       <div class="flex items-center justify-between gap-3">
                         <span class="text-sm">Fundo personalizado</span>
-                        <USwitch v-model="customFeatures.custom_background" />
+                        <USwitch v-model="customFeatures.custom_background" aria-label="Fundo personalizado" />
                       </div>
                       <div class="flex items-center justify-between gap-3">
                         <span class="text-sm">Fonte personalizada</span>
-                        <USwitch v-model="customFeatures.custom_font" />
+                        <USwitch v-model="customFeatures.custom_font" aria-label="Fonte personalizada" />
                       </div>
                       <div class="flex items-center justify-between gap-3">
                         <span class="text-sm">Ocultar branding</span>
-                        <USwitch v-model="customFeatures.hide_branding" />
+                        <USwitch v-model="customFeatures.hide_branding" aria-label="Ocultar marca" />
                       </div>
                     </div>
                   </div>
 
                   <!-- Extras -->
                   <div>
-                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500 dark:text-gray-400">Extras</p>
+                    <p class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-600 dark:text-gray-400">Extras</p>
                     <div class="space-y-3">
                       <div class="flex items-center justify-between gap-3">
                         <span class="text-sm">QR Code</span>
-                        <USwitch v-model="customFeatures.qr_code" />
+                        <USwitch v-model="customFeatures.qr_code" aria-label="QR Code" />
                       </div>
                       <div class="flex items-center justify-between gap-3">
                         <span class="text-sm">Seções (múltiplas abas)</span>
-                        <USwitch v-model="customFeatures.multi_tab" />
+                        <USwitch v-model="customFeatures.multi_tab" aria-label="Seções" />
                       </div>
                       <div class="flex items-center justify-between gap-3">
                         <span class="text-sm">Mais jogos no perfil gamer</span>
-                        <USwitch v-model="customFeatures.games_unlimited" />
+                        <USwitch v-model="customFeatures.games_unlimited" aria-label="Mais jogos no perfil gamer" />
                       </div>
                       <div class="flex items-center justify-between gap-3">
                         <span class="text-sm">Cabeçalho gamer</span>
-                        <USwitch v-model="customFeatures.gamer_header" />
+                        <USwitch v-model="customFeatures.gamer_header" aria-label="Cabeçalho gamer" />
                       </div>
                     </div>
                   </div>
@@ -526,7 +526,7 @@ async function confirmDelete(): Promise<void> {
         <UCard>
           <template #header>
             <div class="flex items-center gap-2">
-              <UIcon name="i-lucide-key-round" class="size-4 text-gray-500" />
+              <UIcon name="i-lucide-key-round" class="size-4 text-gray-600" />
               <h3 class="font-display font-semibold">Redefinir senha</h3>
             </div>
           </template>
@@ -556,7 +556,7 @@ async function confirmDelete(): Promise<void> {
         <UCard>
           <template #header>
             <div class="flex items-center gap-2">
-              <UIcon name="i-lucide-tag" class="size-4 text-gray-500" />
+              <UIcon name="i-lucide-tag" class="size-4 text-gray-600" />
               <h3 class="font-display font-semibold">Código de indicação</h3>
             </div>
           </template>
@@ -568,7 +568,7 @@ async function confirmDelete(): Promise<void> {
                 class="w-full uppercase placeholder:normal-case"
               />
             </UFormField>
-            <p class="text-xs text-gray-500 dark:text-gray-400">
+            <p class="text-xs text-gray-600 dark:text-gray-400">
               Libera manualmente um cupom de indicação pra quem esqueceu de usar no cadastro.
             </p>
             <div class="flex justify-end gap-2">
@@ -593,14 +593,14 @@ async function confirmDelete(): Promise<void> {
         <UCard>
           <template #header>
             <div class="flex items-center gap-2">
-              <UIcon name="i-lucide-file-text" class="size-4 text-gray-500" />
+              <UIcon name="i-lucide-file-text" class="size-4 text-gray-600" />
               <h3 class="font-display font-semibold">Páginas</h3>
             </div>
           </template>
           <div v-if="pagesLoading" class="space-y-2">
             <USkeleton v-for="i in 2" :key="i" class="h-14 w-full rounded-lg" />
           </div>
-          <p v-else-if="!pages.length" class="text-sm text-gray-500 dark:text-gray-400">
+          <p v-else-if="!pages.length" class="text-sm text-gray-600 dark:text-gray-400">
             Este usuário ainda não criou nenhuma página.
           </p>
           <ul v-else class="space-y-2">
@@ -616,7 +616,7 @@ async function confirmDelete(): Promise<void> {
                     {{ p.is_published ? 'Publicado' : 'Rascunho' }}
                   </UBadge>
                 </div>
-                <p class="truncate text-xs text-gray-500 dark:text-gray-400">/{{ p.slug }} · {{ p.template }}</p>
+                <p class="truncate text-xs text-gray-600 dark:text-gray-400">/{{ p.slug }} · {{ p.template }}</p>
               </div>
               <UButton
                 :href="publicUrl(p.slug)"
@@ -636,7 +636,7 @@ async function confirmDelete(): Promise<void> {
         <UCard>
           <template #header>
             <div class="flex items-center gap-2">
-              <UIcon name="i-lucide-shield-check" class="size-4 text-gray-500" />
+              <UIcon name="i-lucide-shield-check" class="size-4 text-gray-600" />
               <h3 class="font-display font-semibold">Acesso</h3>
             </div>
           </template>
@@ -644,11 +644,12 @@ async function confirmDelete(): Promise<void> {
             <div class="flex items-center justify-between gap-3">
               <div>
                 <p class="text-sm font-medium">Conta ativa</p>
-                <p class="text-xs text-gray-500 dark:text-gray-400">
+                <p class="text-xs text-gray-600 dark:text-gray-400">
                   Desativar bloqueia o login imediatamente.
                 </p>
               </div>
               <USwitch
+                aria-label="Conta ativa"
                 :model-value="user.is_active"
                 :disabled="savingStatus"
                 @update:model-value="toggleStatus"
@@ -659,7 +660,7 @@ async function confirmDelete(): Promise<void> {
               <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p class="text-sm font-medium">Verificação de e-mail</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                  <p class="text-xs text-gray-600 dark:text-gray-400">
                     {{ user.email_verified ? 'E-mail já verificado.' : 'Liberar acesso manualmente.' }}
                   </p>
                 </div>
@@ -684,7 +685,7 @@ async function confirmDelete(): Promise<void> {
               <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <p class="text-sm font-medium">Convite Premium</p>
-                  <p class="text-xs text-gray-500 dark:text-gray-400">
+                  <p class="text-xs text-gray-600 dark:text-gray-400">
                     Envia um e-mail convidando a assinar.
                   </p>
                 </div>
@@ -714,7 +715,7 @@ async function confirmDelete(): Promise<void> {
           <p class="text-sm text-gray-600 dark:text-gray-300">
             Remove o usuário e, em cascata, todas as suas páginas e blocos. Ação <strong>irreversível</strong>.
           </p>
-          <p v-if="user.is_superadmin" class="mt-2 text-xs text-gray-500 dark:text-gray-400">
+          <p v-if="user.is_superadmin" class="mt-2 text-xs text-gray-600 dark:text-gray-400">
             Não é possível excluir um superadmin.
           </p>
           <div class="mt-4 flex justify-end">

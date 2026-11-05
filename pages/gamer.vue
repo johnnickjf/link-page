@@ -91,7 +91,7 @@ useHead({
 </script>
 
 <template>
-  <div class="app-surface min-h-screen bg-[#faf9f6] text-gray-900 dark:bg-gray-950 dark:text-gray-100">
+  <div class="app-surface gamer-surface min-h-screen bg-white text-gray-950 dark:bg-[#0c0a1f] dark:text-white">
     <a
       href="#conteudo-principal"
       class="sr-only focus:not-sr-only focus:absolute focus:left-5 focus:top-5 focus:z-50 focus:rounded-lg focus:bg-white focus:px-4 focus:py-2 focus:text-sm focus:font-medium focus:text-gray-900 focus:shadow-lg"
@@ -99,13 +99,13 @@ useHead({
       Pular para o conteúdo
     </a>
 
-    <header class="on-ink sticky top-0 z-40 border-b border-white/10 bg-[#0d0b14]/85 text-white backdrop-blur-md">
+    <header class="on-ink site-header sticky top-0 z-40 backdrop-blur-md">
       <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
         <Logo to="/" />
         <nav aria-label="Principal" class="flex items-center gap-1">
-          <UButton to="/login" variant="ghost" color="neutral" class="text-white hover:bg-white/10 active:bg-white/10">Entrar</UButton>
-          <UButton :to="signupTo" color="neutral" class="bg-white text-gray-950 hover:bg-white/90 active:bg-white/90">
-            Criar perfil
+          <UButton v-if="!auth.isAuthenticated" to="/login" variant="ghost" color="neutral" class="text-white hover:bg-white/10 active:bg-white/10">Entrar</UButton>
+          <UButton :to="signupTo" color="neutral" class="btn-accent font-semibold">
+            {{ auth.isAuthenticated ? 'Meu painel' : 'Criar perfil' }}
           </UButton>
         </nav>
       </div>
@@ -115,14 +115,14 @@ useHead({
       <section aria-labelledby="hero-heading" class="stage-bg overflow-hidden">
         <div class="mx-auto grid max-w-6xl items-center gap-12 px-5 py-14 sm:py-20 lg:grid-cols-[1.08fr_1fr] lg:gap-6">
           <div class="text-center lg:text-left">
-            <p class="animate-rise text-sm font-medium tracking-wide text-white/65">Perfil Gamer da LinkLand</p>
+            <p class="animate-rise text-sm font-medium tracking-wide text-white/90">Perfil Gamer da LinkLand</p>
             <h1
               id="hero-heading"
-              class="animate-rise mt-4 font-headline text-[clamp(2.9rem,7.4vw,5.5rem)] font-extrabold leading-[0.98] tracking-[-0.035em] [animation-delay:80ms]"
+              class="animate-rise mt-4 font-headline text-[clamp(2.9rem,7.4vw,5.5rem)] font-extrabold leading-[0.98] tracking-[-0.03em] [animation-delay:80ms]"
             >
               Seu perfil de <span class="text-brand-gradient">jogador</span> em um link só.
             </h1>
-            <p class="animate-rise mx-auto mt-6 max-w-xl text-pretty text-lg leading-relaxed text-white/75 [animation-delay:160ms] lg:mx-0">
+            <p class="animate-rise mx-auto mt-6 max-w-xl text-pretty text-lg leading-relaxed text-white/95 [animation-delay:160ms] lg:mx-0">
               IDs de todas as plataformas, os jogos que você mais joga, suas conquistas e
               seu canal. Coloque na bio, no Discord e no perfil da live, e nunca mais
               repita seu Riot ID no chat.
@@ -133,7 +133,7 @@ useHead({
                 size="xl"
                 color="neutral"
                 trailing-icon="i-lucide-arrow-right"
-                class="bg-white font-semibold text-gray-950 transition hover:-translate-y-0.5 hover:bg-white active:bg-white"
+                class="btn-accent font-semibold transition hover:-translate-y-0.5"
               >
                 Criar meu perfil grátis
               </UButton>
@@ -149,7 +149,7 @@ useHead({
 
       <!-- Plataformas -->
       <section aria-label="Plataformas" class="border-b border-gray-200 dark:border-white/10">
-        <ul class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-7 gap-y-4 px-5 py-8 text-gray-700 dark:text-gray-300">
+        <ul class="mx-auto flex max-w-6xl flex-wrap items-center justify-center gap-x-7 gap-y-4 px-5 py-8 text-gray-800 dark:text-gray-100">
           <li v-for="p in PLATFORM_ICONS" :key="p.name" class="flex items-center gap-2 text-sm font-medium">
             <UIcon :name="p.icon" class="size-5" aria-hidden="true" />
             {{ p.name }}
@@ -165,50 +165,50 @@ useHead({
           </h2>
 
           <div class="mt-12 grid gap-4 sm:grid-cols-2 lg:grid-cols-6">
-            <div v-reveal class="rounded-3xl border border-gray-200 bg-white p-7 lg:col-span-3 dark:border-white/10 dark:bg-gray-900">
+            <div v-reveal class="rounded-3xl border border-gray-200 bg-white p-7 lg:col-span-3 dark:border-white/10 dark:bg-[#17123a]">
               <h3 class="font-headline text-2xl font-semibold">IDs que se copiam com um toque</h3>
-              <p class="mt-2 leading-relaxed text-gray-600 dark:text-gray-400">
+              <p class="mt-2 leading-relaxed text-gray-700 dark:text-gray-200">
                 PSN, Riot e Nintendo não têm página pública de perfil. Aqui, seu amigo toca e o ID já vai para a área de transferência.
               </p>
               <div class="mt-5 flex items-center gap-3 rounded-xl border border-gray-200 p-3 dark:border-white/10" aria-hidden="true">
                 <UIcon name="i-simple-icons-riotgames" class="size-5" />
                 <span class="min-w-0 flex-1">
-                  <span class="block text-xs text-gray-600 dark:text-gray-400">Riot ID</span>
+                  <span class="block text-xs text-gray-700 dark:text-gray-200">Riot ID</span>
                   <span class="block font-semibold">SeuNick#BR1</span>
                 </span>
-                <UIcon name="i-lucide-copy" class="size-4 text-gray-600 dark:text-gray-400" />
+                <UIcon name="i-lucide-copy" class="size-4 text-gray-700 dark:text-gray-200" />
               </div>
             </div>
 
             <div v-reveal="60" class="stage-bg overflow-hidden rounded-3xl p-7 lg:col-span-3">
               <h3 class="font-headline text-2xl font-semibold">Temas feitos para isso</h3>
-              <p class="mt-2 leading-relaxed text-white/75">Do fliperama à fazendinha: escolha o clima do seu perfil.</p>
+              <p class="mt-2 leading-relaxed text-white/95">Do fliperama à fazendinha: escolha o clima do seu perfil.</p>
               <ul class="mt-5 grid grid-cols-4 gap-2.5" aria-hidden="true">
                 <li v-for="t in THEMES" :key="t.name">
                   <div class="flex h-20 flex-col justify-end gap-1 rounded-xl p-2" :style="{ background: t.bg, boxShadow: 'inset 0 0 0 1px rgb(255 255 255 / 0.12)' }">
                     <span class="block h-1.5 rounded-sm" :style="{ background: t.bar }" />
                     <span class="block h-1.5 rounded-sm" :style="{ background: t.bar }" />
                   </div>
-                  <span class="mt-1.5 block text-xs text-white/70">{{ t.name }}</span>
+                  <span class="mt-1.5 block text-xs text-white/90">{{ t.name }}</span>
                 </li>
               </ul>
             </div>
 
-            <div v-reveal="60" class="rounded-3xl border border-gray-200 bg-white p-7 lg:col-span-2 dark:border-white/10 dark:bg-gray-900">
+            <div v-reveal="60" class="rounded-3xl border border-gray-200 bg-white p-7 lg:col-span-2 dark:border-white/10 dark:bg-[#17123a]">
               <h3 class="font-headline text-xl font-semibold">Mais jogados</h3>
-              <p class="mt-2 leading-relaxed text-gray-600 dark:text-gray-400">
+              <p class="mt-2 leading-relaxed text-gray-700 dark:text-gray-200">
                 Capa, elo e horas jogadas de cada jogo, para mostrar o que você joga de verdade.
               </p>
             </div>
-            <div v-reveal="100" class="rounded-3xl border border-gray-200 bg-white p-7 lg:col-span-2 dark:border-white/10 dark:bg-gray-900">
+            <div v-reveal="100" class="rounded-3xl border border-gray-200 bg-white p-7 lg:col-span-2 dark:border-white/10 dark:bg-[#17123a]">
               <h3 class="font-headline text-xl font-semibold">Conquistas</h3>
-              <p class="mt-2 leading-relaxed text-gray-600 dark:text-gray-400">
+              <p class="mt-2 leading-relaxed text-gray-700 dark:text-gray-200">
                 Campeonatos, recordes e títulos em destaque, do seu jeito.
               </p>
             </div>
-            <div v-reveal="140" class="rounded-3xl border border-gray-200 bg-white p-7 sm:col-span-2 lg:col-span-2 dark:border-white/10 dark:bg-gray-900">
+            <div v-reveal="140" class="rounded-3xl border border-gray-200 bg-white p-7 sm:col-span-2 lg:col-span-2 dark:border-white/10 dark:bg-[#17123a]">
               <h3 class="font-headline text-xl font-semibold">Live na página</h3>
-              <p class="mt-2 leading-relaxed text-gray-600 dark:text-gray-400">
+              <p class="mt-2 leading-relaxed text-gray-700 dark:text-gray-200">
                 Player da Twitch e do YouTube e widget do Discord, que só carregam quando o visitante toca.
               </p>
             </div>
@@ -217,13 +217,13 @@ useHead({
       </section>
 
       <!-- Nivel -->
-      <section aria-labelledby="nivel-heading" class="bg-white py-20 sm:py-28 dark:bg-gray-900/40">
+      <section aria-labelledby="nivel-heading" class="bg-[#e9fff5] py-20 sm:py-28 dark:bg-[#0d1c2e]">
         <div class="mx-auto grid max-w-6xl items-center gap-10 px-5 lg:grid-cols-2 lg:gap-16">
           <div v-reveal>
             <h2 id="nivel-heading" class="font-headline text-4xl font-bold tracking-tight sm:text-5xl">
               Sua página sobe de nível
             </h2>
-            <p class="mt-4 max-w-lg text-pretty text-lg text-gray-600 dark:text-gray-400">
+            <p class="mt-4 max-w-lg text-pretty text-lg text-gray-700 dark:text-gray-200">
               Cada visitante vale 1 XP e cada clique em um link vale 2 XP, com um teto por
               dia para o número valer de verdade. Suas próprias visitas não contam, e você
               escolhe se o nível aparece na página.
@@ -232,10 +232,10 @@ useHead({
           <div v-reveal class="stage-bg rounded-3xl p-8" aria-hidden="true">
             <div class="flex items-baseline justify-between">
               <span class="font-headline text-4xl font-bold">Nv. 12</span>
-              <span class="text-sm tabular-nums text-white/70">5.230 / 5.690 XP</span>
+              <span class="text-sm tabular-nums text-white/90">5.230 / 5.690 XP</span>
             </div>
             <div class="mt-3 h-2.5 overflow-hidden rounded-full bg-white/15">
-              <div class="h-full w-[76%] rounded-full bg-white" />
+              <div class="btn-accent h-full w-[76%] rounded-full" />
             </div>
           </div>
         </div>
@@ -248,32 +248,32 @@ useHead({
         </h2>
 
         <div class="mt-12 grid items-stretch gap-4 lg:grid-cols-2">
-          <div v-reveal="80" class="order-2 flex flex-col rounded-3xl border border-gray-200 bg-white p-8 dark:border-white/10 dark:bg-gray-900 lg:order-none">
-            <p class="font-medium text-gray-600 dark:text-gray-400">Free</p>
+          <div v-reveal="80" class="order-2 flex flex-col rounded-3xl border border-gray-200 bg-white p-8 dark:border-white/10 dark:bg-[#17123a] lg:order-none">
+            <p class="font-medium text-gray-700 dark:text-gray-200">Free</p>
             <p class="mt-1 font-headline text-5xl font-bold tracking-tight">R$0</p>
             <ul class="mt-6 flex-1 space-y-3">
               <li v-for="f in GAMER_FREE_FEATURES" :key="f" class="flex items-start gap-2.5">
-                <UIcon name="i-lucide-check" class="mt-1 size-4 shrink-0 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
-                <span class="text-gray-700 dark:text-gray-300">{{ f }}</span>
+                <UIcon name="i-lucide-check" class="mt-1 size-4 shrink-0 text-emerald-700 dark:text-emerald-300" aria-hidden="true" />
+                <span class="text-gray-800 dark:text-gray-100">{{ f }}</span>
               </li>
             </ul>
             <UButton :to="signupTo" block size="lg" variant="subtle" color="neutral" class="mt-8">Começar grátis</UButton>
           </div>
 
           <div v-reveal class="stage-bg order-1 flex flex-col rounded-3xl p-8 lg:order-none" data-testid="gamer-plan-card">
-            <p class="font-medium text-white/75">Gamer</p>
+            <p class="font-medium text-white/95">Gamer</p>
             <p class="mt-1 font-headline text-5xl font-bold tracking-tight">
-              R${{ brl(GAMER_PRICE_MONTHLY) }}<span class="font-sans text-base font-normal tracking-normal text-white/70">/mês</span>
+              R${{ brl(GAMER_PRICE_MONTHLY) }}<span class="font-sans text-base font-normal tracking-normal text-white/90">/mês</span>
             </p>
-            <p class="mt-2 text-sm text-white/70">ou R${{ brl(GAMER_PRICE_YEARLY) }}/ano · cancele quando quiser</p>
+            <p class="mt-2 text-sm text-white/90">ou R${{ brl(GAMER_PRICE_YEARLY) }}/ano · cancele quando quiser</p>
             <ul class="mt-6 flex-1 space-y-3">
               <li class="flex items-start gap-2.5 font-medium">
-                <UIcon name="i-lucide-check" class="mt-1 size-4 shrink-0 text-emerald-400" aria-hidden="true" />
+                <UIcon name="i-lucide-check" class="mt-1 size-4 shrink-0 stage-check" aria-hidden="true" />
                 Tudo do plano Premium
               </li>
               <li v-for="f in GAMER_EXCLUSIVE_FEATURES" :key="f" class="flex items-start gap-2.5">
-                <UIcon name="i-lucide-check" class="mt-1 size-4 shrink-0 text-emerald-400" aria-hidden="true" />
-                <span class="text-white/85">{{ f }}</span>
+                <UIcon name="i-lucide-check" class="mt-1 size-4 shrink-0 stage-check" aria-hidden="true" />
+                <span class="text-white">{{ f }}</span>
               </li>
             </ul>
             <UButton
@@ -281,7 +281,7 @@ useHead({
               block
               size="lg"
               color="neutral"
-              class="mt-8 bg-white font-semibold text-gray-950 hover:bg-white/90 active:bg-white/90"
+              class="mt-8 btn-accent font-semibold"
             >
               Quero o plano Gamer
             </UButton>
@@ -310,7 +310,7 @@ useHead({
             :to="signupTo"
             size="xl"
             color="neutral"
-            class="mt-8 bg-white font-semibold text-gray-950 transition hover:-translate-y-0.5 hover:bg-white active:bg-white"
+            class="mt-8 btn-accent font-semibold transition hover:-translate-y-0.5"
             trailing-icon="i-lucide-arrow-right"
           >
             Criar meu perfil grátis

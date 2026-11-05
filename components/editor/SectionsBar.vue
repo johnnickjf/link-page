@@ -157,7 +157,7 @@ async function removeTab(): Promise<void> {
         </button>
         <button
           type="button"
-          class="px-1.5 py-1.5 text-gray-400 transition hover:text-gray-700 dark:hover:text-gray-200"
+          class="px-1.5 py-1.5 text-gray-500 transition hover:text-gray-700 dark:hover:text-gray-200"
           :aria-label="`Editar seção ${tab.name}`"
           @click="openEdit(tab)"
         >
