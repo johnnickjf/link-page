@@ -16,9 +16,18 @@ export default defineNuxtConfig({
   css: ['~/assets/css/main.css'],
 
   // @nuxt/fonts baixa as fontes no build e as serve do próprio site. Sem os pesos
-  // listados, o navegador sintetiza o negrito a partir do 400.
+  // listados, o navegador sintetiza o negrito a partir do 400. Só alfabetos
+  // latinos: cada @font-face entra no CSS das páginas públicas. Texto em outro
+  // alfabeto cai na fonte do sistema. Itálico só onde é usado (bio do Classic).
   fonts: {
-    defaults: { weights: [400, 500, 600, 700, 800], styles: ['normal', 'italic'] },
+    defaults: {
+      weights: [400, 500, 600, 700, 800],
+      styles: ['normal'],
+      subsets: ['latin', 'latin-ext'],
+    },
+    families: [
+      { name: 'Playfair Display', weights: [400, 500, 600, 700], styles: ['normal', 'italic'], global: false },
+    ],
   },
 
   // Cookie em vez de localStorage: com "bloquear todos os cookies" o acesso a
