@@ -42,6 +42,9 @@ const PREMIUM_BLOCK_TYPES = [
 ]
 
 const PREMIUM_TEMPLATES = [
+  { value: 'hud', label: 'HUD' },
+  { value: 'esports', label: 'Esports' },
+  { value: 'cozy', label: 'Cozy' },
   { value: 'gradient', label: 'Gradient' },
   { value: 'neon', label: 'Neon' },
   { value: 'pixel', label: 'Pixel' },

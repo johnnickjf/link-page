@@ -623,7 +623,7 @@ async function copyPublicUrl(): Promise<void> {
           </div>
 
           <div v-show="editorTab === 'look'" class="space-y-6">
-          <TemplatePicker v-model="template" @change="saveTemplate" />
+          <TemplatePicker v-model="template" :page-kind="kind" @change="saveTemplate" />
 
           <AppearanceForm
             v-model="theme"

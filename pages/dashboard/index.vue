@@ -175,6 +175,7 @@ async function onCreate(_e: FormSubmitEvent<typeof form>): Promise<void> {
       slug: form.slug,
       title: form.title.trim(),
       kind: form.kind,
+      ...(form.kind === 'gamer' ? { template: 'arcade' } : {}),
     })
     toast.add({ title: 'Página criada!', color: 'success' })
     createOpen.value = false

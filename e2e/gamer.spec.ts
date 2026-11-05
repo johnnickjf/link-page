@@ -215,6 +215,44 @@ test('gamer: cria conquista, stream e lista de jogos pelo editor', async ({ page
   expect(consoleErrors).toEqual([])
 })
 
+test('free: tema Arcade liberado, demais temas gamer pedem o plano Gamer', async ({ page }) => {
+  await openEditor(page, 'free@example.com')
+  await page.getByRole('tab', { name: 'Visual' }).click()
+  const hud = page.getByRole('radio', { name: /HUD/ })
+  await expect(hud).toContainText('Gamer')
+  await hud.click()
+  await expect(page.getByText('O plano Gamer tem tudo do Premium')).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(hud).toHaveAttribute('aria-checked', 'false')
+
+  const arcade = page.getByRole('radio', { name: /Arcade/ })
+  await expect(arcade).not.toContainText('Gamer')
+  const saved = page.waitForResponse((r) => /\/page\/[^/]+$/.test(r.url()) && r.request().method() === 'PUT')
+  await arcade.click()
+  expect((await saved).status()).toBe(200)
+  await expect(arcade).toHaveAttribute('aria-checked', 'true')
+  // Volta ao original.
+  const back = page.waitForResponse((r) => /\/page\/[^/]+$/.test(r.url()) && r.request().method() === 'PUT')
+  await page.getByRole('radio', { name: /Minimal/ }).click()
+  await back
+})
+
+test('premium não recebe temas gamer exclusivos', async ({ page }) => {
+  await openEditor(page, 'premium@example.com')
+  await page.getByRole('tab', { name: 'Visual' }).click()
+  await expect(page.getByRole('radio', { name: /Neon/ })).not.toContainText('Premium')
+  await expect(page.getByRole('radio', { name: /Esports/ })).toContainText('Gamer')
+})
+
+test('perfil gamer vê os temas gamer primeiro', async ({ page }) => {
+  await openEditor(page, 'gamer@example.com')
+  const form = page.getByTestId('gamer-profile-form')
+  const sw = form.getByRole('switch').first()
+  if ((await sw.getAttribute('aria-checked')) !== 'true') await sw.click()
+  await page.getByRole('tab', { name: 'Visual' }).click()
+  await expect(page.getByRole('radio').first()).toContainText('Arcade')
+})
+
 test('premium: criar página já como perfil gamer', async ({ page }, testInfo) => {
   await skipOnboarding(page)
   await login(page, 'premium@example.com')
@@ -229,6 +267,7 @@ test('premium: criar página já como perfil gamer', async ({ page }, testInfo) 
   expect(res.status()).toBe(201)
   const created_page = await res.json()
   expect(created_page.kind).toBe('gamer')
+  expect(created_page.template).toBe('arcade')
 
   // Limpeza: outros testes contam com a ordem da lista deste usuário.
   const auth = await page.request.post(`${API}/auth/token`, {

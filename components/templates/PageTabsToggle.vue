@@ -55,7 +55,7 @@ const model = defineModel<string>({ required: true })
      da mesma variável de contraste que a ativa usa — --lp-text é a cor do
      título/bio, sem relação com esse fundo. */
   color: var(--lp-link-fg, #111827);
-  opacity: 0.6;
+  opacity: 0.75;
   transition: opacity 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
   -webkit-tap-highlight-color: transparent;
 }

@@ -51,6 +51,7 @@ async function onCreate(e: FormSubmitEvent<typeof form>): Promise<void> {
       slug: e.data.slug,
       title: e.data.title.trim(),
       kind: form.kind,
+      ...(form.kind === 'gamer' ? { template: 'arcade' } : {}),
     })
     createdPageId.value = page.id
     createdPageSlug.value = page.slug

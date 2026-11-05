@@ -1,8 +1,9 @@
 <script setup lang="ts">
-import type { Template } from '~/types/api'
+import type { PageKind, Template } from '~/types/api'
 
 const model = defineModel<string>({ required: true })
 const emit = defineEmits<{ change: [id: string] }>()
+const props = defineProps<{ pageKind?: PageKind }>()
 
 const auth = useAuthStore()
 const pagesStore = usePagesStore()
@@ -16,6 +17,10 @@ const SWATCHES: Record<string, { bg: string, bar: string, ring?: string }> = {
   gradient: { bg: 'linear-gradient(160deg, #4338ca, #7e22ce 48%, #be185d)', bar: 'rgb(255 255 255 / 0.3)' },
   neon: { bg: '#050507', bar: '#22d3ee' },
   pixel: { bg: '#0a0a16', bar: '#22c55e' },
+  arcade: { bg: 'linear-gradient(180deg, #12052e, #2a0a4a)', bar: '#ff4fd8' },
+  hud: { bg: '#0b0e0a', bar: '#facc15' },
+  esports: { bg: 'linear-gradient(115deg, #0a0a0c 60%, #ef4444 60%)', bar: '#3f3f46' },
+  cozy: { bg: '#f7f0e1', bar: '#cfe3c8', ring: '#e3d9bf' },
 }
 const FALLBACK_SWATCH = { bg: '#f1f5f9', bar: '#cbd5e1' }
 function swatch(id: string) {
@@ -44,9 +49,26 @@ async function load(): Promise<void> {
 }
 onMounted(load)
 
+// Em perfil gamer, os temas gamer aparecem primeiro.
+const ordered = computed(() => {
+  if (props.pageKind !== 'gamer') return templates.value
+  return [
+    ...templates.value.filter((t) => t.category === 'gamer'),
+    ...templates.value.filter((t) => t.category !== 'gamer'),
+  ]
+})
+
+function planLabel(t: Template): string {
+  return t.plan === 'gamer' ? 'Gamer' : 'Premium'
+}
+
+function isLocked(t: Template): boolean {
+  return Boolean(t.premium) && !auth.canUseTemplate(t.id)
+}
+
 function select(t: Template): void {
-  if (t.premium && !auth.canUseTemplate(t.id)) {
-    openPremiumUpsell()
+  if (isLocked(t)) {
+    openPremiumUpsell(t.plan === 'gamer' ? 'gamer' : 'premium')
     return
   }
   if (t.id === model.value) return
@@ -84,7 +106,7 @@ function select(t: Template): void {
 
     <div v-else role="radiogroup" aria-label="Template da página" class="grid grid-cols-2 gap-3 sm:grid-cols-3">
       <button
-        v-for="t in templates"
+        v-for="t in ordered"
         :key="t.id"
         type="button"
         role="radio"
@@ -94,7 +116,7 @@ function select(t: Template): void {
           model === t.id
             ? 'border-primary-500 ring-2 ring-primary-500/30'
             : 'border-gray-200 hover:-translate-y-0.5 hover:border-gray-300 hover:shadow-sm dark:border-gray-700 dark:hover:border-gray-600',
-          t.premium && !auth.canUseTemplate(t.id) ? 'opacity-60' : '',
+          isLocked(t) ? 'opacity-60' : '',
         ]"
         @click="select(t)"
       >
@@ -109,8 +131,8 @@ function select(t: Template): void {
         <div class="flex items-center justify-between gap-1">
           <span class="font-medium">{{ t.name }}</span>
           <div class="flex shrink-0 items-center gap-1">
-            <UBadge v-if="t.premium && !auth.canUseTemplate(t.id)" color="primary" variant="subtle" size="sm">
-              Premium
+            <UBadge v-if="isLocked(t)" color="primary" variant="subtle" size="sm">
+              {{ planLabel(t) }}
             </UBadge>
             <UIcon
               v-else-if="model === t.id"
@@ -126,7 +148,7 @@ function select(t: Template): void {
           {{ t.description }}
         </p>
         <UIcon
-          v-if="t.premium && !auth.canUseTemplate(t.id)"
+          v-if="isLocked(t)"
           name="i-lucide-lock"
           class="absolute right-2 bottom-2 size-3.5 text-gray-400"
         />

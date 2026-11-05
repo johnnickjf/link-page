@@ -7,6 +7,10 @@ import DarkTemplate from '~/components/templates/DarkTemplate.vue'
 import GradientTemplate from '~/components/templates/GradientTemplate.vue'
 import NeonTemplate from '~/components/templates/NeonTemplate.vue'
 import PixelTemplate from '~/components/templates/PixelTemplate.vue'
+import ArcadeTemplate from '~/components/templates/ArcadeTemplate.vue'
+import HudTemplate from '~/components/templates/HudTemplate.vue'
+import EsportsTemplate from '~/components/templates/EsportsTemplate.vue'
+import CozyTemplate from '~/components/templates/CozyTemplate.vue'
 
 // Despacha o template pelo id (page.template). Reusado no preview do editor e
 // na página pública. Id desconhecido cai no 'minimal'. Template novo entra neste
@@ -29,6 +33,10 @@ const TEMPLATES: Record<string, Component> = {
   gradient: GradientTemplate,
   neon: NeonTemplate,
   pixel: PixelTemplate,
+  arcade: ArcadeTemplate,
+  hud: HudTemplate,
+  esports: EsportsTemplate,
+  cozy: CozyTemplate,
 }
 
 const component = computed<Component>(

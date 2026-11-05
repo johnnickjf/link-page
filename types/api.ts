@@ -367,6 +367,9 @@ export interface Template {
   name: string
   description?: string
   premium?: boolean
+  /** Plano mínimo que libera o template. */
+  plan?: 'free' | 'premium' | 'gamer'
+  category?: 'general' | 'gamer'
 }
 
 /** Retorno de GET /public/{slug} (somente leitura, SSR). */
