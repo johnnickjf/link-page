@@ -58,7 +58,7 @@ onMounted(async () => {
   if (payment === 'success') {
     toast.add({
       title: 'Pagamento confirmado!',
-      description: 'Seu plano Premium está ativo. Aproveite todos os recursos.',
+      description: `Seu plano ${planLabel.value} está ativo. Aproveite todos os recursos.`,
       color: 'success',
       duration: 8000,
     })
@@ -84,6 +84,8 @@ const planLabel = computed(() => {
       return 'Free'
     case 'premium':
       return 'Premium'
+    case 'gamer':
+      return 'Gamer'
     case 'custom':
       return 'Personalizado'
     default:

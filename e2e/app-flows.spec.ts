@@ -127,6 +127,51 @@ test('premium: preview do editor renderiza o template', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Página Premium' })).toBeVisible()
 })
 
+test('gamer: tem tudo do premium no painel e no editor', async ({ page, consoleErrors }) => {
+  await skipOnboarding(page)
+  await login(page, 'gamer@example.com')
+  await expect(page).toHaveURL(/\/dashboard$/)
+  await expect(page.getByText('Plano Gamer')).toBeVisible()
+  await page.getByRole('link', { name: /Editar/ }).first().click()
+
+  // Template premium: nenhum bloqueio nem upsell.
+  const neon = page.getByRole('radio', { name: /Neon/ })
+  await expect(neon).toBeVisible()
+  await expect(neon).not.toContainText('Premium')
+  const saved = page.waitForResponse(
+    (r) => /\/page\/[^/]+$/.test(r.url()) && r.request().method() === 'PUT',
+  )
+  await neon.click()
+  expect((await saved).status()).toBe(200)
+  await expect(neon).toHaveAttribute('aria-checked', 'true')
+  await expect(page.getByRole('dialog')).toHaveCount(0)
+
+  // Volta ao template original (testes independentes da ordem).
+  const back = page.waitForResponse(
+    (r) => /\/page\/[^/]+$/.test(r.url()) && r.request().method() === 'PUT',
+  )
+  await page.getByRole('radio', { name: /Pixel/ }).click()
+  await back
+  expect(consoleErrors).toEqual([])
+})
+
+test('gamer: configurações mostram o plano atual', async ({ page }) => {
+  await skipOnboarding(page)
+  await login(page, 'gamer@example.com')
+  await expect(page).toHaveURL(/\/dashboard$/)
+  await page.goto('/settings')
+  await expect(page.getByText('Você já tem o plano Gamer')).toBeVisible()
+})
+
+test('admin: filtro por plano Gamer', async ({ page, consoleErrors }) => {
+  await login(page, 'admin@example.com')
+  await expect(page).toHaveURL(/\/admin$/)
+  await page.goto('/admin/users?plan=gamer')
+  await expect(page.getByText('gamer@example.com').locator('visible=true').first()).toBeVisible()
+  await expect(page.getByText('free@example.com')).toHaveCount(0)
+  expect(consoleErrors).toEqual([])
+})
+
 test('BUG CONHECIDO: conta acima do limite de páginas gera erro no console', async ({ page, consoleErrors }) => {
   // Cenário real: Premium cancelado volta para Free mantendo várias páginas.
   // O UProgress recebe value > max e o reka-ui loga erro. Corrigir na fase

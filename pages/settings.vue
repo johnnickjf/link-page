@@ -9,9 +9,10 @@ const auth = useAuthStore()
 const billing = useBilling()
 
 const currentPlan = computed(() => auth.user?.plan ?? 'free')
-const isPremium = computed(() => currentPlan.value === 'premium' || !!auth.user?.is_superadmin)
+const isGamer = computed(() => currentPlan.value === 'gamer')
+const isPremium = computed(() => currentPlan.value === 'premium' || isGamer.value || !!auth.user?.is_superadmin)
 const isFree = computed(() => currentPlan.value === 'free')
-const showManage = computed(() => currentPlan.value === 'premium')
+const showManage = computed(() => currentPlan.value === 'premium' || isGamer.value)
 
 // ---- Mensal / Anual ----
 const MONTHLY_PRICE = 19.9
@@ -89,7 +90,7 @@ const PREMIUM_FEATURES = [
       color="success"
       variant="soft"
       icon="i-lucide-sparkles"
-      title="Você já tem o plano Premium"
+:title="`Você já tem o plano ${isGamer ? 'Gamer' : 'Premium'}`"
       description="Aproveite todos os recursos sem limitações. Obrigado por apoiar o LinkLand!"
     >
       <template v-if="showManage" #actions>

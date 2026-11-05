@@ -7,7 +7,7 @@
 export type ID = string
 
 /** Enum de plano do backend (seção 4). */
-export type Plan = 'free' | 'premium' | 'custom'
+export type Plan = 'free' | 'premium' | 'gamer' | 'custom'
 
 // ---------------------------------------------------------------------------
 // Auth / usuário
@@ -52,6 +52,8 @@ export interface User {
   limits: PlanLimits
   /** Somente preenchido quando plan === 'custom'. */
   custom_features?: CustomFeatures | null
+  /** Features efetivas, resolvidas pelo catálogo de planos do back. */
+  features?: string[]
   created_at?: string
   updated_at?: string
 }

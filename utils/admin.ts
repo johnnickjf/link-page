@@ -3,12 +3,14 @@ import type { Plan, SupportStatus, SupportType } from '~/types/api'
 export const planLabel: Record<Plan, string> = {
   free: 'Free',
   premium: 'Premium',
+  gamer: 'Gamer',
   custom: 'Personalizado',
 }
 
-export const planBadgeColor: Record<Plan, 'neutral' | 'warning' | 'primary'> = {
+export const planBadgeColor: Record<Plan, 'neutral' | 'warning' | 'primary' | 'success'> = {
   free: 'neutral',
   premium: 'warning',
+  gamer: 'success',
   custom: 'primary',
 }
 

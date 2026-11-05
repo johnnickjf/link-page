@@ -25,6 +25,7 @@ const planChips: { value: Plan | ''; label: string; icon: string }[] = [
   { value: '', label: 'Todos', icon: 'i-lucide-users' },
   { value: 'free', label: 'Free', icon: 'i-lucide-user' },
   { value: 'premium', label: 'Premium', icon: 'i-lucide-sparkles' },
+  { value: 'gamer', label: 'Gamer', icon: 'i-lucide-gamepad-2' },
   { value: 'custom', label: 'Personalizado', icon: 'i-lucide-settings-2' },
 ]
 

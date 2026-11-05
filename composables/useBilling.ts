@@ -3,13 +3,16 @@ export function useBilling() {
   const loading = ref(false)
   const error = ref<string | null>(null)
 
-  async function checkout(interval: 'monthly' | 'yearly' = 'monthly'): Promise<void> {
+  async function checkout(
+    interval: 'monthly' | 'yearly' = 'monthly',
+    plan: 'premium' | 'gamer' = 'premium',
+  ): Promise<void> {
     loading.value = true
     error.value = null
     try {
       const data = await request<{ url: string }>('/billing/checkout', {
         method: 'POST',
-        body: { interval },
+        body: { interval, plan },
       })
       window.location.href = data.url
     } catch (e) {

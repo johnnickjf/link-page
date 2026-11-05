@@ -36,8 +36,9 @@ const stats = computed(() => {
   if (!d) return []
   const freeCount = d.users_by_plan['free'] ?? 0
   const premiumCount = d.users_by_plan['premium'] ?? 0
+  const gamerCount = d.users_by_plan['gamer'] ?? 0
   const conversionRate = d.total_users
-    ? Math.round((premiumCount / d.total_users) * 100)
+    ? Math.round(((premiumCount + gamerCount) / d.total_users) * 100)
     : 0
   return [
     {
@@ -59,7 +60,7 @@ const stats = computed(() => {
     {
       label: 'Free',
       value: freeCount,
-      sub: `${d.total_users - premiumCount - (d.users_by_plan['custom'] ?? 0)} sem upgrade`,
+      sub: `${d.total_users - premiumCount - gamerCount - (d.users_by_plan['custom'] ?? 0)} sem upgrade`,
       icon: 'i-lucide-user',
       color: 'text-gray-600 bg-gray-100 dark:bg-gray-800 dark:text-gray-300',
       to: '/admin/users?plan=free',
@@ -75,10 +76,11 @@ const stats = computed(() => {
   ]
 })
 
-const planOrder: Plan[] = ['free', 'premium', 'custom']
+const planOrder: Plan[] = ['free', 'premium', 'gamer', 'custom']
 const planColor: Record<Plan, string> = {
   free: 'bg-gray-400 dark:bg-gray-500',
   premium: 'bg-amber-400 dark:bg-amber-500',
+  gamer: 'bg-emerald-400 dark:bg-emerald-500',
   custom: 'bg-violet-400 dark:bg-violet-500',
 }
 

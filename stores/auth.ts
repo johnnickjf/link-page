@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import type { AuthToken, User } from '~/types/api'
+import type { AuthToken, CustomFeatures, User } from '~/types/api'
 
 const COOKIE_MAX_AGE = 60 * 60 * 24 * 30 // 30 dias
 
@@ -38,43 +38,43 @@ export const useAuthStore = defineStore('auth', () => {
     usePagesStore().reset()
   }
 
-  /** true se o usuário tem acesso premium completo (superadmin ou plano premium). */
-  const isPremium = computed(
-    () => Boolean(user.value?.is_superadmin || user.value?.plan === 'premium'),
+  /** true se o usuário tem acesso premium completo (superadmin, Premium ou Gamer). */
+  const isPremium = computed(() =>
+    Boolean(
+      user.value?.is_superadmin
+      || user.value?.plan === 'premium'
+      || user.value?.plan === 'gamer',
+    ),
   )
 
   /**
-   * Verifica se o usuário pode usar uma feature específica.
-   * Superadmin e premium sempre têm acesso; custom verifica custom_features.
+   * Verifica uma feature pela lista resolvida pelo back (`features`). Quem
+   * decide o que cada plano libera é o catálogo do backend; o front só consulta.
+   * O caminho sem `features` cobre um back ainda sem o campo durante o deploy.
    */
-  function canUseFeature(flag: keyof import('~/types/api').CustomFeatures): boolean {
+  function hasFeature(feature: string): boolean {
     if (!user.value) return false
-    if (user.value.is_superadmin || user.value.plan === 'premium') return true
-    if (user.value.plan === 'custom' && user.value.custom_features) {
-      const val = user.value.custom_features[flag]
-      return Boolean(val)
-    }
-    return false
+    if (user.value.features) return user.value.features.includes(feature)
+    if (isPremium.value) return true
+    const cf = user.value.plan === 'custom' ? user.value.custom_features : null
+    if (!cf) return false
+    if (feature.startsWith('block:')) return cf.block_types?.includes(feature.slice(6)) ?? false
+    if (feature.startsWith('template:')) return cf.templates?.includes(feature.slice(9)) ?? false
+    return Boolean(cf[feature as keyof CustomFeatures])
   }
 
-  /** Verifica se o usuário pode usar um tipo de bloco premium (ex.: 'text', 'image'). */
+  function canUseFeature(flag: keyof CustomFeatures): boolean {
+    return hasFeature(flag)
+  }
+
+  /** Verifica se o usuário pode usar um tipo de bloco (ex.: 'text', 'image'). */
   function canUseBlockType(type: string): boolean {
-    if (!user.value) return false
-    if (user.value.is_superadmin || user.value.plan === 'premium') return true
-    if (user.value.plan === 'custom' && user.value.custom_features) {
-      return user.value.custom_features.block_types.includes(type)
-    }
-    return false
+    return hasFeature(`block:${type}`)
   }
 
-  /** Verifica se o usuário pode usar um template premium (ex.: 'gradient', 'neon'). */
+  /** Verifica se o usuário pode usar um template (ex.: 'gradient', 'neon'). */
   function canUseTemplate(id: string): boolean {
-    if (!user.value) return false
-    if (user.value.is_superadmin || user.value.plan === 'premium') return true
-    if (user.value.plan === 'custom' && user.value.custom_features) {
-      return user.value.custom_features.templates.includes(id)
-    }
-    return false
+    return hasFeature(`template:${id}`)
   }
 
   return {
@@ -86,6 +86,7 @@ export const useAuthStore = defineStore('auth', () => {
     setToken,
     setUser,
     clear,
+    hasFeature,
     canUseFeature,
     canUseBlockType,
     canUseTemplate,

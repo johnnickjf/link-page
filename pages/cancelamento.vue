@@ -25,6 +25,7 @@ const reasons = [
 ]
 
 const stillPremium = ref(false)
+const paidPlanName = computed(() => (auth.user?.plan === 'gamer' ? 'Gamer' : 'Premium'))
 
 onMounted(async () => {
   // Recarrega o plano do usuário (pode ter sido downgraded pelo webhook)
@@ -34,7 +35,7 @@ onMounted(async () => {
     // ignora
   }
   // Se o usuário voltou do portal sem cancelar, ainda é premium
-  if (auth.user?.plan === 'premium') {
+  if (auth.user?.plan === 'premium' || auth.user?.plan === 'gamer') {
     stillPremium.value = true
   }
 })
@@ -82,8 +83,8 @@ async function onSubmit(): Promise<void> {
       color="success"
       variant="soft"
       icon="i-lucide-sparkles"
-      title="Sua assinatura Premium continua ativa!"
-      description="Suas alterações foram salvas. Aproveite todos os recursos Premium."
+:title="`Sua assinatura ${paidPlanName} continua ativa!`"
+      :description="`Suas alterações foram salvas. Aproveite todos os recursos ${paidPlanName}.`"
     >
       <template #actions>
         <UButton size="sm" variant="subtle" color="success" to="/dashboard">

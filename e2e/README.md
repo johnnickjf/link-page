@@ -26,6 +26,7 @@ Pré-requisito: o backend em `../link-land` com `poetry install` feito.
 |---|---|
 | `free@example.com` | free, 1 página (`/free-page`) |
 | `premium@example.com` | premium, `/premium-page` |
+| `gamer@example.com` | gamer, `/gamer-page` |
 | `showcase@example.com` | dono das vitrines `/tpl-{template}` e `/tpl-{template}-themed` |
 | `over@example.com` | free com 3 páginas (cenário de downgrade) |
 | `admin@example.com` | superadmin |
