@@ -4,6 +4,7 @@ import { TEMPLATES, disableTracking, expect, settle, test } from './fixtures'
 /** Auditoria automática WCAG 2.1 A/AA nas telas que o visitante vê. */
 const PAGES = [
   '/',
+  '/gamer',
   '/login',
   '/register',
   '/forgot-password',

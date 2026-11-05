@@ -4,8 +4,10 @@
 // quanto quem navega pela home antes de se cadastrar.
 const route = useRoute()
 const { capture } = useReferralCode()
+const { capture: captureKind } = useSignupKind()
 
 watch(() => route.query.referral_code, () => capture(route.query), { immediate: true })
+watch(() => route.query.kind, () => captureKind(route.query), { immediate: true })
 </script>
 
 <template>

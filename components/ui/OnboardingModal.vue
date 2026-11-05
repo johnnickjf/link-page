@@ -17,7 +17,8 @@ const createdPageId = ref<string | null>(null)
 const createdPageSlug = ref<string | null>(null)
 
 // Passo 2: formulário de criação
-const form = reactive({ title: '', slug: '', kind: 'standard' as PageKind })
+const { get: getSignupKind, clear: clearSignupKind } = useSignupKind()
+const form = reactive({ title: '', slug: '', kind: getSignupKind() as PageKind })
 let lastAuto = ''
 const creating = ref(false)
 const createError = ref<string | null>(null)
@@ -53,6 +54,7 @@ async function onCreate(e: FormSubmitEvent<typeof form>): Promise<void> {
       kind: form.kind,
       ...(form.kind === 'gamer' ? { template: 'arcade' } : {}),
     })
+    clearSignupKind()
     createdPageId.value = page.id
     createdPageSlug.value = page.slug
     step.value = 3

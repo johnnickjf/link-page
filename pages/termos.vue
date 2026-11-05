@@ -96,6 +96,14 @@ useHead({ title: 'Termos de Uso · LinkLand' })
           <li><strong>Acesso:</strong> imediato após confirmação do pagamento.</li>
         </ul>
 
+        <h3>5.2.1 Plano Gamer</h3>
+        <p>
+          Inclui tudo do Plano Premium e os recursos exclusivos para perfis gamer descritos na plataforma.
+          Valor de R$ {{ brl(GAMER_PRICE_MONTHLY) }} por mês ou R$ {{ brl(GAMER_PRICE_YEARLY) }} por ano,
+          com as mesmas condições de cobrança, renovação e acesso. As seções seguintes valem para todos
+          os planos pagos.
+        </p>
+
         <h3>5.3 Falha de Pagamento</h3>
         <p>
           Em caso de falha no pagamento (cartão recusado, limite excedido etc.), enviaremos um e-mail de

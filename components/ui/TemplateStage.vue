@@ -2,12 +2,12 @@
 // Vitrine viva: renderiza os templates de verdade (o mesmo TemplateRenderer das
 // páginas publicadas) em celulares. Só no cliente: as páginas de demonstração
 // não entram no HTML indexado, e os templates ficam fora do JS inicial.
-const props = withDefaults(defineProps<{ compact?: boolean, start?: number }>(), {
-  compact: false,
-  start: 0,
-})
+const props = withDefaults(
+  defineProps<{ compact?: boolean, start?: number, gamer?: boolean }>(),
+  { compact: false, start: 0, gamer: false },
+)
 
-const pages = DEMO_PAGES
+const pages = props.gamer ? GAMER_DEMO_PAGES : DEMO_PAGES
 const active = ref(props.start % pages.length)
 
 function wrap(i: number): number {
@@ -59,6 +59,9 @@ function select(i: number): void {
               :title="page.title"
               :bio="page.bio"
               :blocks="page.blocks"
+              :theme="page.theme"
+              :profile-meta="page.profileMeta"
+              :progress="page.progress"
               preview
             />
           </div>

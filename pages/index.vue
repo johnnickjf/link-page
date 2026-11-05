@@ -92,6 +92,17 @@ const showcaseSwatches = [
   { name: 'Pixel', bg: '#0a0a16', bar: '#22c55e' },
 ]
 
+const gamerIcons = [
+  'i-simple-icons-steam',
+  'i-simple-icons-playstation',
+  'i-simple-icons-xbox',
+  'i-simple-icons-nintendo',
+  'i-simple-icons-riotgames',
+  'i-simple-icons-discord',
+  'i-simple-icons-twitch',
+  'i-simple-icons-youtube',
+]
+
 const freeFeatures = [
   '1 página de links publicada',
   'Até 10 blocos por página',
@@ -103,7 +114,7 @@ const freeFeatures = [
 
 const premiumFeatures = [
   'Até 10 páginas e 100 blocos por página',
-  'Todos os templates, incluindo Gradient, Neon e Pixel Art',
+  'Templates Gradient, Neon e Pixel Art, além dos gratuitos',
   'Blocos de Texto e Imagem, fontes e fundo personalizados',
   'QR Code da sua página para divulgar offline',
   'Remova a marca "Criado por LinkLand"',
@@ -183,7 +194,7 @@ const faqs = [
   {
     label: 'O que está incluso no plano Premium?',
     content:
-      'Até 10 páginas e 100 blocos por página, todos os templates (incluindo Gradient, Neon e Pixel Art), blocos de Texto e Imagem, fontes e fundo personalizados, QR Code da página e a opção de remover a marca "Criado por LinkLand" — por R$19,90/mês.',
+      'Até 10 páginas e 100 blocos por página, os templates Gradient, Neon e Pixel Art, blocos de Texto e Imagem, fontes e fundo personalizados, QR Code da página e a opção de remover a marca "Criado por LinkLand" — por R$19,90/mês.',
   },
 ]
 
@@ -239,6 +250,7 @@ useHead({
       <div class="mx-auto flex max-w-6xl items-center justify-between px-5 py-3.5">
         <Logo to="/" />
         <nav aria-label="Principal" class="flex items-center gap-1">
+          <UButton to="/gamer" variant="ghost" color="neutral" class="hidden text-white hover:bg-white/10 active:bg-white/10 sm:inline-flex">Para gamers</UButton>
           <UButton to="/login" variant="ghost" color="neutral" class="text-white hover:bg-white/10 active:bg-white/10">Entrar</UButton>
           <UButton to="/register" color="neutral" class="bg-white text-gray-950 hover:bg-white/90 active:bg-white/90">
             Criar conta
@@ -386,6 +398,35 @@ useHead({
         </div>
       </section>
 
+      <!-- Convite gamer -->
+      <section aria-labelledby="gamer-heading" class="mx-auto max-w-6xl px-5 pt-20 sm:pt-28">
+        <div v-reveal class="stage-bg grid items-center gap-8 overflow-hidden rounded-3xl p-8 sm:p-12 lg:grid-cols-[1.4fr_1fr]">
+          <div>
+            <h2 id="gamer-heading" class="font-headline text-4xl font-bold leading-[1.05] tracking-tight sm:text-5xl">
+              Joga? Seu perfil de jogador também mora aqui.
+            </h2>
+            <p class="mt-4 max-w-xl text-pretty text-lg text-white/75">
+              Reúna seus IDs da Steam, PSN, Xbox e Riot, os jogos que você mais joga,
+              conquistas e seu canal, com temas feitos para isso.
+            </p>
+            <UButton
+              to="/gamer"
+              size="xl"
+              color="neutral"
+              class="mt-7 bg-white font-semibold text-gray-950 transition hover:-translate-y-0.5 hover:bg-white active:bg-white"
+              trailing-icon="i-lucide-arrow-right"
+            >
+              Ver o perfil gamer
+            </UButton>
+          </div>
+          <ul class="flex flex-wrap gap-2.5 lg:justify-end" aria-hidden="true">
+            <li v-for="icon in gamerIcons" :key="icon" class="flex size-14 items-center justify-center rounded-2xl bg-white/10">
+              <UIcon :name="icon" class="size-7" />
+            </li>
+          </ul>
+        </div>
+      </section>
+
       <!-- Grátis vs Premium -->
       <section aria-labelledby="planos-heading" class="mx-auto max-w-6xl px-5 py-20 sm:py-28">
         <div v-reveal class="max-w-2xl">
@@ -526,77 +567,6 @@ useHead({
     </main>
 
     <!-- Footer -->
-    <footer class="border-t border-gray-200 dark:border-gray-800">
-      <div class="mx-auto max-w-6xl px-5 py-10">
-        <div class="flex flex-col gap-8 sm:flex-row sm:items-start sm:justify-between">
-          <div class="max-w-xs">
-            <Logo to="/" sm />
-            <p class="mt-3 text-sm text-gray-500 dark:text-gray-400">
-              Todos os seus links numa página só — bonita, rápida e brasileira.
-            </p>
-          </div>
-
-          <div class="flex gap-14 text-sm">
-            <nav aria-label="Produto">
-              <p class="font-semibold text-gray-900 dark:text-gray-100">Produto</p>
-              <ul class="mt-3 space-y-2 text-gray-500 dark:text-gray-400">
-                <li>
-                  <NuxtLink to="/register" class="transition hover:text-gray-900 dark:hover:text-gray-100">
-                    Criar conta
-                  </NuxtLink>
-                </li>
-                <li>
-                  <NuxtLink to="/login" class="transition hover:text-gray-900 dark:hover:text-gray-100">
-                    Entrar
-                  </NuxtLink>
-                </li>
-              </ul>
-            </nav>
-            <nav aria-label="Links institucionais">
-              <p class="font-semibold text-gray-900 dark:text-gray-100">Legal</p>
-              <ul class="mt-3 space-y-2 text-gray-500 dark:text-gray-400">
-                <li>
-                  <NuxtLink to="/termos" class="transition hover:text-gray-900 dark:hover:text-gray-100">
-                    Termos de Uso
-                  </NuxtLink>
-                </li>
-                <li>
-                  <NuxtLink to="/privacidade" class="transition hover:text-gray-900 dark:hover:text-gray-100">
-                    Privacidade
-                  </NuxtLink>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-
-        <div
-          class="mt-8 flex flex-col items-center justify-between gap-3 border-t border-gray-100 pt-6 text-sm text-gray-500 sm:flex-row dark:border-gray-800/80"
-        >
-          <span>© {{ new Date().getFullYear() }} LinkLand</span>
-          <a
-            href="https://trackpath.com.br"
-            target="_blank"
-            rel="noopener noreferrer"
-            aria-label="Rastreado por TrackPath"
-            data-gtm-category="rodape"
-            data-gtm-action="click_rodape"
-            data-gtm-label="TrackPath"
-            class="inline-flex items-center gap-1.5 transition hover:text-gray-900 dark:hover:text-gray-100"
-          >
-            <img
-              src="https://trackpath.com.br/assets/logo/favicon.png"
-              alt="TrackPath"
-              width="16"
-              height="16"
-              loading="lazy"
-              decoding="async"
-              class="size-4"
-            />
-            Rastreado por TrackPath
-          </a>
-        </div>
-      </div>
-    </footer>
+    <SiteFooter />
   </div>
 </template>
