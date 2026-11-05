@@ -35,6 +35,10 @@ const ICONS: Record<Block['type'], string> = {
   text: 'i-lucide-type',
   image: 'i-lucide-image',
   map: 'i-lucide-map-pin',
+  gameid: 'i-lucide-gamepad-2',
+  games: 'i-lucide-joystick',
+  badges: 'i-lucide-trophy',
+  embed: 'i-lucide-tv',
 }
 
 function blockTitle(b: Block): string {
@@ -46,6 +50,10 @@ function blockTitle(b: Block): string {
     case 'text': return b.config.content || 'Texto'
     case 'image': return b.config.alt || 'Imagem'
     case 'map': return b.config.label || 'Mapa'
+    case 'gameid': return PLATFORMS[b.config.platform]?.label ?? 'ID de jogo'
+    case 'games': return b.config.title || 'Jogos'
+    case 'badges': return b.config.title || 'Conquistas'
+    case 'embed': return b.config.label || EMBED_PROVIDERS[b.config.provider]?.label || 'Stream'
   }
 }
 
@@ -58,6 +66,10 @@ function blockSubtitle(b: Block): string {
     case 'text': return 'Texto'
     case 'image': return b.config.url
     case 'map': return b.config.address
+    case 'gameid': return b.config.handle
+    case 'games': return b.config.items.map((g) => g.name).join(', ')
+    case 'badges': return b.config.items.map((x) => x.title).join(', ')
+    case 'embed': return b.config.value
   }
 }
 

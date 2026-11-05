@@ -49,7 +49,11 @@ export function usePublicTracking(slug: MaybeRefOrGetter<string>) {
     if (firstTimeToday(`v:${toValue(slug)}`)) send('/hit')
   }
 
-  /** Delegado no root do template: qualquer link/botão dentro de um bloco. */
+  /**
+   * Delegado no root do template: qualquer link/botão dentro de um bloco. Precisa
+   * rodar na captura: um bloco pode se trocar ao receber o clique (o player sai
+   * do botão para o iframe), e depois disso o alvo já não está mais na página.
+   */
   function onClick(event: Event): void {
     const target = event.target as Element | null
     if (!target?.closest?.('a, button')) return

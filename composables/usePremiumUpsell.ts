@@ -6,13 +6,15 @@
  */
 export function usePremiumUpsell() {
   const isOpen = useState('premium-upsell-open', () => false)
+  const plan = useState<'premium' | 'gamer'>('premium-upsell-plan', () => 'premium')
 
-  function open(): void {
+  function open(target: 'premium' | 'gamer' = 'premium'): void {
+    plan.value = target
     isOpen.value = true
   }
   function close(): void {
     isOpen.value = false
   }
 
-  return { isOpen, open, close }
+  return { isOpen, plan, open, close }
 }

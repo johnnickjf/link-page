@@ -13,4 +13,8 @@ defineProps<{ block: PublicBlock }>()
   <TextBlock v-else-if="block.type === 'text'" :config="block.config" />
   <ImageBlock v-else-if="block.type === 'image'" :config="block.config" :data-block-id="block.id" />
   <MapBlock v-else-if="block.type === 'map'" :config="block.config" :data-block-id="block.id" />
+  <GameIdBlock v-else-if="block.type === 'gameid'" :config="block.config" :data-block-id="block.id" />
+  <GamesBlock v-else-if="block.type === 'games'" :config="block.config" />
+  <BadgesBlock v-else-if="block.type === 'badges'" :config="block.config" />
+  <EmbedBlock v-else-if="block.type === 'embed'" :config="block.config" :data-block-id="block.id" />
 </template>

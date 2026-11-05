@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Block, ID, PageTab, PublicBlock, Theme } from '~/types/api'
+import type { Block, GamerProfile, ID, PageKind, PageTab, PublicBlock, Theme } from '~/types/api'
 
 definePageMeta({ middleware: 'auth' })
 
@@ -27,6 +27,15 @@ const editorTab = ref<(typeof EDITOR_TABS)[number]['value']>('content')
 const title = ref('')
 const bio = ref('')
 const avatarUrl = ref('')
+const kind = ref<PageKind>('standard')
+const profileMeta = ref<GamerProfile>({})
+const savingProfile = ref(false)
+// O cabeçalho só aparece em perfil gamer e com algo preenchido.
+const previewMeta = computed(() =>
+  kind.value === 'gamer' && Object.values(profileMeta.value).some(Boolean)
+    ? profileMeta.value
+    : null,
+)
 const template = ref('minimal')
 const previousTemplate = ref('minimal')
 const slug = ref('')
@@ -128,6 +137,8 @@ async function load(): Promise<void> {
     slug.value = page.slug
     published.value = page.is_published
     theme.value = { ...(page.theme ?? {}) }
+    kind.value = page.kind ?? 'standard'
+    profileMeta.value = { ...(page.profile_meta ?? {}) }
     blocks.value = [...blks]
     tabs.value = [...tbs]
     activeTabId.value = tabs.value[0]?.id ?? null
@@ -176,6 +187,26 @@ async function saveHeader(): Promise<void> {
 }
 
 // ---- Template (auto-save ao escolher) ----
+async function saveKind(): Promise<void> {
+  try {
+    await store.updatePage(pageId.value, { kind: kind.value })
+  } catch (e) {
+    toast.add({ title: 'Não foi possível salvar', description: getApiErrorMessage(e), color: 'error' })
+  }
+}
+
+async function saveProfile(): Promise<void> {
+  savingProfile.value = true
+  try {
+    await store.updatePage(pageId.value, { profile_meta: profileMeta.value })
+    toast.add({ title: 'Perfil salvo', color: 'success' })
+  } catch (e) {
+    toast.add({ title: 'Não foi possível salvar', description: getApiErrorMessage(e), color: 'error' })
+  } finally {
+    savingProfile.value = false
+  }
+}
+
 async function saveTemplate(id: string): Promise<void> {
   try {
     await store.updatePage(pageId.value, { template: id })
@@ -542,6 +573,14 @@ async function copyPublicUrl(): Promise<void> {
             @save="saveHeader"
           />
 
+          <GamerProfileForm
+            v-model:kind="kind"
+            v-model:meta="profileMeta"
+            :saving="savingProfile"
+            @save-kind="saveKind"
+            @save-meta="saveProfile"
+          />
+
           <UCard>
             <template #header>
               <div class="flex items-center justify-between">
@@ -664,6 +703,7 @@ async function copyPublicUrl(): Promise<void> {
                 :avatar-url="avatarUrl"
                 :theme="theme"
                 :blocks="previewBlocks"
+                :profile-meta="previewMeta"
                 preview
               />
             </div>
@@ -713,6 +753,7 @@ async function copyPublicUrl(): Promise<void> {
       :block="editingBlock"
       :next-position="activeBlocks.length"
       :tab-id="activeTabId"
+      :page-kind="kind"
       @saved="onBlockSaved"
     />
 

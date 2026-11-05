@@ -78,14 +78,9 @@ export function useTemplateLayout(props: TemplateInput, defaultAccent = '#4f46e5
   )
 
   const inlineBlocks = computed(() =>
-    sorted.value.filter(
-      (b) =>
-        b.type === 'link' ||
-        b.type === 'email' ||
-        b.type === 'text' ||
-        b.type === 'image' ||
-        b.type === 'map',
-    ),
+    // Redes viram linha de ícones e o WhatsApp, botão flutuante; o resto entra
+    // na coluna principal. BlockRenderer ignora tipos que não conhece.
+    sorted.value.filter((b) => b.type !== 'social' && b.type !== 'whatsapp'),
   )
 
   const socialBlocks = computed(() =>

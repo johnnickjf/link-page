@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
-import type { Page } from '~/types/api'
+import type { Page, PageKind } from '~/types/api'
 
 definePageMeta({ middleware: 'auth' })
 useHead({
@@ -128,7 +128,7 @@ async function copyLink(slug: string): Promise<void> {
 const createOpen = ref(false)
 const creating = ref(false)
 const createError = ref<string | null>(null)
-const form = reactive({ title: '', slug: '' })
+const form = reactive({ title: '', slug: '', kind: 'standard' as PageKind })
 let lastAuto = ''
 
 watch(
@@ -145,6 +145,7 @@ watch(createOpen, (open) => {
   if (open) {
     form.title = ''
     form.slug = ''
+    form.kind = 'standard'
     lastAuto = ''
     createError.value = null
   }
@@ -173,6 +174,7 @@ async function onCreate(_e: FormSubmitEvent<typeof form>): Promise<void> {
     const page = await pagesStore.createPage({
       slug: form.slug,
       title: form.title.trim(),
+      kind: form.kind,
     })
     toast.add({ title: 'Página criada!', color: 'success' })
     createOpen.value = false
@@ -419,6 +421,7 @@ async function confirmDelete(): Promise<void> {
             icon="i-lucide-triangle-alert"
             :description="createError"
           />
+          <PageKindPicker v-model="form.kind" />
           <UFormField label="Título" name="title">
             <UInput v-model="form.title" placeholder="Minha página" class="w-full" />
           </UFormField>

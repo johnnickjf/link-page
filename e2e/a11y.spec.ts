@@ -11,6 +11,7 @@ const PAGES = [
   '/privacidade',
   ...TEMPLATES.map((t) => `/tpl-${t}`),
   ...TEMPLATES.map((t) => `/na-${t}`),
+  ...TEMPLATES.map((t) => `/gf-${t}`),
 ]
 
 for (const path of PAGES) {

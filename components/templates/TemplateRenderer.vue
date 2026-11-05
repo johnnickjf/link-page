@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
-import type { PublicBlock, Theme } from '~/types/api'
+import type { GamerProfile, PublicBlock, Theme } from '~/types/api'
 import MinimalTemplate from '~/components/templates/MinimalTemplate.vue'
 import ClassicTemplate from '~/components/templates/ClassicTemplate.vue'
 import DarkTemplate from '~/components/templates/DarkTemplate.vue'
@@ -19,6 +19,7 @@ const props = defineProps<{
   theme?: Theme | null
   blocks: PublicBlock[]
   preview?: boolean
+  profileMeta?: GamerProfile | null
 }>()
 
 const TEMPLATES: Record<string, Component> = {
@@ -44,6 +45,7 @@ const component = computed<Component>(
     :theme="theme"
     :blocks="blocks"
     :preview="preview"
+    :profile-meta="profileMeta"
   >
     <!-- Toggle de seções (opcional): repassado ao template, que o coloca
          logo após o cabeçalho. Sem seções, nada é passado = zero mudança. -->

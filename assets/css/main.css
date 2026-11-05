@@ -163,6 +163,198 @@ body {
   outline-offset: 0;
 }
 
+/* ---------------------------------------------------------------------------
+   Blocos gamer. Usam só o contrato --lp-*, então funcionam em qualquer template.
+   --------------------------------------------------------------------------- */
+.lp-gameid {
+  justify-content: flex-start;
+  text-align: left;
+}
+.lp-gameid__text {
+  display: flex;
+  min-width: 0;
+  flex: 1;
+  flex-direction: column;
+  line-height: 1.25;
+}
+.lp-gameid__label {
+  font-size: 0.72rem;
+  font-weight: 500;
+  opacity: 0.75;
+}
+.lp-gameid__handle {
+  /* IDs diferenciam maiúsculas: o template não pode transformar o texto. */
+  text-transform: none;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+.lp-gameid__action {
+  opacity: 0.7;
+}
+
+.lp-card {
+  padding: 1rem;
+  background: var(--lp-link-bg, #fff);
+  color: var(--lp-link-fg, #111827);
+  border: 1px solid var(--lp-link-border, #e5e7eb);
+  border-radius: var(--lp-media-radius, 1rem);
+  box-shadow: var(--lp-link-rest-shadow, none);
+}
+.lp-card__title {
+  margin-bottom: 0.75rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.01em;
+}
+
+.lp-games--grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.lp-games--grid .lp-game__text {
+  margin-top: 0.4rem;
+}
+.lp-games--list {
+  display: grid;
+  gap: 0.6rem;
+}
+.lp-games--list .lp-game {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+.lp-games--list .lp-game__cover {
+  width: 3rem;
+  flex-shrink: 0;
+}
+.lp-game__cover {
+  display: block;
+  width: 100%;
+  aspect-ratio: 3 / 4;
+  border-radius: min(var(--lp-media-radius, 0.6rem), 0.6rem);
+  object-fit: cover;
+}
+.lp-game__cover--empty {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: color-mix(in srgb, var(--lp-accent, #4f46e5) 22%, transparent);
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.lp-game__text {
+  display: block;
+  min-width: 0;
+}
+.lp-game__name {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.lp-game__meta {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.72rem;
+  opacity: 0.75;
+}
+
+.lp-badges {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(9.5rem, 1fr));
+  gap: 0.75rem;
+}
+.lp-badge {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.lp-badge__icon {
+  display: flex;
+  width: 2.25rem;
+  height: 2.25rem;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: center;
+  border-radius: 0.6rem;
+  background: color-mix(in srgb, var(--lp-accent, #4f46e5) 22%, transparent);
+}
+.lp-badge__title {
+  display: block;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.25;
+}
+.lp-badge__desc {
+  display: block;
+  margin-top: 0.1rem;
+  font-size: 0.72rem;
+  line-height: 1.3;
+  opacity: 0.75;
+}
+
+.lp-embed {
+  overflow: hidden;
+  padding: 0;
+  aspect-ratio: 16 / 9;
+}
+.lp-embed--tall {
+  aspect-ratio: auto;
+  height: 26rem;
+}
+.lp-embed__facade {
+  display: flex;
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.35rem;
+  padding: 1rem;
+  text-align: center;
+  color: inherit;
+}
+.lp-embed__facade:focus-visible {
+  outline: 2px solid var(--lp-accent, #4f46e5);
+  outline-offset: -4px;
+}
+.lp-embed__hint {
+  font-size: 0.75rem;
+  opacity: 0.75;
+}
+
+.lp-gamer-info {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.25rem 0.85rem;
+  margin-top: 0.75rem;
+  color: var(--lp-muted, #6b7280);
+  font-size: 0.8125rem;
+  text-align: center;
+}
+.lp-gamer-info__tag {
+  color: var(--lp-text, #111827);
+  font-weight: 600;
+}
+.lp-gamer-info__lfg {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--lp-text, #111827);
+  font-weight: 500;
+}
+.lp-gamer-info__dot {
+  width: 0.5rem;
+  height: 0.5rem;
+  border-radius: 9999px;
+  background: #22c55e;
+  box-shadow: 0 0 0 3px rgb(34 197 94 / 0.25);
+}
+
 /* Entrada suave da página pública: filhos do container entram em cascata.
    Roda uma vez no mount (barato); nada de animação infinita. */
 @keyframes lp-fade-up {

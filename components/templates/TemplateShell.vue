@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { PublicBlock, Theme } from '~/types/api'
+import type { GamerProfile, PublicBlock, Theme } from '~/types/api'
 
 // Estrutura comum a todos os templates: redes, blocos, assinatura e WhatsApp,
 // nessa ordem. Cada template entra só com a identidade dele: as classes, o
@@ -16,6 +16,8 @@ const props = withDefaults(
     theme?: Theme | null
     blocks: PublicBlock[]
     preview?: boolean
+    // Chega por herança de atributos: os templates não precisam conhecer.
+    profileMeta?: GamerProfile | null
     rootClass: string
     contentClass: string
     blocksClass?: string
@@ -36,6 +38,8 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, iconMode, initials, showBr
   >
     <div class="lp-animate" :class="contentClass">
       <slot name="header" :accent="accent" :initials="initials" />
+
+      <GamerHeaderInfo v-if="profileMeta" :meta="profileMeta" />
 
       <slot name="tabs" />
 

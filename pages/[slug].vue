@@ -76,7 +76,8 @@ useSeoMeta({
     :avatar-url="page.avatar_url"
     :theme="page.theme"
     :blocks="activeBlocks"
-    @click="onTrackedClick"
+    :profile-meta="page.profile_meta"
+    @click.capture="onTrackedClick"
   >
     <template v-if="hasTabs" #tabs>
       <PageTabsToggle v-model="activeTabId" :tabs="tabs" />

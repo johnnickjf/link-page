@@ -1,13 +1,20 @@
 <script setup lang="ts">
 import type {
+  BadgeItem,
+  BadgesConfig,
   Block,
   BlockType,
   CreateBlockPayload,
   EmailConfig,
+  EmbedConfig,
+  GameIdConfig,
+  GameItem,
+  GamesConfig,
   ID,
   ImageConfig,
   LinkConfig,
   MapConfig,
+  PageKind,
   SocialConfig,
   TextConfig,
   WhatsappConfig,
@@ -19,6 +26,8 @@ const props = defineProps<{
   nextPosition?: number
   /** Seção destino ao criar (null = página sem seções). */
   tabId?: ID | null
+  /** Em perfil gamer, os tipos gamer aparecem primeiro. */
+  pageKind?: PageKind
 }>()
 const open = defineModel<boolean>('open', { required: true })
 const emit = defineEmits<{ saved: [block: Block] }>()
@@ -30,7 +39,18 @@ const auth = useAuthStore()
 const { open: openPremiumUpsell } = usePremiumUpsell()
 const isEdit = computed(() => Boolean(props.block))
 
-const PREMIUM_BLOCK_TYPES = new Set<BlockType>(['text', 'image', 'map'])
+// Plano mostrado no selo dos tipos que o usuário ainda não tem.
+const LOCKED_LABEL: Partial<Record<BlockType, 'Premium' | 'Gamer'>> = {
+  text: 'Premium',
+  image: 'Premium',
+  map: 'Premium',
+  badges: 'Gamer',
+  embed: 'Gamer',
+}
+function lockLabel(type: BlockType): string | null {
+  const label = LOCKED_LABEL[type]
+  return label && !auth.canUseBlockType(type) ? label : null
+}
 
 const TYPES: { value: BlockType; label: string; icon: string }[] = [
   { value: 'link', label: 'Link', icon: 'i-lucide-link' },
@@ -40,10 +60,16 @@ const TYPES: { value: BlockType; label: string; icon: string }[] = [
   { value: 'text', label: 'Texto', icon: 'i-lucide-type' },
   { value: 'image', label: 'Imagem', icon: 'i-lucide-image' },
   { value: 'map', label: 'Mapa', icon: 'i-lucide-map-pin' },
+  { value: 'gameid', label: 'ID de jogo', icon: 'i-lucide-gamepad-2' },
+  { value: 'games', label: 'Jogos', icon: 'i-lucide-joystick' },
+  { value: 'badges', label: 'Conquistas', icon: 'i-lucide-trophy' },
+  { value: 'embed', label: 'Stream', icon: 'i-lucide-tv' },
 ]
 const NETWORKS = [
   'instagram', 'tiktok', 'youtube', 'x', 'facebook', 'linkedin',
   'github', 'twitch', 'telegram', 'spotify', 'threads', 'pinterest',
+  'discord', 'kick', 'steam', 'playstation', 'xbox', 'nintendo', 'riot', 'epic',
+  'battlenet', 'roblox',
 ]
 
 // Ícones populares para o botão de link (Lucide + algumas marcas).
@@ -63,12 +89,26 @@ function iconAriaLabel(ic: string): string {
 }
 
 function selectType(type: BlockType): void {
-  if (PREMIUM_BLOCK_TYPES.has(type) && !auth.canUseBlockType(type)) {
-    openPremiumUpsell()
+  const locked = lockLabel(type)
+  if (locked) {
+    openPremiumUpsell(locked === 'Gamer' ? 'gamer' : 'premium')
     return
   }
   form.type = type
   error.value = null
+}
+
+interface GameRow {
+  name: string
+  rank: string
+  hours: number | null
+  cover_url: string
+}
+function blankGame(): GameRow {
+  return { name: '', rank: '', hours: null, cover_url: '' }
+}
+function blankBadge(): { title: string, icon: string, description: string } {
+  return { title: '', icon: 'trophy', description: '' }
 }
 
 function blankForm() {
@@ -82,9 +122,38 @@ function blankForm() {
     text: { content: '' } as TextConfig,
     image: { url: '', alt: '', link: '' } as ImageConfig,
     map: { address: '', label: '' } as MapConfig,
+    gameid: { platform: 'steam', handle: '', url: '' } as GameIdConfig,
+    games: { title: '', items: [blankGame()] } as { title: string, items: GameRow[] },
+    badges: { title: '', items: [blankBadge()] },
+    embed: { provider: 'twitch', value: '', label: '' } as EmbedConfig,
   }
 }
+const orderedTypes = computed(() => {
+  if (props.pageKind !== 'gamer') return TYPES
+  const isGamerType = (t: BlockType) => ['gameid', 'games', 'badges', 'embed'].includes(t)
+  return [...TYPES.filter((t) => isGamerType(t.value)), ...TYPES.filter((t) => !isGamerType(t.value))]
+})
+
 const form = reactive(blankForm())
+
+const BADGE_ICON_OPTIONS = Object.keys(BADGE_ICONS).map((value) => ({
+  value,
+  label: { trophy: 'Troféu', medal: 'Medalha', crown: 'Coroa', flame: 'Chama', swords: 'Espadas', target: 'Alvo', star: 'Estrela', zap: 'Raio', shield: 'Escudo', gem: 'Gema', rocket: 'Foguete', gamepad: 'Controle' }[value] ?? value,
+}))
+const EMBED_OPTIONS = (Object.keys(EMBED_PROVIDERS) as EmbedProvider[]).map((value) => ({
+  value,
+  label: EMBED_PROVIDERS[value].label,
+}))
+
+// Limite de jogos do plano. O backend confere o total da página.
+const maxGames = computed(() => (auth.hasFeature('games_unlimited') ? 24 : 3))
+function addGame(): void {
+  if (form.games.items.length >= maxGames.value) {
+    openPremiumUpsell(maxGames.value === 3 ? 'gamer' : 'premium')
+    return
+  }
+  form.games.items.push(blankGame())
+}
 const saving = ref(false)
 const error = ref<string | null>(null)
 
@@ -103,6 +172,15 @@ watch(open, (isOpen) => {
   else if (b.type === 'text') Object.assign(form.text, b.config)
   else if (b.type === 'image') Object.assign(form.image, b.config)
   else if (b.type === 'map') Object.assign(form.map, b.config)
+  else if (b.type === 'gameid') Object.assign(form.gameid, b.config)
+  else if (b.type === 'embed') Object.assign(form.embed, b.config)
+  else if (b.type === 'games') {
+    form.games.title = b.config.title ?? ''
+    form.games.items = b.config.items.map((g) => ({ ...blankGame(), ...g }))
+  } else if (b.type === 'badges') {
+    form.badges.title = b.config.title ?? ''
+    form.badges.items = b.config.items.map((x) => ({ ...blankBadge(), ...x }))
+  }
 })
 
 function buildConfig() {
@@ -142,6 +220,47 @@ function buildConfig() {
       if (form.map.label?.trim()) c.label = form.map.label.trim()
       return c
     }
+    case 'gameid': {
+      const c: GameIdConfig = {
+        platform: form.gameid.platform,
+        handle: form.gameid.handle.trim(),
+      }
+      if (form.gameid.url?.trim()) c.url = form.gameid.url.trim()
+      return c
+    }
+    case 'games': {
+      const c: GamesConfig = {
+        items: form.games.items
+          .filter((g) => g.name.trim())
+          .map((g) => {
+            const item: GameItem = { name: g.name.trim() }
+            if (g.rank.trim()) item.rank = g.rank.trim()
+            if (g.hours !== null && g.hours !== undefined && String(g.hours) !== '') item.hours = Number(g.hours)
+            if (g.cover_url) item.cover_url = g.cover_url
+            return item
+          }),
+      }
+      if (form.games.title.trim()) c.title = form.games.title.trim()
+      return c
+    }
+    case 'badges': {
+      const c: BadgesConfig = {
+        items: form.badges.items
+          .filter((x) => x.title.trim())
+          .map((x) => {
+            const item: BadgeItem = { title: x.title.trim(), icon: x.icon }
+            if (x.description.trim()) item.description = x.description.trim()
+            return item
+          }),
+      }
+      if (form.badges.title.trim()) c.title = form.badges.title.trim()
+      return c
+    }
+    case 'embed': {
+      const c: EmbedConfig = { provider: form.embed.provider, value: form.embed.value.trim() }
+      if (form.embed.label?.trim()) c.label = form.embed.label.trim()
+      return c
+    }
   }
 }
 
@@ -160,6 +279,18 @@ function validate(): string | null {
     case 'email':
       if (!form.email.email.trim()) return 'Informe o e-mail'
       if (!isValidEmail(form.email.email.trim())) return 'E-mail inválido'
+      break
+    case 'gameid':
+      if (!form.gameid.handle.trim()) return 'Informe o seu ID'
+      break
+    case 'games':
+      if (!form.games.items.some((g) => g.name.trim())) return 'Adicione ao menos um jogo'
+      break
+    case 'badges':
+      if (!form.badges.items.some((x) => x.title.trim())) return 'Adicione ao menos uma conquista'
+      break
+    case 'embed':
+      if (!form.embed.value.trim()) return 'Informe o canal, vídeo ou servidor'
       break
     case 'text':
       if (!form.text.content.trim()) return 'Escreva o texto'
@@ -224,7 +355,7 @@ async function submit(): Promise<void> {
         <!-- Tipo (só na criação) -->
         <div v-if="!isEdit" role="radiogroup" aria-label="Tipo de bloco" class="grid grid-cols-3 gap-2 sm:grid-cols-5">
           <button
-            v-for="t in TYPES"
+            v-for="t in orderedTypes"
             :key="t.value"
             type="button"
             role="radio"
@@ -234,21 +365,19 @@ async function submit(): Promise<void> {
               form.type === t.value
                 ? 'border-primary-500 ring-2 ring-primary-500/30'
                 : 'border-gray-200 hover:border-gray-300 dark:border-gray-700',
-              PREMIUM_BLOCK_TYPES.has(t.value) && !auth.canUseBlockType(t.value)
-                ? 'opacity-50'
-                : '',
+              lockLabel(t.value) ? 'opacity-60' : '',
             ]"
             @click="selectType(t.value)"
           >
             <UIcon :name="t.icon" class="size-5" />
             {{ t.label }}
             <UBadge
-              v-if="PREMIUM_BLOCK_TYPES.has(t.value) && !auth.canUseBlockType(t.value)"
+              v-if="lockLabel(t.value)"
               color="primary"
               variant="subtle"
               size="sm"
             >
-              Premium
+              {{ lockLabel(t.value) }}
             </UBadge>
           </button>
         </div>
@@ -401,6 +530,118 @@ async function submit(): Promise<void> {
           </UFormField>
           <UFormField label="Legenda (opcional)">
             <UInput v-model="form.map.label" placeholder="Nossa loja física" class="w-full" />
+          </UFormField>
+        </template>
+
+        <template v-else-if="form.type === 'gameid'">
+          <UFormField label="Plataforma">
+            <USelect v-model="form.gameid.platform" :items="PLATFORM_OPTIONS" class="w-full" />
+          </UFormField>
+          <UFormField label="Seu ID">
+            <UInput
+              v-model="form.gameid.handle"
+              maxlength="64"
+              :placeholder="PLATFORMS[form.gameid.platform].placeholder"
+              class="w-full"
+            />
+          </UFormField>
+          <UFormField
+            label="Link do perfil (opcional)"
+            hint="Sem link, o visitante copia o ID"
+          >
+            <UInput v-model="form.gameid.url" placeholder="https://…" class="w-full" />
+          </UFormField>
+        </template>
+
+        <template v-else-if="form.type === 'games'">
+          <UFormField label="Título (opcional)">
+            <UInput v-model="form.games.title" maxlength="60" placeholder="Mais jogados" class="w-full" />
+          </UFormField>
+          <div
+            v-for="(game, i) in form.games.items"
+            :key="i"
+            class="space-y-2 rounded-lg border border-gray-200 p-3 dark:border-gray-700"
+            data-testid="game-row"
+          >
+            <div class="flex items-center gap-2">
+              <UInput v-model="game.name" maxlength="60" placeholder="Nome do jogo" class="min-w-0 flex-1" :aria-label="`Nome do jogo ${i + 1}`" />
+              <UButton
+                v-if="form.games.items.length > 1"
+                icon="i-lucide-x"
+                size="sm"
+                variant="ghost"
+                color="neutral"
+                :aria-label="`Remover jogo ${i + 1}`"
+                @click="form.games.items.splice(i, 1)"
+              />
+            </div>
+            <div class="grid grid-cols-2 gap-2">
+              <UInput v-model="game.rank" maxlength="40" placeholder="Elo / rank" :aria-label="`Rank do jogo ${i + 1}`" />
+              <UInput v-model.number="game.hours" type="number" min="0" placeholder="Horas jogadas" :aria-label="`Horas do jogo ${i + 1}`" />
+            </div>
+            <ImageUploadField v-model="game.cover_url" :uploader="uploadImage" rounded="lg" button-label="Capa do jogo" />
+          </div>
+          <UButton
+            variant="subtle"
+            color="neutral"
+            size="sm"
+            icon="i-lucide-plus"
+            data-testid="add-game"
+            @click="addGame"
+          >
+            Adicionar jogo
+          </UButton>
+        </template>
+
+        <template v-else-if="form.type === 'badges'">
+          <UFormField label="Título (opcional)">
+            <UInput v-model="form.badges.title" maxlength="60" placeholder="Conquistas" class="w-full" />
+          </UFormField>
+          <div
+            v-for="(badge, i) in form.badges.items"
+            :key="i"
+            class="space-y-2 rounded-lg border border-gray-200 p-3 dark:border-gray-700"
+          >
+            <div class="flex items-center gap-2">
+              <USelect v-model="badge.icon" :items="BADGE_ICON_OPTIONS" class="w-32 shrink-0" :aria-label="`Ícone da conquista ${i + 1}`" />
+              <UInput v-model="badge.title" maxlength="40" placeholder="Top 500" class="min-w-0 flex-1" :aria-label="`Título da conquista ${i + 1}`" />
+              <UButton
+                v-if="form.badges.items.length > 1"
+                icon="i-lucide-x"
+                size="sm"
+                variant="ghost"
+                color="neutral"
+                :aria-label="`Remover conquista ${i + 1}`"
+                @click="form.badges.items.splice(i, 1)"
+              />
+            </div>
+            <UInput v-model="badge.description" maxlength="80" placeholder="Detalhe (opcional)" class="w-full" :aria-label="`Detalhe da conquista ${i + 1}`" />
+          </div>
+          <UButton
+            v-if="form.badges.items.length < 12"
+            variant="subtle"
+            color="neutral"
+            size="sm"
+            icon="i-lucide-plus"
+            @click="form.badges.items.push(blankBadge())"
+          >
+            Adicionar conquista
+          </UButton>
+        </template>
+
+        <template v-else-if="form.type === 'embed'">
+          <UFormField label="Serviço">
+            <USelect v-model="form.embed.provider" :items="EMBED_OPTIONS" class="w-full" />
+          </UFormField>
+          <UFormField :label="EMBED_PROVIDERS[form.embed.provider].hint">
+            <UInput
+              v-model="form.embed.value"
+              :placeholder="EMBED_PROVIDERS[form.embed.provider].placeholder"
+              class="w-full"
+            />
+          </UFormField>
+          <UFormField label="Texto do botão (opcional)">
+            <UInput v-model="form.embed.label" maxlength="60" :placeholder="EMBED_PROVIDERS[form.embed.provider].cta" class="w-full" />
           </UFormField>
         </template>
 

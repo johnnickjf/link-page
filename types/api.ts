@@ -37,6 +37,8 @@ export interface CustomFeatures {
   hide_branding: boolean
   qr_code: boolean
   multi_tab: boolean
+  games_unlimited?: boolean
+  gamer_header?: boolean
 }
 
 /** GET /user/me — inclui `plan`, `email_verified` e os limites (aninhados). */
@@ -98,7 +100,51 @@ export interface ChangePasswordResponse {
 // Blocos
 // ---------------------------------------------------------------------------
 
-export type BlockType = 'link' | 'social' | 'whatsapp' | 'email' | 'text' | 'image' | 'map'
+export type BlockType =
+  | 'link' | 'social' | 'whatsapp' | 'email' | 'text' | 'image' | 'map'
+  | 'gameid' | 'games' | 'badges' | 'embed'
+
+export type GamePlatform =
+  | 'steam' | 'xbox' | 'psn' | 'nintendo' | 'riot' | 'epic' | 'battlenet'
+  | 'discord' | 'ea' | 'ubisoft' | 'roblox' | 'other'
+
+export interface GameIdConfig {
+  platform: GamePlatform
+  handle: string
+  /** Sem URL, o visitante copia o ID. */
+  url?: string
+  label?: string
+}
+
+export interface GameItem {
+  name: string
+  cover_url?: string
+  hours?: number
+  rank?: string
+}
+
+export interface GamesConfig {
+  title?: string
+  items: GameItem[]
+}
+
+export interface BadgeItem {
+  title: string
+  icon?: string
+  description?: string
+}
+
+export interface BadgesConfig {
+  title?: string
+  items: BadgeItem[]
+}
+
+export interface EmbedConfig {
+  provider: 'twitch' | 'youtube' | 'discord'
+  /** Identificador já validado pelo back (canal, id do vídeo, id do servidor). */
+  value: string
+  label?: string
+}
 
 export interface LinkConfig {
   label: string
@@ -150,6 +196,10 @@ export interface BlockConfigByType {
   text: TextConfig
   image: ImageConfig
   map: MapConfig
+  gameid: GameIdConfig
+  games: GamesConfig
+  badges: BadgesConfig
+  embed: EmbedConfig
 }
 
 /** Bloco completo (rotas autenticadas), união discriminada por `type`. */
@@ -266,6 +316,16 @@ export interface Theme {
   [key: string]: unknown
 }
 
+export type PageKind = 'standard' | 'gamer'
+
+/** Cabeçalho do perfil gamer (`page.profile_meta`). */
+export interface GamerProfile {
+  gamertag?: string
+  main_game?: string
+  region?: string
+  looking_for_group?: boolean
+}
+
 export interface Page {
   id: ID
   user_id?: ID
@@ -277,6 +337,8 @@ export interface Page {
   template: string
   theme?: Theme | null
   is_published: boolean
+  kind?: PageKind
+  profile_meta?: GamerProfile | null
   created_at?: string
   updated_at?: string
 }
@@ -287,11 +349,12 @@ export interface CreatePagePayload {
   bio?: string
   avatar_url?: string
   template?: string
+  kind?: PageKind
 }
 
 /** PUT /page não troca slug (seção 14.1 do back). */
 export type UpdatePagePayload = Partial<
-  Pick<Page, 'title' | 'bio' | 'avatar_url' | 'template' | 'theme'>
+  Pick<Page, 'title' | 'bio' | 'avatar_url' | 'template' | 'theme' | 'kind' | 'profile_meta'>
 >
 
 export interface PublishPayload {
@@ -314,6 +377,8 @@ export interface PublicPage {
   avatar_url?: string | null
   template: string
   theme?: Theme | null
+  kind?: PageKind
+  profile_meta?: GamerProfile | null
   blocks: PublicBlock[]
   /** Vazio quando a página não usa seções. Toggle só aparece com 2+. */
   tabs?: PublicTab[]

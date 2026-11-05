@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
+import type { PageKind } from '~/types/api'
 
 const emit = defineEmits<{ done: [] }>()
 
@@ -16,7 +17,7 @@ const createdPageId = ref<string | null>(null)
 const createdPageSlug = ref<string | null>(null)
 
 // Passo 2: formulário de criação
-const form = reactive({ title: '', slug: '' })
+const form = reactive({ title: '', slug: '', kind: 'standard' as PageKind })
 let lastAuto = ''
 const creating = ref(false)
 const createError = ref<string | null>(null)
@@ -49,6 +50,7 @@ async function onCreate(e: FormSubmitEvent<typeof form>): Promise<void> {
     const page = await pagesStore.createPage({
       slug: e.data.slug,
       title: e.data.title.trim(),
+      kind: form.kind,
     })
     createdPageId.value = page.id
     createdPageSlug.value = page.slug
@@ -168,6 +170,7 @@ const currentMeta = computed(() => stepMeta[step.value - 1]!)
             icon="i-lucide-triangle-alert"
             :description="createError"
           />
+          <PageKindPicker v-model="form.kind" />
           <UFormField label="Nome da página" name="title">
             <UInput
               v-model="form.title"

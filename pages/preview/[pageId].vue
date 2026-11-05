@@ -104,6 +104,7 @@ const previewBlocks = computed<PublicBlock[]>(() =>
         :avatar-url="page.avatar_url"
         :theme="(page.theme as Theme)"
         :blocks="previewBlocks"
+        :profile-meta="page.profile_meta"
       >
         <template v-if="hasTabs" #tabs>
           <PageTabsToggle

@@ -37,6 +37,8 @@ const PREMIUM_BLOCK_TYPES = [
   { value: 'text', label: 'Texto' },
   { value: 'image', label: 'Imagem' },
   { value: 'map', label: 'Mapa' },
+  { value: 'badges', label: 'Conquistas' },
+  { value: 'embed', label: 'Stream' },
 ]
 
 const PREMIUM_TEMPLATES = [
@@ -56,6 +58,8 @@ const customFeatures = reactive<CustomFeatures>({
   hide_branding: false,
   qr_code: false,
   multi_tab: false,
+  games_unlimited: false,
+  gamer_header: false,
 })
 const savingPlan = ref(false)
 
@@ -73,6 +77,8 @@ function syncPlanForm(u: AdminUser): void {
     customFeatures.hide_branding = u.custom_features.hide_branding ?? false
     customFeatures.qr_code = u.custom_features.qr_code ?? false
     customFeatures.multi_tab = u.custom_features.multi_tab ?? false
+    customFeatures.games_unlimited = u.custom_features.games_unlimited ?? false
+    customFeatures.gamer_header = u.custom_features.gamer_header ?? false
   } else {
     customFeatures.max_pages = null
     customFeatures.max_blocks_per_page = null
@@ -83,6 +89,8 @@ function syncPlanForm(u: AdminUser): void {
     customFeatures.hide_branding = false
     customFeatures.qr_code = false
     customFeatures.multi_tab = false
+    customFeatures.games_unlimited = false
+    customFeatures.gamer_header = false
   }
 }
 
@@ -488,6 +496,14 @@ async function confirmDelete(): Promise<void> {
                       <div class="flex items-center justify-between gap-3">
                         <span class="text-sm">Seções (múltiplas abas)</span>
                         <USwitch v-model="customFeatures.multi_tab" />
+                      </div>
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-sm">Mais jogos no perfil gamer</span>
+                        <USwitch v-model="customFeatures.games_unlimited" />
+                      </div>
+                      <div class="flex items-center justify-between gap-3">
+                        <span class="text-sm">Cabeçalho gamer</span>
+                        <USwitch v-model="customFeatures.gamer_header" />
                       </div>
                     </div>
                   </div>
