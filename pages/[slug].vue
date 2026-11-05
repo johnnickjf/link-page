@@ -43,6 +43,10 @@ const activeBlocks = computed(() => {
   return active?.blocks ?? []
 })
 
+// Contagem anônima de visitas e cliques (só no navegador, nunca no SSR).
+const { trackVisit, onClick: onTrackedClick } = usePublicTracking(slug)
+onMounted(trackVisit)
+
 useHead(() => ({
   link: [{ rel: 'canonical', href: url.href }],
 }))
@@ -72,6 +76,7 @@ useSeoMeta({
     :avatar-url="page.avatar_url"
     :theme="page.theme"
     :blocks="activeBlocks"
+    @click="onTrackedClick"
   >
     <template v-if="hasTabs" #tabs>
       <PageTabsToggle v-model="activeTabId" :tabs="tabs" />

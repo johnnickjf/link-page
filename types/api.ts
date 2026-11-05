@@ -166,9 +166,10 @@ export type Block = {
   }
 }[BlockType]
 
-/** Bloco no shape leve do /public/{slug} (sem id/page_id/is_active). */
+/** Bloco no shape leve do /public/{slug}. `id` serve para contar cliques. */
 export type PublicBlock = {
   [K in BlockType]: {
+    id?: string | null
     type: K
     config: BlockConfigByType[K]
     position: number
@@ -316,6 +317,30 @@ export interface PublicPage {
   blocks: PublicBlock[]
   /** Vazio quando a página não usa seções. Toggle só aparece com 2+. */
   tabs?: PublicTab[]
+}
+
+// ---------------------------------------------------------------------------
+// Estatísticas (só contagens agregadas)
+// ---------------------------------------------------------------------------
+
+export interface DayStats {
+  /** Data pura (YYYY-MM-DD), no fuso de Brasília. */
+  day: string
+  views: number
+  clicks: number
+}
+
+export interface PageStats {
+  days: number
+  views: number
+  clicks: number
+  daily: DayStats[]
+  blocks: { block_id: ID, type: string, label: string, clicks: number }[]
+}
+
+export interface StatsSummary {
+  days: number
+  pages: { page_id: ID, views: number, clicks: number }[]
 }
 
 // ---------------------------------------------------------------------------

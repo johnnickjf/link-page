@@ -55,6 +55,17 @@ useHead({ title: 'Política de Privacidade · LinkLand' })
           <li><strong>Logs de acesso e erros</strong> para diagnóstico e estabilidade do serviço.</li>
         </ul>
 
+        <h3>1.2.1 Contagem anônima de visitas</h3>
+        <p>
+          Para mostrar a cada usuário quantas visitas e cliques sua página recebeu, contamos os acessos
+          às páginas públicas de forma anônima: guardamos <strong>apenas totais por dia</strong>, sem
+          endereço IP, sem identificador do visitante e sem cookies. Para não contar a mesma pessoa duas
+          vezes no dia, usamos um código temporário, derivado do endereço IP e do navegador com uma chave
+          aleatória diária, que é apagado automaticamente em até 26 horas e não permite identificar
+          ninguém. O navegador do visitante guarda localmente, só naquele dia, um lembrete de que a
+          visita já foi contada.
+        </p>
+
         <h3>1.3 Dados de pagamento</h3>
         <p>
           Pagamentos são integralmente processados pela <strong>Stripe Payments</strong>. O LinkLand

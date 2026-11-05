@@ -18,6 +18,20 @@ const route = useRoute()
 
 const userLoading = ref(false)
 
+// ---- Estatísticas (best-effort: se falhar, os cards mostram zero) ----
+const { summary: statsSummary } = useStats()
+const statsPage = ref<Page | null>(null)
+const statsByPage = ref<Record<string, { views: number, clicks: number }>>({})
+async function loadStats(): Promise<void> {
+  try {
+    const { pages } = await statsSummary(30)
+    statsByPage.value = Object.fromEntries(pages.map((p) => [p.page_id, p]))
+  } catch {
+    // Estatística nunca atrapalha o dashboard.
+  }
+}
+onMounted(loadStats)
+
 // ---- Onboarding ----
 const ONBOARDING_KEY = 'll_onboarding_done'
 const showOnboarding = ref(false)
@@ -328,6 +342,26 @@ async function confirmDelete(): Promise<void> {
           </UBadge>
         </div>
 
+        <button
+          type="button"
+          class="mt-3 flex w-fit items-center gap-3 rounded text-xs text-gray-500 transition hover:text-primary-500 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 dark:text-gray-400"
+          :aria-label="`Ver estatísticas de ${page.title}`"
+          data-testid="page-stats-open"
+          @click="statsPage = page"
+        >
+          <span class="flex items-center gap-1 tabular-nums">
+            <UIcon name="i-lucide-eye" class="size-3.5" />
+            <span data-testid="page-views">{{ (statsByPage[page.id]?.views ?? 0).toLocaleString('pt-BR') }}</span>
+            visitas
+          </span>
+          <span class="flex items-center gap-1 tabular-nums">
+            <UIcon name="i-lucide-mouse-pointer-click" class="size-3.5" />
+            <span data-testid="page-clicks">{{ (statsByPage[page.id]?.clicks ?? 0).toLocaleString('pt-BR') }}</span>
+            cliques
+          </span>
+          <span class="text-gray-400 dark:text-gray-500">· 30 dias</span>
+        </button>
+
         <div class="mt-4 flex items-center gap-2">
           <UButton :to="`/editor/${page.id}`" icon="i-lucide-pencil" size="sm">
             Editar
@@ -366,6 +400,8 @@ async function confirmDelete(): Promise<void> {
         </div>
       </div>
     </div>
+
+    <PageStatsModal :page="statsPage" @close="statsPage = null" />
 
     <!-- Modal: nova página -->
     <UModal v-model:open="createOpen" title="Nova página">

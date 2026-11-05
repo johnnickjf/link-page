@@ -64,6 +64,7 @@ useHead({
           v-for="(b, i) in socialBlocks"
           :key="`s-${i}`"
           :config="b.config"
+          :data-block-id="b.id"
         />
       </div>
 
@@ -75,7 +76,7 @@ useHead({
       <BrandingBadge v-if="showBranding" />
     </div>
 
-    <WhatsappButton v-if="whatsapp" :config="whatsapp.config" :fixed="!preview" />
+    <WhatsappButton v-if="whatsapp" :config="whatsapp.config" :fixed="!preview" :data-block-id="whatsapp.id" />
   </div>
 </template>
 

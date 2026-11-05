@@ -68,6 +68,7 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, iconMode, initials, showBr
           v-for="(b, i) in socialBlocks"
           :key="`s-${i}`"
           :config="b.config"
+          :data-block-id="b.id"
         />
       </div>
 
@@ -78,7 +79,7 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, iconMode, initials, showBr
       <BrandingBadge v-if="showBranding" />
     </div>
 
-    <WhatsappButton v-if="whatsapp" :config="whatsapp.config" :fixed="!preview" />
+    <WhatsappButton v-if="whatsapp" :config="whatsapp.config" :fixed="!preview" :data-block-id="whatsapp.id" />
   </div>
 </template>
 

@@ -43,3 +43,5 @@ for intencional.
 
 - Conta acima do limite de páginas → erro de console no dashboard
   (`UProgress` com value > max).
+- Navegador com armazenamento bloqueado → script do `@nuxtjs/color-mode` lança
+  erro e a página cai em "Algo deu errado".
