@@ -20,6 +20,15 @@ for (const tpl of TEMPLATES) {
   }
 }
 
+for (const tpl of TEMPLATES) {
+  test(`visual: iniciais e seções no ${tpl}`, async ({ page, consoleErrors }) => {
+    await page.goto(`/na-${tpl}`)
+    await settle(page)
+    await expect(page).toHaveScreenshot(`na-${tpl}.png`, { fullPage: true })
+    expect(consoleErrors).toEqual([])
+  })
+}
+
 test('visual: página sem avatar e sem bio', async ({ page }) => {
   await page.goto('/sem-avatar')
   await settle(page)

@@ -10,22 +10,20 @@ const props = defineProps<{
   preview?: boolean
 }>()
 
-const { inlineBlocks, socialBlocks, whatsapp, accent, iconMode, initials, showBranding, rootStyle } =
-  useTemplateLayout(props, '#22c55e')
-
 useHead({
   link: [{ rel: 'stylesheet', href: 'https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap' }],
 })
 </script>
 
 <template>
-  <div
-    class="pixel-root px-5 py-14"
-    :class="preview ? 'relative min-h-full' : 'min-h-screen'"
-    :style="rootStyle"
-    :data-icon-mode="iconMode"
+  <TemplateShell
+    v-bind="props"
+    root-class="pixel-root px-5 py-14"
+    content-class="pixel-content mx-auto flex w-full max-w-[480px] flex-col items-center"
+    blocks-class="mt-7 w-full space-y-3"
+    default-accent="#22c55e"
   >
-    <div class="lp-animate pixel-content mx-auto flex w-full max-w-[480px] flex-col items-center">
+    <template #header="{ initials }">
 
       <!-- Avatar quadrado -->
       <div class="pixel-avatar">
@@ -55,29 +53,10 @@ useHead({
       >
         {{ bio }}
       </p>
+    </template>
 
-      <slot name="tabs" />
-
-      <!-- Redes sociais -->
-      <div v-if="socialBlocks.length" class="mt-6 flex flex-wrap justify-center gap-5">
-        <SocialBlock
-          v-for="(b, i) in socialBlocks"
-          :key="`s-${i}`"
-          :config="b.config"
-          :data-block-id="b.id"
-        />
-      </div>
-
-      <!-- Blocos de link -->
-      <div class="mt-7 w-full space-y-3">
-        <BlockRenderer v-for="(b, i) in inlineBlocks" :key="`b-${i}`" :block="b" />
-      </div>
-
-      <BrandingBadge v-if="showBranding" />
-    </div>
-
-    <WhatsappButton v-if="whatsapp" :config="whatsapp.config" :fixed="!preview" :data-block-id="whatsapp.id" />
-  </div>
+    <template #tabs><slot name="tabs" /></template>
+  </TemplateShell>
 </template>
 
 <style scoped>
@@ -110,7 +89,7 @@ useHead({
 }
 
 /* Conteúdo acima da grade. */
-.pixel-content {
+.pixel-root :deep(.pixel-content) {
   position: relative;
   z-index: 1;
 }

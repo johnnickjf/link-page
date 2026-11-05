@@ -9,19 +9,16 @@ const props = defineProps<{
   blocks: PublicBlock[]
   preview?: boolean
 }>()
-
-const { inlineBlocks, socialBlocks, whatsapp, accent, iconMode, initials, showBranding, rootStyle } =
-  useTemplateLayout(props, '#4f46e5')
 </script>
 
 <template>
-  <div
-    class="minimal-root bg-white px-5 py-14"
-    :class="preview ? 'relative min-h-full' : 'min-h-screen'"
-    :style="rootStyle"
-    :data-icon-mode="iconMode"
+  <TemplateShell
+    v-bind="props"
+    root-class="minimal-root bg-white px-5 py-14"
+    content-class="mx-auto flex w-full max-w-[480px] flex-col"
+    default-accent="#4f46e5"
   >
-    <div class="lp-animate mx-auto flex w-full max-w-[480px] flex-col">
+    <template #header="{ accent, initials }">
       <header class="flex flex-col items-center text-center">
         <img
           v-if="avatarUrl"
@@ -52,30 +49,10 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, iconMode, initials, showBr
           {{ bio }}
         </p>
       </header>
+    </template>
 
-      <slot name="tabs" />
-
-      <div
-        v-if="socialBlocks.length"
-        class="mt-6 flex flex-wrap justify-center gap-5"
-      >
-        <SocialBlock
-          v-for="(b, i) in socialBlocks"
-          :key="`s-${i}`"
-          :config="b.config"
-          :data-block-id="b.id"
-        />
-      </div>
-
-      <div class="mt-8 space-y-3">
-        <BlockRenderer v-for="(b, i) in inlineBlocks" :key="`b-${i}`" :block="b" />
-      </div>
-
-      <BrandingBadge v-if="showBranding" />
-    </div>
-
-    <WhatsappButton v-if="whatsapp" :config="whatsapp.config" :fixed="!preview" :data-block-id="whatsapp.id" />
-  </div>
+    <template #tabs><slot name="tabs" /></template>
+  </TemplateShell>
 </template>
 
 <style scoped>

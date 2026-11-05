@@ -73,6 +73,22 @@ test('free: login → dashboard → editor → salvar título → página públi
   })
 })
 
+test('editor: prévia ao vivo reage ao título e ao tema', async ({ page }, testInfo) => {
+  await skipOnboarding(page)
+  await login(page, 'premium@example.com')
+  await expect(page).toHaveURL(/\/dashboard$/)
+  await page.getByRole('link', { name: /Editar/ }).first().click()
+  const title = page.getByPlaceholder('Seu nome ou marca')
+  await expect(title).toHaveValue('Página Premium')
+  if (testInfo.project.name === 'mobile') {
+    await title.fill('Prévia ao vivo')
+    await page.getByRole('button', { name: 'Visualizar' }).click()
+  } else {
+    await title.fill('Prévia ao vivo')
+  }
+  await expect(page.getByRole('heading', { level: 1, name: 'Prévia ao vivo' })).toBeVisible()
+})
+
 test('free: template premium bloqueado abre upsell e não troca', async ({ page }) => {
   await skipOnboarding(page)
   await login(page, 'free@example.com')

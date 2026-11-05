@@ -9,8 +9,8 @@ import NeonTemplate from '~/components/templates/NeonTemplate.vue'
 import PixelTemplate from '~/components/templates/PixelTemplate.vue'
 
 // Despacha o template pelo id (page.template). Reusado no preview do editor e
-// na página pública (Fase 6). Fallback para 'minimal'. Novos templates da
-// Fase 7 entram neste mapa.
+// na página pública. Id desconhecido cai no 'minimal'. Template novo entra neste
+// mapa e no catálogo do backend (template_service.py).
 const props = defineProps<{
   template: string
   title: string
@@ -21,9 +21,6 @@ const props = defineProps<{
   preview?: boolean
 }>()
 
-// Selecionáveis hoje (GET /template no back): minimal, classic, dark.
-// gradient e neon já existem no front e ficam selecionáveis quando o back
-// adicioná-los. Fallback: minimal.
 const TEMPLATES: Record<string, Component> = {
   minimal: MinimalTemplate,
   classic: ClassicTemplate,
