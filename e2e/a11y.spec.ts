@@ -1,5 +1,5 @@
 import AxeBuilder from '@axe-core/playwright'
-import { TEMPLATES, expect, settle, test } from './fixtures'
+import { TEMPLATES, disableTracking, expect, settle, test } from './fixtures'
 
 /** Auditoria automática WCAG 2.1 A/AA nas telas que o visitante vê. */
 const PAGES = [
@@ -12,10 +12,12 @@ const PAGES = [
   ...TEMPLATES.map((t) => `/tpl-${t}`),
   ...TEMPLATES.map((t) => `/na-${t}`),
   ...TEMPLATES.map((t) => `/gf-${t}`),
+  ...TEMPLATES.map((t) => `/lvl-${t}`),
 ]
 
 for (const path of PAGES) {
   test(`acessibilidade: ${path}`, async ({ page }) => {
+    await disableTracking(page)
     await page.goto(path)
     await settle(page)
     const { violations } = await new AxeBuilder({ page })

@@ -51,6 +51,14 @@ export async function login(page: Page, email: string, password = PASSWORD): Pro
   await page.getByRole('button', { name: 'Entrar', exact: true }).click()
 }
 
+/**
+ * Visitar uma página dá XP de verdade. Testes que comparam números ou imagens
+ * desligam o envio, para o resultado não depender da ordem de execução.
+ */
+export async function disableTracking(page: Page): Promise<void> {
+  await page.route(/\/public\/[^/]+\/(hit|click\/.*)$/, (route) => route.abort())
+}
+
 /** Marca o onboarding como visto (evita o modal cobrir o dashboard). */
 export async function skipOnboarding(page: Page): Promise<void> {
   await page.addInitScript(() => localStorage.setItem('ll_onboarding_done', '1'))

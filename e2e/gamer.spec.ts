@@ -26,8 +26,11 @@ test('copiar ID preserva maiúsculas mesmo em template que usa caixa alta', asyn
   await page.goto('/gf-pixel')
   await page.waitForLoadState('networkidle')
   const copy = page.getByRole('button', { name: /Copiar Riot ID: KaiBR#BR1/ })
-  await copy.click()
-  await expect(copy).toContainText('Copiado!')
+  // O botão só responde depois da hidratação: repete o gesto até ela terminar.
+  await expect(async () => {
+    await copy.click()
+    await expect(copy).toContainText('Copiado!', { timeout: 500 })
+  }).toPass()
   expect(await page.evaluate(() => navigator.clipboard.readText())).toBe('KaiBR#BR1')
   await expect(copy.locator('.lp-gameid__handle')).toHaveCSS('text-transform', 'none')
   expect(consoleErrors).toEqual([])

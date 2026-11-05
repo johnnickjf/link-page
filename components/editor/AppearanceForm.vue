@@ -12,6 +12,12 @@ const { open: openPremiumUpsell } = usePremiumUpsell()
 const canBackground = computed(() => auth.canUseFeature('custom_background'))
 const canFont = computed(() => auth.canUseFeature('custom_font'))
 const canHideBranding = computed(() => auth.canUseFeature('hide_branding'))
+const showLevel = computed({
+  get: () => Boolean(theme.value.show_level),
+  set: (value: boolean) => {
+    theme.value.show_level = value
+  },
+})
 
 const buttonStyles = [
   { value: 'rounded', label: 'Arredondado' },
@@ -253,6 +259,17 @@ const FONTS = [
         <p v-else class="text-xs text-gray-400 dark:text-gray-500">
           Escolha entre 10 fontes do Google Fonts no plano Premium.
         </p>
+      </div>
+
+      <!-- Nível (todos os planos, opt-in) -->
+      <div class="flex items-center justify-between gap-4 rounded-lg" data-testid="show-level">
+        <div>
+          <p class="text-sm font-medium">Mostrar nível e XP</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">
+            Sua página ganha XP com visitas e cliques. Deixe visível só se quiser.
+          </p>
+        </div>
+        <USwitch v-model="showLevel" aria-label="Mostrar nível e XP na página pública" />
       </div>
 
       <!-- Branding (premium) -->

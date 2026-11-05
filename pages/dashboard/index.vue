@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
-import type { Page, PageKind } from '~/types/api'
+import type { Page, PageKind, StatsSummary } from '~/types/api'
 
 definePageMeta({ middleware: 'auth' })
 useHead({
@@ -21,7 +21,7 @@ const userLoading = ref(false)
 // ---- Estatísticas (best-effort: se falhar, os cards mostram zero) ----
 const { summary: statsSummary } = useStats()
 const statsPage = ref<Page | null>(null)
-const statsByPage = ref<Record<string, { views: number, clicks: number }>>({})
+const statsByPage = ref<Record<string, StatsSummary['pages'][number]>>({})
 async function loadStats(): Promise<void> {
   try {
     const { pages } = await statsSummary(30)
@@ -31,6 +31,11 @@ async function loadStats(): Promise<void> {
   }
 }
 onMounted(loadStats)
+
+function levelPercent(p: StatsSummary['pages'][number]['progress']): number {
+  if (p.next_level_xp === null) return 100
+  return Math.round(((p.xp - p.level_xp) / (p.next_level_xp - p.level_xp)) * 100)
+}
 
 // ---- Onboarding ----
 const ONBOARDING_KEY = 'll_onboarding_done'
@@ -343,6 +348,19 @@ async function confirmDelete(): Promise<void> {
           >
             {{ page.is_published ? 'Publicado' : 'Rascunho' }}
           </UBadge>
+        </div>
+
+        <div v-if="statsByPage[page.id]" class="mt-3" data-testid="page-level">
+          <div class="flex items-baseline justify-between gap-2 text-xs text-gray-600 dark:text-gray-400">
+            <span class="text-sm font-semibold text-gray-900 dark:text-gray-100">Nv. {{ statsByPage[page.id]!.progress.level }}</span>
+            <span class="tabular-nums">{{ statsByPage[page.id]!.progress.xp.toLocaleString('pt-BR') }} XP</span>
+          </div>
+          <UProgress
+            :model-value="levelPercent(statsByPage[page.id]!.progress)"
+            size="xs"
+            class="mt-1"
+            :aria-label="`Progresso de nível de ${page.title}`"
+          />
         </div>
 
         <button

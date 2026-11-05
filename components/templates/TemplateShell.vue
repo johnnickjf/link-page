@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { GamerProfile, PublicBlock, Theme } from '~/types/api'
+import type { GamerProfile, PageProgress, PublicBlock, Theme } from '~/types/api'
 
 // Estrutura comum a todos os templates: redes, blocos, assinatura e WhatsApp,
 // nessa ordem. Cada template entra só com a identidade dele: as classes, o
@@ -18,6 +18,7 @@ const props = withDefaults(
     preview?: boolean
     // Chega por herança de atributos: os templates não precisam conhecer.
     profileMeta?: GamerProfile | null
+    progress?: PageProgress | null
     rootClass: string
     contentClass: string
     blocksClass?: string
@@ -40,6 +41,8 @@ const { inlineBlocks, socialBlocks, whatsapp, accent, iconMode, initials, showBr
       <slot name="header" :accent="accent" :initials="initials" />
 
       <GamerHeaderInfo v-if="profileMeta" :meta="profileMeta" />
+
+      <LevelBar v-if="progress && theme?.show_level" :progress="progress" />
 
       <slot name="tabs" />
 

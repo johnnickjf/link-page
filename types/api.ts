@@ -313,6 +313,8 @@ export interface Theme {
   font?: string
   /** Premium: oculta a assinatura "feito com LinkLand". */
   hide_branding?: boolean
+  /** Mostra nível e barra de XP na página pública (opt-in). */
+  show_level?: boolean
   [key: string]: unknown
 }
 
@@ -373,6 +375,16 @@ export interface Template {
 }
 
 /** Retorno de GET /public/{slug} (somente leitura, SSR). */
+/** Nível e XP de uma página, calculados pelo back a partir das contagens. */
+export interface PageProgress {
+  level: number
+  xp: number
+  /** XP em que o nível atual começa. */
+  level_xp: number
+  /** XP do próximo nível; null no nível máximo. */
+  next_level_xp: number | null
+}
+
 export interface PublicPage {
   slug: string
   title: string
@@ -382,6 +394,8 @@ export interface PublicPage {
   theme?: Theme | null
   kind?: PageKind
   profile_meta?: GamerProfile | null
+  /** Só vem quando o dono ligou `theme.show_level`. */
+  progress?: PageProgress | null
   blocks: PublicBlock[]
   /** Vazio quando a página não usa seções. Toggle só aparece com 2+. */
   tabs?: PublicTab[]
@@ -404,11 +418,12 @@ export interface PageStats {
   clicks: number
   daily: DayStats[]
   blocks: { block_id: ID, type: string, label: string, clicks: number }[]
+  progress: PageProgress
 }
 
 export interface StatsSummary {
   days: number
-  pages: { page_id: ID, views: number, clicks: number }[]
+  pages: { page_id: ID, views: number, clicks: number, progress: PageProgress }[]
 }
 
 // ---------------------------------------------------------------------------

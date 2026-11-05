@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Block, GamerProfile, ID, PageKind, PageTab, PublicBlock, Theme } from '~/types/api'
+import type { Block, GamerProfile, ID, PageKind, PageProgress, PageTab, PublicBlock, Theme } from '~/types/api'
 
 definePageMeta({ middleware: 'auth' })
 
@@ -30,6 +30,16 @@ const avatarUrl = ref('')
 const kind = ref<PageKind>('standard')
 const profileMeta = ref<GamerProfile>({})
 const savingProfile = ref(false)
+// Nível real da página, para a prévia da barra de XP. Sem isso, mostra o nível 1.
+const progress = ref<PageProgress>({ level: 1, xp: 0, level_xp: 0, next_level_xp: 50 })
+const { pageStats } = useStats()
+onMounted(async () => {
+  try {
+    progress.value = (await pageStats(pageId.value, 7)).progress
+  } catch {
+    // A prévia segue com o nível 1.
+  }
+})
 // O cabeçalho só aparece em perfil gamer e com algo preenchido.
 const previewMeta = computed(() =>
   kind.value === 'gamer' && Object.values(profileMeta.value).some(Boolean)
@@ -704,6 +714,7 @@ async function copyPublicUrl(): Promise<void> {
                 :theme="theme"
                 :blocks="previewBlocks"
                 :profile-meta="previewMeta"
+                :progress="progress"
                 preview
               />
             </div>

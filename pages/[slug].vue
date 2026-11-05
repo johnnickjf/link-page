@@ -77,6 +77,7 @@ useSeoMeta({
     :theme="page.theme"
     :blocks="activeBlocks"
     :profile-meta="page.profile_meta"
+    :progress="page.progress"
     @click.capture="onTrackedClick"
   >
     <template v-if="hasTabs" #tabs>

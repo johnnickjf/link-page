@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Block, ID, Page, PageTab, PublicBlock, Theme } from '~/types/api'
+import type { Block, ID, Page, PageProgress, PageTab, PublicBlock, Theme } from '~/types/api'
 
 definePageMeta({ middleware: 'auth', layout: 'public' })
 
@@ -13,6 +13,8 @@ const tabs = ref<PageTab[]>([])
 const activeTabId = ref<ID | null>(null)
 const loading = ref(true)
 const error = ref<string | null>(null)
+const progress = ref<PageProgress | null>(null)
+const { pageStats } = useStats()
 
 onMounted(async () => {
   try {
@@ -25,6 +27,9 @@ onMounted(async () => {
     blocks.value = [...blks]
     tabs.value = [...tbs]
     activeTabId.value = tabs.value[0]?.id ?? null
+    if (p.theme?.show_level) {
+      progress.value = (await pageStats(pageId.value, 7).catch(() => null))?.progress ?? null
+    }
   } catch (e) {
     error.value = getApiErrorMessage(e)
   } finally {
@@ -105,6 +110,7 @@ const previewBlocks = computed<PublicBlock[]>(() =>
         :theme="(page.theme as Theme)"
         :blocks="previewBlocks"
         :profile-meta="page.profile_meta"
+        :progress="progress"
       >
         <template v-if="hasTabs" #tabs>
           <PageTabsToggle

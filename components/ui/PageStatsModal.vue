@@ -98,6 +98,19 @@ const maxBlockClicks = computed(() =>
         </div>
 
         <template v-else-if="stats">
+          <div class="flex items-center justify-between gap-4 rounded-lg bg-gray-50 p-3 dark:bg-white/5" data-testid="stats-level">
+            <div>
+              <p class="text-xs text-gray-600 dark:text-gray-400">Nível da página</p>
+              <p class="font-display text-2xl font-bold">Nv. {{ stats.progress.level }}</p>
+            </div>
+            <p class="text-right text-xs tabular-nums text-gray-600 dark:text-gray-400">
+              {{ stats.progress.xp.toLocaleString('pt-BR') }} XP
+              <template v-if="stats.progress.next_level_xp !== null">
+                <br>faltam {{ (stats.progress.next_level_xp - stats.progress.xp).toLocaleString('pt-BR') }} para o próximo
+              </template>
+            </p>
+          </div>
+
           <div class="grid grid-cols-2 gap-3">
             <div class="rounded-lg border border-gray-200 p-3 dark:border-gray-800">
               <p class="text-2xl font-bold tabular-nums" data-testid="stats-views">{{ stats.views.toLocaleString('pt-BR') }}</p>
