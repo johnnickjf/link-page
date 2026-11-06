@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
 
-definePageMeta({ layout: false })
+definePageMeta({ layout: false, colorMode: 'light' })
 useHead({
   title: 'Reenviar confirmação · LinkLand',
   meta: [{ name: 'robots', content: 'noindex, follow' }],

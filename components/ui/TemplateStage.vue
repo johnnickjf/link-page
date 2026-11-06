@@ -14,9 +14,11 @@ function wrap(i: number): number {
   return (i + pages.length) % pages.length
 }
 
-// `compact` = um celular só; senão, o ativo e os vizinhos em leque.
+// `compact` = um celular só; senão, o ativo e os vizinhos em leque. No celular não
+// há largura para o leque: os vizinhos nem são renderizados.
+const isNarrow = useMediaQuery('(max-width: 639px)')
 const visible = computed(() =>
-  (props.compact ? [0] : [-1, 0, 1]).map((offset) => ({
+  (props.compact || isNarrow.value ? [0] : [-1, 0, 1]).map((offset) => ({
     offset,
     page: pages[wrap(active.value + offset)]!,
   })),
@@ -28,7 +30,8 @@ function stopAutoplay(): void {
   timer = null
 }
 onMounted(() => {
-  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
+  // Só a vitrine gamer gira sozinha: na home normal, a página fica parada.
+  if (!props.gamer || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
   timer = setInterval(() => {
     active.value = wrap(active.value + 1)
   }, 4200)
@@ -68,7 +71,7 @@ function select(i: number): void {
         </div>
         <template #fallback>
           <div class="stage-phone" data-offset="0" aria-hidden="true">
-            <div class="stage-phone__screen bg-[#16141f]" />
+            <div class="stage-phone__screen stage-phone__screen--empty" />
           </div>
         </template>
       </ClientOnly>
@@ -76,7 +79,7 @@ function select(i: number): void {
 
     <div
       v-if="!compact"
-      class="mt-6 flex max-w-sm flex-wrap justify-center gap-1.5"
+      class="relative z-3 mt-6 flex max-w-lg flex-wrap justify-center gap-1.5"
       role="group"
       aria-label="Ver o template"
     >
@@ -114,10 +117,10 @@ function select(i: number): void {
   margin-left: calc(var(--phone-w) / -2);
   padding: 7px;
   border-radius: 2.4rem;
-  background: #05040a;
+  background: #0f172a;
   box-shadow:
-    0 0 0 1px rgb(255 255 255 / 0.14),
-    0 40px 80px -24px rgb(0 0 0 / 0.8);
+    0 0 0 1px rgb(15 23 42 / 0.08),
+    0 28px 56px -24px rgb(15 23 42 / 0.45);
   transition: transform 0.6s cubic-bezier(0.22, 0.8, 0.35, 1), opacity 0.4s ease;
 }
 .stage-phone[data-offset='0'] {
@@ -133,13 +136,6 @@ function select(i: number): void {
 }
 .stage-phone[data-offset='1'] {
   transform: translateX(46%) translateY(26px) rotate(7deg) scale(0.86);
-}
-/* No celular não há largura para o leque: fica só o ativo. */
-@media (max-width: 639px) {
-  .stage-phone[data-offset='-1'],
-  .stage-phone[data-offset='1'] {
-    display: none;
-  }
 }
 /* A tela é desenhada em largura de celular real e reduzida: o template renderiza
    exatamente como na página publicada. 234 = 248 da moldura - 2x7 de borda. */
@@ -157,26 +153,62 @@ function select(i: number): void {
   transform-origin: top left;
 }
 .stage-chip {
-  padding: 0.3rem 0.75rem;
+  padding: 0.45rem 0.85rem;
   border-radius: 9999px;
-  border: 1px solid rgb(255 255 255 / 0.4);
-  color: #fff;
+  border: 1px solid var(--ui-color-neutral-300);
+  background: #fff;
+  color: var(--ui-color-neutral-700);
   font-size: 0.8125rem;
   font-weight: 500;
   transition: background 0.2s ease, color 0.2s ease, border-color 0.2s ease;
 }
 .stage-chip:hover {
+  border-color: var(--ui-color-primary-600);
+}
+.stage-chip[aria-pressed='true'] {
+  border-color: var(--ui-color-primary-600);
+  background: var(--ui-color-primary-600);
+  color: #fff;
+}
+.stage-chip:focus-visible {
+  outline: 2px solid var(--ui-color-primary-600);
+  outline-offset: 2px;
+}
+
+/* Sobre o painel roxo das telas de login e cadastro. */
+.stage-panel .stage-phone {
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.2),
+    0 28px 56px -20px rgb(38 18 84 / 0.7);
+}
+
+/* Sobre o palco escuro da superfície gamer. */
+.stage-bg .stage-phone {
+  background: #05040a;
+  box-shadow:
+    0 0 0 1px rgb(255 255 255 / 0.14),
+    0 40px 80px -24px rgb(0 0 0 / 0.8);
+}
+.stage-bg .stage-phone__screen--empty {
+  background: #16141f;
+}
+.stage-bg .stage-chip {
+  padding: 0.3rem 0.75rem;
+  background: transparent;
+  border-color: rgb(255 255 255 / 0.4);
+  color: #fff;
+}
+.stage-bg .stage-chip:hover {
   border-color: #fff;
   background: rgb(255 255 255 / 0.12);
 }
-.stage-chip[aria-pressed='true'] {
-  border-color: var(--stage-accent, #d4ff3f);
-  background: var(--stage-accent, #d4ff3f);
-  color: var(--stage-accent-ink, #14170a);
+.stage-bg .stage-chip[aria-pressed='true'] {
+  border-color: var(--stage-accent);
+  background: var(--stage-accent);
+  color: var(--stage-accent-ink);
 }
-.stage-chip:focus-visible {
-  outline: 2px solid #fff;
-  outline-offset: 2px;
+.stage-bg .stage-chip:focus-visible {
+  outline-color: #fff;
 }
 @media (prefers-reduced-motion: reduce) {
   .stage-phone { transition: none; }

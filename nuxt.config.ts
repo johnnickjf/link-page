@@ -15,15 +15,25 @@ export default defineNuxtConfig({
 
   css: ['~/assets/css/main.css'],
 
+  // CSS em arquivo próprio: fica em cache entre as páginas, em vez de vir repetido
+  // dentro de cada HTML (216 KB que o servidor entrega sem compressão).
+  features: { inlineStyles: false },
+
+  // JS, CSS e demais arquivos estáticos já saem do build comprimidos.
+  nitro: { compressPublicAssets: { gzip: true, brotli: true } },
+
   // @nuxt/fonts baixa as fontes no build e as serve do próprio site. Sem os pesos
-  // listados, o navegador sintetiza o negrito a partir do 400. Só alfabetos
-  // latinos: cada @font-face entra no CSS das páginas públicas. Texto em outro
-  // alfabeto cai na fonte do sistema. Itálico só onde é usado (bio do Classic).
+  // listados, o navegador sintetiza o negrito a partir do 400. Bunny e não Google: o
+  // Google entrega também um .woff de 140 KB por peso, com o alfabeto inteiro, que
+  // vence os .woff2 no navegador. As mesmas fontes vêm do Bunny em arquivos leves,
+  // por alfabeto, e sem mudar a largura do texto das páginas já publicadas. O
+  // navegador só baixa o alfabeto que a página usa. Itálico só onde é usado (bio do
+  // Classic).
   fonts: {
+    provider: 'bunny',
     defaults: {
       weights: [400, 500, 600, 700, 800],
       styles: ['normal'],
-      subsets: ['latin', 'latin-ext'],
     },
     families: [
       { name: 'Playfair Display', weights: [400, 500, 600, 700], styles: ['normal', 'italic'], global: false },
@@ -81,7 +91,7 @@ export default defineNuxtConfig({
       meta: [
         { charset: 'utf-8' },
         { name: 'viewport', content: 'width=device-width, initial-scale=1' },
-        { name: 'theme-color', content: '#2c12c8' },
+        { name: 'theme-color', content: '#ffffff' },
         { name: 'robots', content: 'index, follow' },
       ],
       // Google Tag Manager — o snippet precisa ser o mais alto possível no

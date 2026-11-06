@@ -27,14 +27,8 @@ function demoBlocks(links: string[], networks: string[]): PublicBlock[] {
   ]
 }
 
+/** A vitrine abre no segundo item (ver `start`), com os vizinhos ao lado. */
 export const DEMO_PAGES: DemoPage[] = [
-  {
-    template: 'neon',
-    name: 'Neon',
-    title: 'Kai Beats',
-    bio: 'Produtor musical. Lançamento novo toda sexta.',
-    blocks: demoBlocks(['Ouvir o novo single', 'Beats à venda', 'Agenda de shows'], ['spotify', 'instagram', 'youtube']),
-  },
   {
     template: 'classic',
     name: 'Classic',
@@ -43,11 +37,19 @@ export const DEMO_PAGES: DemoPage[] = [
     blocks: demoBlocks(['Cardápio do dia', 'Reservar uma mesa', 'Como chegar'], ['instagram', 'whatsapp']),
   },
   {
-    template: 'pixel',
-    name: 'Pixel',
-    title: 'PixelKid',
-    bio: 'Speedruns e jogos retrô, ao vivo de terça a sábado.',
-    blocks: demoBlocks(['Live na Twitch', 'Servidor no Discord', 'Meus recordes'], ['twitch', 'discord', 'youtube']),
+    template: 'minimal',
+    name: 'Minimal',
+    title: 'Dra. Marina Rocha',
+    bio: 'Nutricionista. Atendimento on-line para todo o Brasil.',
+    blocks: demoBlocks(['Agendar consulta', 'Receitas gratuitas', 'Depoimentos'], ['instagram', 'whatsapp']),
+    theme: { button_color: '#6f3ce0', button_text_color: '#ffffff' },
+  },
+  {
+    template: 'dark',
+    name: 'Dark',
+    title: 'Rafa Souza',
+    bio: 'Desenvolvedor. Escrevo sobre código e carreira.',
+    blocks: demoBlocks(['Artigos', 'Projetos open source', 'Mentoria'], ['github', 'linkedin', 'x']),
   },
   {
     template: 'gradient',
@@ -57,18 +59,18 @@ export const DEMO_PAGES: DemoPage[] = [
     blocks: demoBlocks(['Meu portfólio', 'Curso de Canva', 'Newsletter semanal'], ['instagram', 'tiktok', 'linkedin']),
   },
   {
-    template: 'minimal',
-    name: 'Minimal',
-    title: 'Dra. Marina Rocha',
-    bio: 'Nutricionista. Atendimento on-line para todo o Brasil.',
-    blocks: demoBlocks(['Agendar consulta', 'Receitas gratuitas', 'Depoimentos'], ['instagram', 'whatsapp']),
+    template: 'neon',
+    name: 'Neon',
+    title: 'Kai Beats',
+    bio: 'Produtor musical. Lançamento novo toda sexta.',
+    blocks: demoBlocks(['Ouvir o novo single', 'Beats à venda', 'Agenda de shows'], ['spotify', 'instagram', 'youtube']),
   },
   {
-    template: 'dark',
-    name: 'Dark',
-    title: 'Rafa Souza',
-    bio: 'Desenvolvedor. Escrevo sobre código e carreira.',
-    blocks: demoBlocks(['Artigos', 'Projetos open source', 'Mentoria'], ['github', 'linkedin', 'x']),
+    template: 'pixel',
+    name: 'Pixel',
+    title: 'PixelKid',
+    bio: 'Speedruns e jogos retrô, ao vivo de terça a sábado.',
+    blocks: demoBlocks(['Live na Twitch', 'Servidor no Discord', 'Meus recordes'], ['twitch', 'discord', 'youtube']),
   },
 ]
 

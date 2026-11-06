@@ -229,26 +229,26 @@ async function confirmDelete(): Promise<void> {
     <!-- CTA Premium (só para Free) -->
     <div
       v-if="isFree && !userLoading"
-      class="mt-6 overflow-hidden rounded-2xl bg-gradient-to-br from-indigo-500 via-purple-600 to-pink-500 px-6 py-5 shadow-lg"
+      class="mt-6 rounded-2xl border border-primary-200 bg-primary-50 px-6 py-5 dark:border-primary-900 dark:bg-primary-950/40"
     >
       <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div class="flex items-start gap-3">
           <div
-            class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-white/20 text-white"
+            class="flex size-10 shrink-0 items-center justify-center rounded-xl bg-primary-600 text-white dark:bg-primary-400 dark:text-gray-950"
           >
-            <UIcon name="i-lucide-sparkles" class="size-5" />
+            <UIcon name="i-lucide-crown" class="size-5" />
           </div>
           <div>
-            <p class="font-semibold text-white">Desbloqueie o LinkLand Premium</p>
-            <p class="mt-1 text-sm text-white/75">
+            <p class="font-semibold text-gray-950 dark:text-white">Desbloqueie o LinkLand Premium</p>
+            <p class="mt-1 text-sm text-gray-700 dark:text-gray-200">
               Templates exclusivos, fontes, QR Code, blocos de texto e imagem — tudo por
-              <strong class="text-white">R$19,90/mês</strong>.
+              <strong class="text-gray-950 dark:text-white">R$19,90/mês</strong>.
             </p>
           </div>
         </div>
         <NuxtLink
           to="/settings"
-          class="shrink-0 self-start rounded-lg bg-white px-4 py-2 text-sm font-semibold text-indigo-600 shadow-sm transition hover:bg-white/90 sm:self-auto"
+          class="shrink-0 self-start rounded-lg bg-primary-600 px-4 py-2 text-sm font-semibold text-white transition hover:bg-primary-700 sm:self-auto dark:bg-primary-400 dark:text-gray-950 dark:hover:bg-primary-300"
         >
           Ver planos →
         </NuxtLink>

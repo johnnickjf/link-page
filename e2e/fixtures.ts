@@ -34,6 +34,9 @@ export const test = base.extend<{ consoleErrors: string[] }>({
       const text = msg.text()
       // Recursos externos abortados de propósito pelo bloqueio acima.
       if (/ERR_FAILED|ERR_BLOCKED|net::/.test(text)) return
+      // A barra do toast conta o tempo com Date.now(), e o relógio do WSL volta ~2,5 s a
+      // cada 30 s: durante o salto o valor passa de 100%. Não acontece fora do WSL.
+      if (/Invalid prop `value`.*`ProgressRoot`/.test(text)) return
       errors.push(`console: ${text}`)
     })
     await use(errors)

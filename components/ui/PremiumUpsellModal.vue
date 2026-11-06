@@ -11,8 +11,8 @@ function goToPlans(): void {
   <UModal v-model:open="isOpen" :title="plan === 'gamer' ? 'Esse recurso é do plano Gamer' : 'Esse recurso é Premium'">
     <template #body>
       <div class="flex flex-col items-center gap-4 py-2 text-center">
-        <div class="flex size-14 items-center justify-center rounded-2xl bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 text-white shadow-lg">
-          <UIcon name="i-lucide-sparkles" class="size-7" />
+        <div class="flex size-14 items-center justify-center rounded-2xl bg-primary-50 text-primary-700 dark:bg-primary-950 dark:text-primary-300">
+          <UIcon name="i-lucide-crown" class="size-7" />
         </div>
         <p v-if="plan === 'gamer'" class="text-sm text-gray-600 dark:text-gray-300">
           O plano Gamer tem tudo do Premium e libera temas gamer, conquistas,
@@ -30,8 +30,8 @@ function goToPlans(): void {
           Agora não
         </UButton>
         <UButton
-          icon="i-lucide-sparkles"
-          class="w-full sm:w-auto bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 hover:opacity-90"
+          icon="i-lucide-crown"
+          class="w-full sm:w-auto"
           @click="goToPlans"
         >
           Assinar agora

@@ -19,7 +19,10 @@ useSeoMeta({
   ogImage: `${SITE_URL}/og-image.png`,
   twitterCard: 'summary_large_image',
 })
-useHead({ link: [{ rel: 'canonical', href: `${SITE_URL}/gamer` }] })
+useHead({
+  link: [{ rel: 'canonical', href: `${SITE_URL}/gamer` }],
+  meta: [{ name: 'theme-color', content: '#080420' }],
+})
 
 // Quem já tem conta vai direto para os planos; quem não tem, cria o perfil.
 const signupTo = computed(() => (auth.isAuthenticated ? '/dashboard' : '/register?kind=gamer'))
@@ -120,7 +123,7 @@ useHead({
               id="hero-heading"
               class="animate-rise mt-4 font-headline text-[clamp(2.9rem,7.4vw,5.5rem)] font-extrabold leading-[0.98] tracking-[-0.03em] [animation-delay:80ms]"
             >
-              Seu perfil de <span class="text-brand-gradient">jogador</span> em um link só.
+              Seu perfil de <span class="text-brand-accent">jogador</span> em um link só.
             </h1>
             <p class="animate-rise mx-auto mt-6 max-w-xl text-pretty text-lg leading-relaxed text-white/95 [animation-delay:160ms] lg:mx-0">
               IDs de todas as plataformas, os jogos que você mais joga, suas conquistas e

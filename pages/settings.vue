@@ -111,7 +111,7 @@ const PREMIUM_FEATURES = [
       class="mx-auto mb-8 max-w-3xl"
       color="success"
       variant="soft"
-      icon="i-lucide-sparkles"
+      icon="i-lucide-crown"
       :title="`Você já tem o plano ${isGamer ? 'Gamer' : 'Premium'}`"
       description="Aproveite os recursos do seu plano. Obrigado por apoiar o LinkLand!"
     >
@@ -204,23 +204,23 @@ const PREMIUM_FEATURES = [
       <div class="order-1 relative lg:order-none">
         <div class="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap">
           <span
-            class="rounded-full bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 py-1 text-xs font-semibold text-white shadow"
+            class="rounded-full bg-primary-600 px-4 py-1 text-xs font-semibold text-white dark:bg-primary-400 dark:text-gray-950"
           >
             Mais popular
           </span>
         </div>
 
-        <div class="overflow-hidden rounded-xl shadow-lg ring-2 ring-indigo-500/50">
-          <div class="bg-gradient-to-br from-indigo-600 via-purple-600 to-pink-600 px-6 py-6">
-            <p class="text-sm font-semibold text-indigo-100">Premium</p>
+        <div class="overflow-hidden rounded-xl ring-2 ring-primary-600 dark:ring-primary-400">
+          <div class="bg-primary-50 px-6 py-6 dark:bg-primary-950/40">
+            <p class="text-sm font-semibold text-primary-800 dark:text-primary-200">Premium</p>
             <div class="mt-2 flex items-end gap-1">
-              <span class="font-display text-4xl font-bold tracking-tight text-white">{{ priceLabel }}</span>
-              <span class="mb-1 text-sm text-indigo-200">{{ priceSuffix }}</span>
+              <span class="font-display text-4xl font-bold tracking-tight text-gray-950 dark:text-white">{{ priceLabel }}</span>
+              <span class="mb-1 text-sm text-gray-700 dark:text-gray-200">{{ priceSuffix }}</span>
             </div>
-            <p v-if="interval === 'yearly'" class="mt-1 text-sm text-indigo-100">
+            <p v-if="interval === 'yearly'" class="mt-1 text-sm text-gray-700 dark:text-gray-200">
               Equivale a R${{ yearlyMonthlyEquivalentLabel }}/mês · economize R${{ yearlySavingsLabel }} no ano
             </p>
-            <p class="mt-1.5 text-sm text-indigo-100">
+            <p class="mt-1.5 text-sm text-gray-700 dark:text-gray-200">
               Tudo que você precisa para crescer online.
             </p>
           </div>
@@ -228,7 +228,7 @@ const PREMIUM_FEATURES = [
           <div class="bg-white p-6 dark:bg-gray-900">
             <button
               type="button"
-              class="flex w-full items-center justify-center gap-2 rounded-lg bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 px-4 py-2.5 text-sm font-semibold text-white shadow-sm transition hover:opacity-90 focus:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-60"
+              class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 dark:bg-primary-400 dark:text-gray-950 dark:hover:bg-primary-300 disabled:cursor-not-allowed disabled:opacity-60"
               :disabled="isPremium || billing.loading.value"
               data-testid="buy-premium"
               @click="billing.checkout(interval)"
@@ -246,7 +246,7 @@ const PREMIUM_FEATURES = [
               >
                 <UIcon
                   name="i-lucide-check"
-                  class="mt-0.5 size-4 shrink-0 text-indigo-500"
+                  class="mt-0.5 size-4 shrink-0 text-primary-600 dark:text-primary-400"
                 />
                 <span>{{ f.label }}</span>
               </li>

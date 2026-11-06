@@ -9,7 +9,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
   [{ label: auth.user?.email || 'Minha conta', type: 'label' }],
   [
     { label: 'Minha conta', icon: 'i-lucide-user', to: '/account' },
-    { label: 'Planos', icon: 'i-lucide-sparkles', to: '/settings' },
+    { label: 'Planos', icon: 'i-lucide-crown', to: '/settings' },
     { label: 'Suporte', icon: 'i-lucide-life-buoy', to: '/support' },
   ],
   [
@@ -54,8 +54,7 @@ const menuItems = computed<DropdownMenuItem[][]>(() => [
             to="/settings"
             aria-label="Ver planos"
             size="sm"
-            icon="i-lucide-sparkles"
-            class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white hover:opacity-90"
+            icon="i-lucide-crown"
           >
             <span class="hidden sm:inline">Premium</span>
           </UButton>

@@ -82,7 +82,7 @@ async function onSubmit(): Promise<void> {
       class="mb-6"
       color="success"
       variant="soft"
-      icon="i-lucide-sparkles"
+      icon="i-lucide-crown"
 :title="`Sua assinatura ${paidPlanName} continua ativa!`"
       :description="`Suas alterações foram salvas. Aproveite todos os recursos ${paidPlanName}.`"
     >
@@ -178,7 +178,7 @@ async function onSubmit(): Promise<void> {
       <p class="text-sm text-gray-500 dark:text-gray-400">
         Mudou de ideia?
       </p>
-      <UButton to="/settings" variant="subtle" color="primary" icon="i-lucide-sparkles">
+      <UButton to="/settings" variant="subtle" color="primary" icon="i-lucide-crown">
         Reativar Premium
       </UButton>
     </div>

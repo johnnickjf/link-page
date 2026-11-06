@@ -1,5 +1,5 @@
 <script setup lang="ts">
-definePageMeta({ layout: false })
+definePageMeta({ layout: false, colorMode: 'light' })
 useHead({
   title: 'Verificando e-mail · LinkLand',
   meta: [{ name: 'robots', content: 'noindex, follow' }],

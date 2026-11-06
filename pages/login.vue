@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import type { FormError, FormSubmitEvent } from '@nuxt/ui'
 
-definePageMeta({ layout: false })
+definePageMeta({ layout: false, colorMode: 'light' })
 useHead({ title: 'Entrar · LinkLand' })
 
 const route = useRoute()
@@ -134,8 +134,7 @@ async function onSubmit(event: FormSubmitEvent<typeof state>): Promise<void> {
           block
           size="lg"
           :loading="loading"
-          class="bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-md shadow-indigo-500/25 transition hover:opacity-90"
-        >
+                  >
           Entrar
         </UButton>
       </UForm>
