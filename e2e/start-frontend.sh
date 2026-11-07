@@ -6,8 +6,9 @@ HERE="$(cd "$(dirname "$0")" && pwd)"
 cd "$HERE/.."
 
 export NUXT_PUBLIC_GTM_ID=""
-export API_BASE="http://127.0.0.1:8765"
-export NUXT_PUBLIC_API_BASE="http://127.0.0.1:8765"
+# Com barra no fim, igual à produção: quem junta a URL na mão quebra aqui também.
+export API_BASE="http://127.0.0.1:8765/"
+export NUXT_PUBLIC_API_BASE="http://127.0.0.1:8765/"
 export NUXT_PUBLIC_SITE_URL="http://127.0.0.1:3100"
 
 if [ "${E2E_SKIP_BUILD:-0}" != "1" ] || [ ! -f .output/server/index.mjs ]; then

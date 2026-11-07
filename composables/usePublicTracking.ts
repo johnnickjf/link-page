@@ -34,7 +34,9 @@ export function usePublicTracking(slug: MaybeRefOrGetter<string>) {
 
   function send(path: string): void {
     try {
-      const base = `${config.public.apiBase}/public/${encodeURIComponent(toValue(slug))}`
+      // A base pode vir com barra no fim, como em produção: `//public` responde 404.
+      const api = config.public.apiBase.replace(/\/+$/, '')
+      const base = `${api}/public/${encodeURIComponent(toValue(slug))}`
       fetch(`${base}${path}`, {
         method: 'POST',
         keepalive: true,
