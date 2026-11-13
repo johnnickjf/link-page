@@ -9,24 +9,6 @@ const auth = useAuthStore()
 const pagesStore = usePagesStore()
 const { open: openPremiumUpsell } = usePremiumUpsell()
 
-// Miniatura de cada template: dá para escolher pelo olho, sem ler descrição.
-const SWATCHES: Record<string, { bg: string, bar: string, ring?: string }> = {
-  minimal: { bg: '#ffffff', bar: '#e2e8f0', ring: '#e2e8f0' },
-  classic: { bg: '#f8f5ee', bar: '#d6d3d1', ring: '#e7e5e4' },
-  dark: { bg: '#18181b', bar: '#3f3f46' },
-  gradient: { bg: 'linear-gradient(160deg, #4338ca, #7e22ce 48%, #be185d)', bar: 'rgb(255 255 255 / 0.3)' },
-  neon: { bg: '#050507', bar: '#22d3ee' },
-  pixel: { bg: '#0a0a16', bar: '#22c55e' },
-  arcade: { bg: 'linear-gradient(180deg, #12052e, #2a0a4a)', bar: '#ff4fd8' },
-  hud: { bg: '#0b0e0a', bar: '#facc15' },
-  esports: { bg: 'linear-gradient(115deg, #0a0a0c 60%, #ef4444 60%)', bar: '#3f3f46' },
-  cozy: { bg: '#f7f0e1', bar: '#cfe3c8', ring: '#e3d9bf' },
-}
-const FALLBACK_SWATCH = { bg: '#f1f5f9', bar: '#cbd5e1' }
-function swatch(id: string) {
-  return SWATCHES[id] ?? FALLBACK_SWATCH
-}
-
 const templates = ref<Template[]>([])
 const loading = ref(true)
 const error = ref<string | null>(null)
@@ -47,7 +29,11 @@ async function load(): Promise<void> {
     loading.value = false
   }
 }
-onMounted(load)
+onMounted(() => {
+  load()
+  // Trocar de template na prévia sem esperar o download do novo.
+  preloadTemplates()
+})
 
 // Em perfil gamer, os temas gamer aparecem primeiro.
 const ordered = computed(() => {
@@ -122,11 +108,11 @@ function select(t: Template): void {
       >
         <div
           class="mb-2.5 flex h-14 flex-col justify-end gap-1 rounded-md p-1.5"
-          :style="{ background: swatch(t.id).bg, boxShadow: swatch(t.id).ring ? `inset 0 0 0 1px ${swatch(t.id).ring}` : undefined }"
+          :style="{ background: templateSwatch(t.id).bg, boxShadow: templateSwatch(t.id).ring ? `inset 0 0 0 1px ${templateSwatch(t.id).ring}` : undefined }"
           aria-hidden="true"
         >
-          <span class="block h-1.5 rounded-sm" :style="{ background: swatch(t.id).bar }" />
-          <span class="block h-1.5 rounded-sm" :style="{ background: swatch(t.id).bar }" />
+          <span class="block h-1.5 rounded-sm" :style="{ background: templateSwatch(t.id).bar }" />
+          <span class="block h-1.5 rounded-sm" :style="{ background: templateSwatch(t.id).bar }" />
         </div>
         <div class="flex items-center justify-between gap-1">
           <span class="font-medium">{{ t.name }}</span>

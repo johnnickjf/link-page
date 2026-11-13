@@ -6,13 +6,16 @@
 export const GAMER_PRICE_MONTHLY = 29.9
 export const GAMER_PRICE_YEARLY = 299.9
 
+/** Preço mensal do Premium, igual ao Price do Stripe. */
+export const PREMIUM_PRICE_MONTHLY = 19.9
+
 export function brl(value: number): string {
   return value.toLocaleString('pt-BR', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
 }
 
 /** O que o plano Gamer soma ao Premium. */
 export const GAMER_EXCLUSIVE_FEATURES = [
-  'Temas gamer HUD, Esports e Cozy',
+  'Temas gamer HUD, Esports, Cozy, Terminal e Quest',
   'Conquistas no perfil',
   'Player da Twitch, do YouTube e widget do Discord',
   'Cabeçalho com gamertag, jogo principal e status',
@@ -31,7 +34,7 @@ export const FREE_HIGHLIGHTS = [
 /** O que o Premium soma ao Free. */
 export const PREMIUM_HIGHLIGHTS = [
   'Até 10 páginas, com 100 blocos em cada',
-  'Templates Gradient, Neon e Pixel',
+  'Templates Gradient, Neon, Pixel, Aurora e Noir',
   'Blocos de Texto, Imagem e Mapa, e seções',
   'Fontes e fundo personalizados',
   'QR Code e sem o "Criado por LinkLand"',
@@ -64,8 +67,8 @@ export const PLAN_COMPARISON: { title: string, rows: PlanComparisonRow[] }[] = [
     title: 'Templates',
     rows: [
       { label: 'Minimal, Classic, Dark e Arcade', free: true, premium: true, gamer: true },
-      { label: 'Gradient, Neon e Pixel', free: false, premium: true, gamer: true },
-      { label: 'HUD, Esports e Cozy', free: false, premium: false, gamer: true },
+      { label: 'Gradient, Neon, Pixel, Aurora e Noir', free: false, premium: true, gamer: true },
+      { label: 'HUD, Esports, Cozy, Terminal e Quest', free: false, premium: false, gamer: true },
     ],
   },
   {

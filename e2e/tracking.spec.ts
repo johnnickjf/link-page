@@ -226,6 +226,26 @@ test('prévia do editor não conta visita', async ({ page, request }) => {
   expect(tracked).toEqual([])
 })
 
+test('resumo do painel soma os números de todas as páginas', async ({ page }) => {
+  await skipOnboarding(page)
+  await login(page, 'premium@example.com')
+  await expect(page).toHaveURL(/\/dashboard$/)
+  await expect(page.getByTestId('page-views').first()).toHaveText('161')
+
+  const sum = async (testId: string) =>
+    (await page.getByTestId(testId).allInnerTexts()).reduce((n, t) => n + Number(t.replace(/\D/g, '')), 0)
+  const views = await sum('page-views')
+  const clicks = await sum('page-clicks')
+  expect(views).toBeGreaterThanOrEqual(161)
+  await expect(page.getByTestId('overview-views')).toHaveText(views.toLocaleString('pt-BR'))
+  await expect(page.getByTestId('overview-clicks')).toHaveText(clicks.toLocaleString('pt-BR'))
+  await expect(page.getByTestId('overview-per-visit')).toHaveText(
+    (clicks / views).toLocaleString('pt-BR', { maximumFractionDigits: 1 }),
+  )
+  // Cada cartão mostra a miniatura do tema da página.
+  await expect(page.getByTestId('page-swatch')).toHaveCount(await page.getByTestId('page-views').count())
+})
+
 test('painel mostra os números e o modal de estatísticas', async ({ page, consoleErrors }) => {
   await skipOnboarding(page)
   await login(page, 'premium@example.com')

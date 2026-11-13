@@ -47,3 +47,15 @@ export function passwordError(password: string): string | null {
   if (!/[0-9]/.test(password)) return 'Inclua ao menos 1 número'
   return null
 }
+
+/**
+ * Completa com https:// um endereço digitado sem esquema ("loja.com.br",
+ * "instagram.com/voce"), do jeito que as pessoas copiam da barra do navegador.
+ * Quem já tem esquema passa intacto, inclusive os perigosos: o backend recusa.
+ */
+export function withScheme(url?: string | null): string {
+  const u = (url ?? '').trim()
+  if (!u || /^[a-z][a-z0-9+.-]*:/i.test(u)) return u
+  if (u.startsWith('//')) return `https:${u}`
+  return `https://${u}`
+}

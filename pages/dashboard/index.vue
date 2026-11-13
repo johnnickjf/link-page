@@ -32,6 +32,20 @@ async function loadStats(): Promise<void> {
 }
 onMounted(loadStats)
 
+// Resumo do topo: soma de todas as páginas na mesma janela de 30 dias dos cartões.
+// "Cliques por visita" e não porcentagem: o clique é único por bloco, então quem
+// visita e clica em três links soma três, e a taxa passaria de 100%.
+const totals = computed(() => {
+  const all = Object.values(statsByPage.value)
+  const views = all.reduce((n, p) => n + p.views, 0)
+  const clicks = all.reduce((n, p) => n + p.clicks, 0)
+  return {
+    views,
+    clicks,
+    perVisit: views ? (clicks / views).toLocaleString('pt-BR', { maximumFractionDigits: 1 }) : '—',
+  }
+})
+
 function levelPercent(p: StatsSummary['pages'][number]['progress']): number {
   if (p.next_level_xp === null) return 100
   return Math.round(((p.xp - p.level_xp) / (p.next_level_xp - p.level_xp)) * 100)
@@ -276,6 +290,44 @@ async function confirmDelete(): Promise<void> {
       </div>
     </UCard>
 
+    <!-- Resumo dos últimos 30 dias -->
+    <section
+      v-if="pagesStore.loaded && pagesStore.pages.length"
+      class="mt-6"
+      aria-labelledby="overview-title"
+      data-testid="overview"
+    >
+      <h2 id="overview-title" class="text-sm font-semibold text-gray-700 dark:text-gray-200">
+        Últimos 30 dias, em todas as páginas
+      </h2>
+      <dl class="mt-2 grid grid-cols-3 gap-2 sm:gap-3">
+        <div class="rounded-xl border border-gray-200 bg-white p-3 sm:p-4 dark:border-gray-800 dark:bg-gray-900">
+          <dt class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+            <UIcon name="i-lucide-eye" class="size-3.5 shrink-0" aria-hidden="true" />Visitas
+          </dt>
+          <dd class="mt-1 font-display text-xl font-bold tabular-nums sm:text-2xl" data-testid="overview-views">
+            {{ totals.views.toLocaleString('pt-BR') }}
+          </dd>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-white p-3 sm:p-4 dark:border-gray-800 dark:bg-gray-900">
+          <dt class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+            <UIcon name="i-lucide-mouse-pointer-click" class="size-3.5 shrink-0" aria-hidden="true" />Cliques
+          </dt>
+          <dd class="mt-1 font-display text-xl font-bold tabular-nums sm:text-2xl" data-testid="overview-clicks">
+            {{ totals.clicks.toLocaleString('pt-BR') }}
+          </dd>
+        </div>
+        <div class="rounded-xl border border-gray-200 bg-white p-3 sm:p-4 dark:border-gray-800 dark:bg-gray-900">
+          <dt class="flex items-center gap-1.5 text-xs text-gray-600 dark:text-gray-400">
+            <UIcon name="i-lucide-trending-up" class="size-3.5 shrink-0" aria-hidden="true" />Cliques por visita
+          </dt>
+          <dd class="mt-1 font-display text-xl font-bold tabular-nums sm:text-2xl" data-testid="overview-per-visit">
+            {{ totals.perVisit }}
+          </dd>
+        </div>
+      </dl>
+    </section>
+
     <!-- Loading -->
     <div
       v-if="!pagesStore.loaded && !pagesStore.error"
@@ -331,7 +383,20 @@ async function confirmDelete(): Promise<void> {
         class="flex flex-col rounded-xl border border-gray-200 bg-white p-4 dark:border-gray-800 dark:bg-gray-900"
       >
         <div class="flex items-start justify-between gap-2">
-          <div class="min-w-0">
+          <div
+            class="flex h-12 w-10 shrink-0 flex-col justify-end gap-1 rounded-md p-1.5"
+            :style="{
+              background: templateSwatch(page.template).bg,
+              boxShadow: templateSwatch(page.template).ring ? `inset 0 0 0 1px ${templateSwatch(page.template).ring}` : undefined,
+            }"
+            :title="`Tema ${templateName(page.template)}`"
+            aria-hidden="true"
+            data-testid="page-swatch"
+          >
+            <span class="block h-1 rounded-sm" :style="{ background: templateSwatch(page.template).bar }" />
+            <span class="block h-1 rounded-sm" :style="{ background: templateSwatch(page.template).bar }" />
+          </div>
+          <div class="min-w-0 flex-1">
             <h3 class="truncate font-semibold">{{ page.title }}</h3>
             <button
               type="button"

@@ -45,9 +45,13 @@ const PREMIUM_TEMPLATES = [
   { value: 'hud', label: 'HUD' },
   { value: 'esports', label: 'Esports' },
   { value: 'cozy', label: 'Cozy' },
+  { value: 'terminal', label: 'Terminal' },
+  { value: 'quest', label: 'Quest' },
   { value: 'gradient', label: 'Gradient' },
   { value: 'neon', label: 'Neon' },
   { value: 'pixel', label: 'Pixel' },
+  { value: 'aurora', label: 'Aurora' },
+  { value: 'noir', label: 'Noir' },
 ]
 
 const planForm = reactive({ plan: 'free' as Plan, max_pages: null as number | null, max_blocks_per_page: null as number | null })

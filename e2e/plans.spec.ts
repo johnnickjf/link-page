@@ -159,7 +159,7 @@ test('comparação: limites iguais aos que o backend aplica', async ({ page }) =
   const cells = (label: string) => row(label).locator('td').allInnerTexts()
   expect(await cells('Blocos por página')).toEqual(['10', '100', '100'])
   expect((await cells('Lista de jogos'))[2]).toBe('24 por bloco')
-  expect(await row('HUD, Esports e Cozy').locator('td', { hasText: 'Não incluso' }).count()).toBe(2)
+  expect(await row('HUD, Esports, Cozy, Terminal e Quest').locator('td', { hasText: 'Não incluso' }).count()).toBe(2)
   await expect(page.getByTestId('comparison-row').filter({ hasText: /^Páginas/ }).locator('td').first()).toHaveText('1')
 })
 
@@ -201,4 +201,28 @@ test('visual: tela de planos', async ({ page }) => {
   await openPlans(page, 'free@example.com')
   await settle(page)
   await expect(page).toHaveScreenshot('plans-free.png', { fullPage: true })
+})
+
+test('home: comparação completa dos planos abre sob demanda', async ({ page }) => {
+  await page.goto('/')
+  await page.waitForLoadState('networkidle')
+  const toggle = page.getByTestId('home-compare-toggle')
+  const table = page.getByTestId('plan-comparison')
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await expect(table).toBeHidden()
+
+  await toggle.click()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'true')
+  await expect(table).toBeVisible()
+  for (const name of ['Free', 'Premium', 'Gamer']) {
+    await expect(table.getByRole('columnheader', { name, exact: true })).toBeVisible()
+  }
+  // Na home o destaque é o Premium, e ele tem tudo menos os recursos gamer.
+  await expect(table.getByRole('columnheader', { name: 'Premium', exact: true })).toHaveClass(/bg-primary-100/)
+  const missing = (plan: string) => table.locator(`td[data-plan="${plan}"]`, { hasText: 'Não incluso' }).count()
+  expect(await missing('gamer')).toBe(0)
+  expect(await missing('premium')).toBe(4)
+
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+  expect(overflow).toBe(0)
 })

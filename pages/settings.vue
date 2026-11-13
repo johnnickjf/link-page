@@ -15,7 +15,7 @@ const isFree = computed(() => currentPlan.value === 'free')
 const showManage = computed(() => currentPlan.value === 'premium' || isGamer.value)
 
 // ---- Mensal / Anual ----
-const MONTHLY_PRICE = 19.9
+const MONTHLY_PRICE = PREMIUM_PRICE_MONTHLY
 const YEARLY_PRICE = 199.9
 
 const yearlySavingsLabel = brl(MONTHLY_PRICE * 12 - YEARLY_PRICE)
@@ -57,11 +57,6 @@ function runUpgrade(): void {
   billing.checkout(interval.value, 'gamer')
 }
 
-const COMPARISON_COLUMNS = [
-  { id: 'free', name: 'Free' },
-  { id: 'premium', name: 'Premium' },
-  { id: 'gamer', name: 'Gamer' },
-] as const
 </script>
 
 <template>
@@ -276,72 +271,14 @@ const COMPARISON_COLUMNS = [
     </div>
 
     <!-- Comparação completa: o Gamer é a coluna que tem tudo. -->
-    <section class="mx-auto mt-16 max-w-5xl" aria-labelledby="compare-title" data-testid="plan-comparison">
+    <section class="mx-auto mt-16 max-w-5xl" aria-labelledby="compare-title">
       <h2 id="compare-title" class="text-center font-display text-2xl font-bold tracking-tight">
         Compare todos os recursos
       </h2>
       <p class="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
         Cada plano inclui tudo do plano anterior.
       </p>
-
-      <table class="mt-8 w-full table-fixed border-separate border-spacing-0 text-sm">
-        <thead class="sticky top-14 z-10">
-          <tr>
-            <th scope="col" class="w-[40%] border-b border-gray-200 bg-gray-50 sm:w-1/2 dark:border-gray-800 dark:bg-gray-950">
-              <span class="sr-only">Recurso</span>
-            </th>
-            <th
-              v-for="column in COMPARISON_COLUMNS"
-              :key="column.id"
-              scope="col"
-              class="border-b border-gray-200 px-0.5 py-3 text-center text-xs font-semibold sm:text-sm dark:border-gray-800"
-              :class="column.id === 'gamer'
-                ? 'rounded-t-lg bg-primary-100 text-primary-900 dark:bg-primary-950 dark:text-primary-100'
-                : 'bg-gray-50 dark:bg-gray-950'"
-            >
-              {{ column.name }}
-            </th>
-          </tr>
-        </thead>
-        <tbody v-for="group in PLAN_COMPARISON" :key="group.title">
-          <tr>
-            <th
-              colspan="4"
-              scope="rowgroup"
-              class="pb-2 pt-6 text-left font-display text-sm font-semibold"
-            >
-              {{ group.title }}
-            </th>
-          </tr>
-          <tr v-for="row in group.rows" :key="row.label" data-testid="comparison-row">
-            <th
-              scope="row"
-              class="border-t border-gray-200 py-3 pr-2 text-left font-normal text-gray-700 dark:border-gray-800 dark:text-gray-200"
-            >
-              {{ row.label }}
-            </th>
-            <td
-              v-for="column in COMPARISON_COLUMNS"
-              :key="column.id"
-              class="border-t border-gray-200 px-0.5 py-3 text-center align-middle dark:border-gray-800"
-              :class="column.id === 'gamer' ? 'bg-primary-50 dark:bg-primary-950/40' : ''"
-              :data-plan="column.id"
-            >
-              <span v-if="typeof row[column.id] === 'string'" class="text-xs font-semibold sm:text-sm">
-                {{ row[column.id] }}
-              </span>
-              <template v-else-if="row[column.id]">
-                <UIcon name="i-lucide-check" class="mx-auto block size-5 text-primary-600 dark:text-primary-400" />
-                <span class="sr-only">Incluso</span>
-              </template>
-              <template v-else>
-                <UIcon name="i-lucide-minus" class="mx-auto block size-4 text-gray-300 dark:text-gray-600" />
-                <span class="sr-only">Não incluso</span>
-              </template>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <PlanComparisonTable class="mt-8" sticky-class="top-14" />
     </section>
 
     <UModal v-model:open="confirmUpgrade" title="Trocar para o plano Gamer?">

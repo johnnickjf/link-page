@@ -134,3 +134,23 @@ test('slug é case-insensitive', async ({ page }) => {
   expect(res?.status()).toBe(200)
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Template Minimal')
 })
+
+test('página pública baixa só o CSS do próprio template', async ({ request }) => {
+  const cssOf = async (path: string) => {
+    const html = await (await request.get(path)).text()
+    const hrefs = [...html.matchAll(/<link[^>]*>/g)]
+      .map((m) => m[0])
+      .filter((tag) => /rel="stylesheet"/.test(tag))
+      .map((tag) => /href="([^"]+)"/.exec(tag)?.[1])
+      .filter((h): h is string => Boolean(h))
+    let css = ''
+    for (const href of hrefs) css += await (await request.get(href)).text()
+    return css
+  }
+  const quest = await cssOf('/tpl-quest')
+  expect(quest).toContain('quest-root')
+  for (const other of ['hud-root', 'noir-root', 'cozy-root', 'neon-root']) expect(quest).not.toContain(other)
+  const noir = await cssOf('/tpl-noir')
+  expect(noir).toContain('noir-root')
+  expect(noir).not.toContain('quest-root')
+})

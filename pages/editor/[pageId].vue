@@ -566,13 +566,14 @@ async function copyPublicUrl(): Promise<void> {
               type="button"
               role="tab"
               :aria-selected="editorTab === tab.value"
-              class="flex flex-1 items-center justify-center gap-1.5 rounded-lg px-2 py-2 text-sm font-medium transition focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
+              class="flex min-w-0 flex-1 items-center justify-center gap-1.5 rounded-lg px-1.5 py-2 text-[13px] font-medium transition sm:px-2 sm:text-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-500"
               :class="editorTab === tab.value
                 ? 'bg-white text-gray-900 shadow-sm dark:bg-gray-800 dark:text-gray-100'
                 : 'text-gray-600 hover:text-gray-900 dark:text-gray-400 dark:hover:text-gray-100'"
               @click="editorTab = tab.value"
             >
-              <UIcon :name="tab.icon" class="size-4" aria-hidden="true" />
+              <!-- Em celular pequeno o ícone sai para o rótulo caber. -->
+              <UIcon :name="tab.icon" class="hidden size-4 shrink-0 min-[400px]:block" aria-hidden="true" />
               {{ tab.label }}
             </button>
           </div>

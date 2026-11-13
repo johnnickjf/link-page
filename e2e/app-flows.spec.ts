@@ -259,3 +259,22 @@ test('cadastro cria conta e pede confirmação de e-mail', async ({ page, consol
   await expect(page.getByText(/confirm|verifi/i).first()).toBeVisible()
   expect(consoleErrors).toEqual([])
 })
+
+test('admin: painel mostra assinantes, crescimento e movimento da plataforma', async ({ page, consoleErrors }) => {
+  await login(page, 'admin@example.com')
+  await expect(page).toHaveURL(/\/admin$/)
+  const value = async (label: string) => {
+    const el = page.getByTestId(`admin-stat-${label}`)
+    await expect(el).toBeVisible()
+    return Number((await el.innerText()).replace(/\D/g, ''))
+  }
+  const users = await value('Usuários')
+  const subscribers = await value('Assinantes')
+  const visits = await value('Visitas em 30 dias')
+  // Seed: premium@ e gamer@ pagam; a vitrine do premium tem 161 visitas no mês.
+  expect(subscribers).toBeGreaterThanOrEqual(2)
+  expect(users).toBeGreaterThan(subscribers)
+  expect(visits).toBeGreaterThanOrEqual(161)
+  await expect(page.getByText(/% de conversão · \d+ Premium · \d+ Gamer/)).toBeVisible()
+  expect(consoleErrors).toEqual([])
+})

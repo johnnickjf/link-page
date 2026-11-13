@@ -175,3 +175,69 @@ test('cadastro pelo caminho gamer avisa o próximo passo', async ({ page }) => {
   await page.goto('/register')
   await expect(page.getByText('você já monta seu perfil gamer')).toHaveCount(0)
 })
+
+/**
+ * Celulares pequenos: 320 px (iPhone SE e Androids de entrada) e 360 px (a largura
+ * mais comum no Brasil). Nada pode sair da tela, nenhum texto pode estourar o
+ * botão e os botões dos temas precisam ter área de toque de pelo menos 44 px.
+ */
+const SMALL_PUBLIC = ['/', '/gamer', '/register', '/tpl-aurora', '/tpl-noir', '/tpl-terminal', '/tpl-quest', '/gf-terminal', '/gf-quest', '/tabs-demo']
+for (const width of [320, 360]) {
+  test(`celular de ${width}px: páginas públicas e temas`, async ({ page, consoleErrors }, testInfo) => {
+    test.skip(testInfo.project.name !== 'mobile', 'só no projeto mobile')
+    await page.setViewportSize({ width, height: 700 })
+    await disableTracking(page)
+    for (const path of SMALL_PUBLIC) {
+      await page.goto(path)
+      await settle(page)
+      expect(await overflowing(page), `fora da tela em ${path} (${width}px)`).toEqual([])
+      const scroll = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+      expect(scroll, `rolagem lateral em ${path} (${width}px)`).toBe(0)
+      // A vitrine da home mostra celulares em escala reduzida: fica de fora.
+      const small = await page.locator('.lp-link:not([data-testid="template-stage"] .lp-link)').evaluateAll((els) =>
+        els.filter((el) => el.getBoundingClientRect().height < 44).map((el) => el.textContent?.trim()))
+      expect(small, `botões baixos demais em ${path}`).toEqual([])
+    }
+    expect(consoleErrors.filter((e) => !/status of 40[0-9]/.test(e))).toEqual([])
+  })
+
+  test(`celular de ${width}px: área logada e admin`, async ({ page, consoleErrors, request }, testInfo) => {
+    test.skip(testInfo.project.name !== 'mobile', 'só no projeto mobile')
+    await page.setViewportSize({ width, height: 700 })
+    const auth = await request.post(`${API}/auth/token`, {
+      form: { username: 'premium@example.com', password: PASSWORD },
+      headers: { 'X-Forwarded-For': `10.249.3.${width % 250}` },
+    })
+    const pages = await (await request.get(`${API}/page`, {
+      headers: { Authorization: `Bearer ${(await auth.json()).access_token}` },
+    })).json()
+    await skipOnboarding(page)
+    await login(page, 'premium@example.com')
+    await expect(page).toHaveURL(/\/dashboard$/)
+    // Sem settle(): em tela pequena há imagens com carregamento preguiçoso fora da
+    // tela, que só carregam ao rolar.
+    for (const path of ['/dashboard', '/settings', `/editor/${pages[0].id}`, '/account']) {
+      await page.goto(path)
+      await page.waitForLoadState('networkidle')
+      expect(await overflowing(page), `fora da tela em ${path} (${width}px)`).toEqual([])
+    }
+    // Modal de novo bloco: tipos, campos e botões cabem na tela.
+    await page.goto(`/editor/${pages[0].id}`)
+    await page.waitForLoadState('networkidle')
+    await page.getByRole('button', { name: 'Adicionar', exact: true }).first().click()
+    await expect(page.getByRole('dialog')).toBeVisible()
+    expect(await overflowing(page), `modal de bloco fora da tela (${width}px)`).toEqual([])
+    await page.keyboard.press('Escape')
+
+    await page.goto('/')
+    await page.context().clearCookies()
+    await login(page, 'admin@example.com')
+    await expect(page).toHaveURL(/\/admin$/)
+    for (const path of ['/admin', '/admin/users', '/admin/support']) {
+      await page.goto(path)
+      await page.waitForLoadState('networkidle')
+      expect(await overflowing(page), `fora da tela em ${path} (${width}px)`).toEqual([])
+    }
+    expect(consoleErrors.filter((e) => !/status of 40[0-9]|status of 503/.test(e))).toEqual([])
+  })
+}

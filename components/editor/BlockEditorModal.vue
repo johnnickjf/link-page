@@ -152,6 +152,39 @@ function addGame(): void {
 const saving = ref(false)
 const error = ref<string | null>(null)
 
+// Link colado no bloco errado: quem cola o endereço do Instagram num "Link" quase
+// sempre queria o ícone da rede, e um wa.me queria o botão de WhatsApp. O editor
+// oferece a troca com um clique, levando o que já foi digitado.
+const linkSuggestion = computed(() => {
+  if (isEdit.value || form.type !== 'link') return null
+  const phone = whatsappPhoneFromUrl(form.link.url)
+  if (phone) return { kind: 'whatsapp' as const, phone }
+  const network = detectNetwork(form.link.url)
+  if (network && !lockLabel('social')) return { kind: 'social' as const, network }
+  return null
+})
+
+function applyLinkSuggestion(): void {
+  const s = linkSuggestion.value
+  if (!s) return
+  if (s.kind === 'social') {
+    form.social.network = s.network
+    form.social.url = form.link.url.trim()
+    form.type = 'social'
+  } else {
+    form.whatsapp.phone = s.phone
+    if (form.link.label.trim()) form.whatsapp.label = form.link.label.trim()
+    form.type = 'whatsapp'
+  }
+  error.value = null
+}
+
+// No bloco de rede, a rede acompanha o endereço colado.
+watch(() => form.social.url, (url) => {
+  const network = detectNetwork(url)
+  if (network) form.social.network = network
+})
+
 watch(open, (isOpen) => {
   if (!isOpen) return
   error.value = null
@@ -183,13 +216,13 @@ function buildConfig() {
     case 'link': {
       const c: LinkConfig = {
         label: form.link.label.trim(),
-        url: form.link.url.trim(),
+        url: withScheme(form.link.url),
       }
       if (form.link.icon?.trim()) c.icon = form.link.icon.trim()
       return c
     }
     case 'social':
-      return { network: form.social.network, url: form.social.url.trim() }
+      return { network: form.social.network, url: withScheme(form.social.url) }
     case 'whatsapp': {
       const c: WhatsappConfig = { phone: form.whatsapp.phone.trim() }
       if (form.whatsapp.message?.trim()) c.message = form.whatsapp.message.trim()
@@ -205,9 +238,9 @@ function buildConfig() {
     case 'text':
       return { content: form.text.content.trim() }
     case 'image': {
-      const c: ImageConfig = { url: form.image.url.trim() }
+      const c: ImageConfig = { url: withScheme(form.image.url) }
       if (form.image.alt?.trim()) c.alt = form.image.alt.trim()
-      if (form.image.link?.trim()) c.link = form.image.link.trim()
+      if (form.image.link?.trim()) c.link = withScheme(form.image.link)
       return c
     }
     case 'map': {
@@ -220,7 +253,7 @@ function buildConfig() {
         platform: form.gameid.platform,
         handle: form.gameid.handle.trim(),
       }
-      if (form.gameid.url?.trim()) c.url = form.gameid.url.trim()
+      if (form.gameid.url?.trim()) c.url = withScheme(form.gameid.url)
       return c
     }
     case 'games': {
@@ -385,6 +418,23 @@ async function submit(): Promise<void> {
           <UFormField label="URL">
             <UInput v-model="form.link.url" placeholder="https://…" class="w-full" />
           </UFormField>
+          <div
+            v-if="linkSuggestion"
+            class="flex flex-col gap-3 rounded-lg border border-primary-200 bg-primary-50 p-3 text-sm sm:flex-row sm:items-center sm:justify-between dark:border-primary-900 dark:bg-primary-950/40"
+            data-testid="link-suggestion"
+          >
+            <p class="text-gray-800 dark:text-gray-100">
+              <template v-if="linkSuggestion.kind === 'social'">
+                Este é um link do <strong>{{ networkLabel(linkSuggestion.network) }}</strong>. Quer mostrar como ícone de rede social, no topo da página?
+              </template>
+              <template v-else>
+                Este é um link de <strong>WhatsApp</strong>. O botão de WhatsApp abre a conversa direto, com uma mensagem pronta se você quiser.
+              </template>
+            </p>
+            <UButton size="sm" class="shrink-0 self-start sm:self-auto" @click="applyLinkSuggestion">
+              {{ linkSuggestion.kind === 'social' ? 'Usar como rede social' : 'Usar botão de WhatsApp' }}
+            </UButton>
+          </div>
           <UFormField label="Ícone (opcional)">
             <div class="space-y-2">
               <div class="grid grid-cols-6 gap-1.5 sm:grid-cols-8">

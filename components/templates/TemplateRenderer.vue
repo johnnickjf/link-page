@@ -1,20 +1,11 @@
 <script setup lang="ts">
 import type { Component } from 'vue'
 import type { GamerProfile, PageProgress, PublicBlock, Theme } from '~/types/api'
-import MinimalTemplate from '~/components/templates/MinimalTemplate.vue'
-import ClassicTemplate from '~/components/templates/ClassicTemplate.vue'
-import DarkTemplate from '~/components/templates/DarkTemplate.vue'
-import GradientTemplate from '~/components/templates/GradientTemplate.vue'
-import NeonTemplate from '~/components/templates/NeonTemplate.vue'
-import PixelTemplate from '~/components/templates/PixelTemplate.vue'
-import ArcadeTemplate from '~/components/templates/ArcadeTemplate.vue'
-import HudTemplate from '~/components/templates/HudTemplate.vue'
-import EsportsTemplate from '~/components/templates/EsportsTemplate.vue'
-import CozyTemplate from '~/components/templates/CozyTemplate.vue'
 
 // Despacha o template pelo id (page.template). Reusado no preview do editor e
-// na página pública. Id desconhecido cai no 'minimal'. Template novo entra neste
-// mapa e no catálogo do backend (template_service.py).
+// na página pública. Id desconhecido cai no 'minimal'. Cada template é carregado
+// sob demanda (ver TEMPLATE_LOADERS): no SSR o HTML sai completo e o CSS do
+// template usado vem junto; o navegador não baixa os outros.
 const props = defineProps<{
   template: string
   title: string
@@ -27,21 +18,8 @@ const props = defineProps<{
   progress?: PageProgress | null
 }>()
 
-const TEMPLATES: Record<string, Component> = {
-  minimal: MinimalTemplate,
-  classic: ClassicTemplate,
-  dark: DarkTemplate,
-  gradient: GradientTemplate,
-  neon: NeonTemplate,
-  pixel: PixelTemplate,
-  arcade: ArcadeTemplate,
-  hud: HudTemplate,
-  esports: EsportsTemplate,
-  cozy: CozyTemplate,
-}
-
 const component = computed<Component>(
-  () => TEMPLATES[props.template] ?? MinimalTemplate,
+  () => TEMPLATE_COMPONENTS[props.template] ?? TEMPLATE_COMPONENTS.minimal!,
 )
 </script>
 

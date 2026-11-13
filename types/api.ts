@@ -474,6 +474,11 @@ export interface AdminDashboard {
   users_by_plan: Partial<Record<Plan, number>>
   total_pages: number
   total_blocks: number
+  /** Campos novos: opcionais para o front funcionar com o backend anterior. */
+  published_pages?: number
+  new_users_30d?: number
+  views_30d?: number
+  clicks_30d?: number
 }
 
 export interface Paginated<T> {

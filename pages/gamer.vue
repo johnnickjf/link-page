@@ -47,6 +47,8 @@ const THEMES = [
   { name: 'HUD', tag: 'Gamer', bg: '#0b0e0a', bar: '#facc15' },
   { name: 'Esports', tag: 'Gamer', bg: 'linear-gradient(115deg, #0a0a0c 62%, #ef4444 62%)', bar: '#3f3f46' },
   { name: 'Cozy', tag: 'Gamer', bg: '#f7f0e1', bar: '#cfe3c8' },
+  { name: 'Terminal', tag: 'Gamer', bg: '#050806', bar: '#39ff88' },
+  { name: 'Quest', tag: 'Gamer', bg: 'radial-gradient(70% 60% at 50% 0%, #4c2a7a, #14101d 75%)', bar: '#c084fc' },
 ]
 
 const faqs = [
@@ -186,7 +188,7 @@ useHead({
             <div v-reveal="60" class="stage-bg overflow-hidden rounded-3xl p-7 lg:col-span-3">
               <h3 class="font-headline text-2xl font-semibold">Temas feitos para isso</h3>
               <p class="mt-2 leading-relaxed text-white/95">Do fliperama à fazendinha: escolha o clima do seu perfil.</p>
-              <ul class="mt-5 grid grid-cols-4 gap-2.5" aria-hidden="true">
+              <ul class="mt-5 grid grid-cols-3 gap-2.5" aria-hidden="true">
                 <li v-for="t in THEMES" :key="t.name">
                   <div class="flex h-20 flex-col justify-end gap-1 rounded-xl p-2" :style="{ background: t.bg, boxShadow: 'inset 0 0 0 1px rgb(255 255 255 / 0.12)' }">
                     <span class="block h-1.5 rounded-sm" :style="{ background: t.bar }" />

@@ -34,43 +34,42 @@ onMounted(load)
 const stats = computed(() => {
   const d = dashboard.value
   if (!d) return []
-  const freeCount = d.users_by_plan['free'] ?? 0
   const premiumCount = d.users_by_plan['premium'] ?? 0
   const gamerCount = d.users_by_plan['gamer'] ?? 0
-  const conversionRate = d.total_users
-    ? Math.round(((premiumCount + gamerCount) / d.total_users) * 100)
-    : 0
+  const paid = premiumCount + gamerCount
+  const conversionRate = d.total_users ? Math.round((paid / d.total_users) * 100) : 0
+  const n = (v?: number) => (v ?? 0).toLocaleString('pt-BR')
   return [
     {
       label: 'Usuários',
-      value: d.total_users,
-      sub: `${d.active_users} ativos`,
+      value: n(d.total_users),
+      sub: `+${n(d.new_users_30d)} em 30 dias · ${n(d.active_users)} ativos`,
       icon: 'i-lucide-users',
-      color: 'text-blue-600 bg-blue-50 dark:bg-blue-950/60 dark:text-blue-300',
+      color: 'text-primary-700 bg-primary-100 dark:bg-primary-950/60 dark:text-primary-300',
       to: '/admin/users',
     },
     {
-      label: 'Premium',
-      value: premiumCount,
-      sub: `${conversionRate}% de conversão`,
-      icon: 'i-lucide-sparkles',
-      color: 'text-amber-600 bg-amber-50 dark:bg-amber-950/60 dark:text-amber-300',
+      label: 'Assinantes',
+      value: n(paid),
+      sub: `${conversionRate}% de conversão · ${n(premiumCount)} Premium · ${n(gamerCount)} Gamer`,
+      icon: 'i-lucide-crown',
+      color: 'text-pink-700 bg-pink-100 dark:bg-pink-950/60 dark:text-pink-300',
       to: '/admin/users?plan=premium',
     },
     {
-      label: 'Free',
-      value: freeCount,
-      sub: `${d.total_users - premiumCount - gamerCount - (d.users_by_plan['custom'] ?? 0)} sem upgrade`,
-      icon: 'i-lucide-user',
-      color: 'text-gray-600 bg-gray-100 dark:bg-gray-800 dark:text-gray-300',
-      to: '/admin/users?plan=free',
+      label: 'Visitas em 30 dias',
+      value: n(d.views_30d),
+      sub: `${n(d.clicks_30d)} cliques em links`,
+      icon: 'i-lucide-chart-line',
+      color: 'text-emerald-700 bg-emerald-100 dark:bg-emerald-950/60 dark:text-emerald-300',
+      to: null,
     },
     {
       label: 'Páginas',
-      value: d.total_pages,
-      sub: `${d.total_blocks} blocos no total`,
+      value: n(d.total_pages),
+      sub: `${n(d.published_pages)} publicadas · ${n(d.total_blocks)} blocos`,
       icon: 'i-lucide-file-text',
-      color: 'text-violet-600 bg-violet-50 dark:bg-violet-950/60 dark:text-violet-300',
+      color: 'text-gray-700 bg-gray-100 dark:bg-gray-800 dark:text-gray-300',
       to: null,
     },
   ]
@@ -79,9 +78,9 @@ const stats = computed(() => {
 const planOrder: Plan[] = ['free', 'premium', 'gamer', 'custom']
 const planColor: Record<Plan, string> = {
   free: 'bg-gray-400 dark:bg-gray-500',
-  premium: 'bg-amber-400 dark:bg-amber-500',
+  premium: 'bg-primary-500 dark:bg-primary-400',
   gamer: 'bg-emerald-400 dark:bg-emerald-500',
-  custom: 'bg-violet-400 dark:bg-violet-500',
+  custom: 'bg-pink-400 dark:bg-pink-500',
 }
 
 const planDistribution = computed(() => {
@@ -139,9 +138,9 @@ const planDistribution = computed(() => {
             <UIcon :name="s.icon" class="size-5" />
           </div>
           <div class="min-w-0">
-            <p class="text-2xl font-bold leading-none">{{ s.value }}</p>
+            <p class="text-2xl font-bold leading-none tabular-nums" :data-testid="`admin-stat-${s.label}`">{{ s.value }}</p>
             <p class="mt-0.5 truncate text-sm font-medium text-gray-700 dark:text-gray-300">{{ s.label }}</p>
-            <p class="truncate text-xs text-gray-600 dark:text-gray-400">{{ s.sub }}</p>
+            <p class="text-xs text-gray-600 dark:text-gray-400">{{ s.sub }}</p>
           </div>
         </component>
       </div>

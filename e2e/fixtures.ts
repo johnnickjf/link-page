@@ -2,7 +2,7 @@ import { test as base, expect, type Page } from '@playwright/test'
 
 export const PASSWORD = 'Senha123'
 export const API = 'http://127.0.0.1:8765'
-export const TEMPLATES = ['minimal', 'classic', 'dark', 'gradient', 'neon', 'pixel', 'arcade', 'hud', 'esports', 'cozy'] as const
+export const TEMPLATES = ['minimal', 'classic', 'dark', 'gradient', 'neon', 'pixel', 'arcade', 'hud', 'esports', 'cozy', 'aurora', 'noir', 'terminal', 'quest'] as const
 
 const ALLOWED_HOSTS = new Set(['127.0.0.1', 'localhost'])
 

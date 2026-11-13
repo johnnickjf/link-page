@@ -10,6 +10,8 @@ if (auth.isAuthenticated) {
 
 const SITE_URL = 'https://linkland.me'
 
+const compareOpen = ref(false)
+
 useSeoMeta({
   title: 'LinkLand · Página de Links Grátis para Instagram, TikTok e Bio',
   description:
@@ -135,7 +137,7 @@ const freeFeatures = [
 
 const premiumFeatures = [
   'Até 10 páginas e 100 blocos por página',
-  'Templates Gradient, Neon e Pixel Art, além dos gratuitos',
+  'Templates Gradient, Neon, Pixel Art, Aurora e Noir, além dos gratuitos',
   'Blocos de Texto e Imagem, fontes e fundo personalizados',
   'QR Code da sua página para divulgar offline',
   'Remova a marca "Criado por LinkLand"',
@@ -215,7 +217,7 @@ const faqs = [
   {
     label: 'O que está incluso no plano Premium?',
     content:
-      'Até 10 páginas e 100 blocos por página, os templates Gradient, Neon e Pixel Art, blocos de Texto e Imagem, fontes e fundo personalizados, QR Code da página e a opção de remover a marca "Criado por LinkLand" — por R$19,90/mês.',
+      'Até 10 páginas e 100 blocos por página, os templates Gradient, Neon, Pixel Art, Aurora e Noir, blocos de Texto e Imagem, fontes e fundo personalizados, QR Code da página e a opção de remover a marca "Criado por LinkLand" — por R$19,90/mês.',
   },
 ]
 
@@ -512,6 +514,29 @@ useHead({
                 Experimentar o Premium
               </UButton>
             </div>
+          </div>
+
+          <!-- Comparação completa, fechada por padrão: quem quer os detalhes abre. -->
+          <div class="mt-8 text-center">
+            <UButton
+              variant="outline"
+              color="neutral"
+              size="lg"
+              class="min-h-12 bg-white font-semibold"
+              :trailing-icon="compareOpen ? 'i-lucide-chevron-up' : 'i-lucide-chevron-down'"
+              aria-controls="comparar-planos"
+              :aria-expanded="compareOpen"
+              data-testid="home-compare-toggle"
+              @click="compareOpen = !compareOpen"
+            >
+              {{ compareOpen ? 'Fechar comparação' : 'Comparar todos os recursos' }}
+            </UButton>
+          </div>
+          <div v-show="compareOpen" id="comparar-planos" class="mt-6 rounded-3xl bg-white p-4 shadow-sm sm:p-8">
+            <p class="mb-4 text-sm text-gray-700">
+              Cada plano inclui tudo do anterior. O Gamer soma ao Premium os recursos de perfil de jogador.
+            </p>
+            <PlanComparisonTable highlight="premium" head-bg-class="bg-white" sticky-class="top-16" />
           </div>
         </div>
       </section>

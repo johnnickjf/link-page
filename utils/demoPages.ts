@@ -72,6 +72,20 @@ export const DEMO_PAGES: DemoPage[] = [
     bio: 'Speedruns e jogos retrô, ao vivo de terça a sábado.',
     blocks: demoBlocks(['Live na Twitch', 'Servidor no Discord', 'Meus recordes'], ['twitch', 'discord', 'youtube']),
   },
+  {
+    template: 'aurora',
+    name: 'Aurora',
+    title: 'Lia Martins',
+    bio: 'Maquiadora e criadora de conteúdo de beleza.',
+    blocks: demoBlocks(['Agendar maquiagem', 'Meus produtos favoritos', 'Curso de automaquiagem'], ['instagram', 'tiktok', 'youtube']),
+  },
+  {
+    template: 'noir',
+    name: 'Noir',
+    title: 'Atelier Ventura',
+    bio: 'Alfaiataria sob medida desde 1998.',
+    blocks: demoBlocks(['Agendar prova', 'Coleção atual', 'Onde estamos'], ['instagram', 'whatsapp']),
+  },
 ]
 
 function gamerBlocks(
@@ -153,6 +167,32 @@ export const GAMER_DEMO_PAGES: DemoPage[] = [
       [['nintendo', 'SW-1234-5678-9012']],
       [{ name: 'Vale Tranquilo', hours: 700 }, { name: 'Ilha dos Bichos', hours: 520 }, { name: 'Café da Vovó', hours: 180 }],
       ['twitch', 'tiktok'],
+    ),
+  },
+  {
+    template: 'terminal',
+    name: 'Terminal',
+    title: 'Theo Dev',
+    bio: 'Programo jogos indie e faço live de game jam.',
+    profileMeta: { gamertag: 'theodev', main_game: 'Game jam' },
+    blocks: gamerBlocks(
+      [['steam', 'theodev']],
+      [{ name: 'Bit Runner', hours: 410 }, { name: 'Code Dungeon', rank: 'Top 100' }, { name: 'Orbital', hours: 120 }],
+      ['github', 'twitch', 'discord'],
+    ),
+  },
+  {
+    template: 'quest',
+    name: 'Quest',
+    title: 'Mago Rúbio',
+    bio: 'Mestre de RPG de mesa e de MMO. Campanha nova toda lua cheia.',
+    theme: { show_level: true },
+    progress: { level: 31, xp: 23500, level_xp: 22792, next_level_xp: 24178 },
+    profileMeta: { gamertag: 'magorubio', main_game: 'Reinos de Aster' },
+    blocks: gamerBlocks(
+      [['discord', 'mago_rubio']],
+      [{ name: 'Reinos de Aster', rank: 'Arquimago' }, { name: 'Torre Sombria', hours: 860 }, { name: 'Dados & Dragões', hours: 300 }],
+      ['youtube', 'twitch'],
     ),
   },
   {
