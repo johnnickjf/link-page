@@ -34,6 +34,8 @@ const ctaLabel = computed(() =>
 const gamerPriceLabel = computed(() =>
   `R$${brl(interval.value === 'monthly' ? GAMER_PRICE_MONTHLY : GAMER_PRICE_YEARLY)}`,
 )
+const gamerYearlySavingsLabel = brl(GAMER_PRICE_MONTHLY * 12 - GAMER_PRICE_YEARLY)
+const gamerYearlyMonthlyEquivalentLabel = brl(GAMER_PRICE_YEARLY / 12)
 const gamerCtaLabel = computed(() =>
   currentPlan.value === 'premium'
     ? 'Fazer upgrade para o Gamer'
@@ -55,38 +57,11 @@ function runUpgrade(): void {
   billing.checkout(interval.value, 'gamer')
 }
 
-const FREE_FEATURES = [
-  { label: '1 página', included: true },
-  { label: 'Até 10 blocos por página', included: true },
-  { label: 'Templates Minimal, Classic e Dark', included: true },
-  { label: 'Blocos de Link, Social, WhatsApp e E-mail', included: true },
-  { label: 'SEO básico', included: true },
-  { label: 'IDs de jogo, até 3 jogos e tema Arcade', included: true },
-  { label: 'Nível, XP e contagem de visitas e cliques', included: true },
-  { label: 'Templates Gradient e Neon', included: false },
-  { label: 'Blocos de Texto e Imagem', included: false },
-  { label: 'Fontes personalizadas', included: false },
-  { label: 'Fundo personalizado', included: false },
-  { label: 'QR Code da página', included: false },
-  { label: 'Ocultar branding LinkLand', included: false },
-  { label: 'SEO otimizado (Open Graph, canonical, Twitter Card)', included: false },
-  { label: 'Novos recursos em primeira mão', included: false },
-  { label: 'Suporte prioritário', included: false },
-]
-
-const PREMIUM_FEATURES = [
-  { label: 'Até 10 páginas', included: true },
-  { label: 'Até 100 blocos por página', included: true },
-  { label: 'Templates Gradient, Neon e Pixel, além dos gratuitos', included: true },
-  { label: 'Blocos de Texto, Imagem e Mapa', included: true },
-  { label: 'SEO otimizado (Open Graph, canonical, Twitter Card)', included: true },
-  { label: 'Fontes Google personalizadas', included: true },
-  { label: 'Fundo personalizado (cor, gradiente ou imagem)', included: true },
-  { label: 'QR Code da página', included: true },
-  { label: 'Ocultar "Criado por LinkLand"', included: true },
-  { label: 'Novos recursos em primeira mão', included: true },
-  { label: 'Suporte prioritário', included: true },
-]
+const COMPARISON_COLUMNS = [
+  { id: 'free', name: 'Free' },
+  { id: 'premium', name: 'Premium' },
+  { id: 'gamer', name: 'Gamer' },
+] as const
 </script>
 
 <template>
@@ -159,137 +134,215 @@ const PREMIUM_FEATURES = [
       </UButton>
     </div>
 
-    <div class="mx-auto grid max-w-5xl items-start gap-6 lg:grid-cols-3">
+    <div class="mx-auto grid max-w-5xl gap-y-8 lg:grid-cols-3 lg:gap-x-6 lg:gap-y-0">
+      <!-- Cada cartão ocupa 3 linhas da grade (subgrid): título, botão e lista ficam
+           alinhados entre os planos, com a mesma altura. -->
 
-      <!-- Free (no celular vem depois do Premium; no desktop mantém a ordem natural) -->
-      <div class="order-2 rounded-xl border border-gray-200 bg-white p-6 dark:border-gray-800 dark:bg-gray-900 lg:order-none">
-        <p class="text-sm font-medium text-gray-500 dark:text-gray-400">Free</p>
-        <div class="mt-3 flex items-end gap-1">
-          <span class="font-display text-4xl font-bold tracking-tight">R$0</span>
-          <span class="mb-1 text-sm text-gray-500 dark:text-gray-400">/mês</span>
+      <!-- Free (no celular vem depois dos pagos; no desktop mantém a ordem natural) -->
+      <div
+        class="order-2 flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 lg:order-none lg:row-span-3 lg:grid lg:grid-rows-subgrid"
+        data-testid="plan-free"
+      >
+        <div class="px-6 pt-6">
+          <p class="text-sm font-semibold text-gray-700 dark:text-gray-200">Free</p>
+          <div class="mt-3 flex items-end gap-1">
+            <span class="font-display text-4xl font-bold tracking-tight">R$0</span>
+            <span class="mb-1 text-sm text-gray-500 dark:text-gray-400">/mês</span>
+          </div>
+          <p class="mt-1.5 text-sm text-gray-500 dark:text-gray-400">
+            Para começar a construir sua presença online.
+          </p>
         </div>
-        <p class="mt-1.5 text-sm text-gray-500 dark:text-gray-400">
-          Para começar a construir sua presença online.
-        </p>
 
-        <UButton
-          block
-          class="mt-6"
-          color="neutral"
-          variant="outline"
-          :disabled="isFree"
-        >
-          {{ isFree ? 'Plano atual' : 'Usar plano Free' }}
-        </UButton>
-
-        <ul class="mt-6 space-y-3">
-          <li
-            v-for="f in FREE_FEATURES"
-            :key="f.label"
-            class="flex items-start gap-3 text-sm"
+        <div class="px-6 pt-6">
+          <UButton
+            block
+            color="neutral"
+            variant="outline"
+            :disabled="isFree"
           >
-            <UIcon
-              :name="f.included ? 'i-lucide-check' : 'i-lucide-x'"
-              class="mt-0.5 size-4 shrink-0"
-              :class="f.included ? 'text-green-500' : 'text-gray-300 dark:text-gray-600'"
-            />
-            <span :class="f.included ? '' : 'text-gray-500 dark:text-gray-400'">
-              {{ f.label }}
-            </span>
-          </li>
-        </ul>
+            {{ isFree ? 'Plano atual' : 'Usar plano Free' }}
+          </UButton>
+        </div>
+
+        <div class="p-6">
+          <p class="text-sm font-semibold">Inclui:</p>
+          <ul class="mt-3 space-y-3">
+            <li v-for="f in FREE_HIGHLIGHTS" :key="f" class="flex items-start gap-3 text-sm">
+              <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-primary-600 dark:text-primary-400" />
+              <span>{{ f }}</span>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <!-- Premium (aparece primeiro no celular, sem precisar rolar) -->
-      <div class="order-1 relative lg:order-none">
-        <div class="absolute -top-3.5 left-1/2 z-10 -translate-x-1/2 whitespace-nowrap">
-          <span
-            class="rounded-full bg-primary-600 px-4 py-1 text-xs font-semibold text-white dark:bg-primary-400 dark:text-gray-950"
-          >
-            Mais popular
-          </span>
+      <div
+        class="order-1 flex flex-col overflow-hidden rounded-xl bg-white ring-2 ring-primary-600 dark:bg-gray-900 dark:ring-primary-400 lg:order-none lg:row-span-3 lg:grid lg:grid-rows-subgrid"
+        data-testid="plan-premium"
+      >
+        <div class="bg-primary-50 px-6 py-6 dark:bg-primary-950/40">
+          <div class="flex items-center justify-between gap-2">
+            <p class="text-sm font-semibold text-primary-800 dark:text-primary-200">Premium</p>
+            <span class="rounded-full bg-primary-600 px-2.5 py-0.5 text-xs font-semibold text-white dark:bg-primary-400 dark:text-gray-950">
+              Mais popular
+            </span>
+          </div>
+          <div class="mt-3 flex items-end gap-1">
+            <span class="font-display text-4xl font-bold tracking-tight text-gray-950 dark:text-white">{{ priceLabel }}</span>
+            <span class="mb-1 text-sm text-gray-700 dark:text-gray-200">{{ priceSuffix }}</span>
+          </div>
+          <p v-if="interval === 'yearly'" class="mt-1 text-sm text-gray-700 dark:text-gray-200">
+            Equivale a R${{ yearlyMonthlyEquivalentLabel }}/mês · economize R${{ yearlySavingsLabel }} no ano
+          </p>
+          <p class="mt-1.5 text-sm text-gray-700 dark:text-gray-200">
+            Tudo que você precisa para crescer online.
+          </p>
         </div>
 
-        <div class="overflow-hidden rounded-xl ring-2 ring-primary-600 dark:ring-primary-400">
-          <div class="bg-primary-50 px-6 py-6 dark:bg-primary-950/40">
-            <p class="text-sm font-semibold text-primary-800 dark:text-primary-200">Premium</p>
-            <div class="mt-2 flex items-end gap-1">
-              <span class="font-display text-4xl font-bold tracking-tight text-gray-950 dark:text-white">{{ priceLabel }}</span>
-              <span class="mb-1 text-sm text-gray-700 dark:text-gray-200">{{ priceSuffix }}</span>
-            </div>
-            <p v-if="interval === 'yearly'" class="mt-1 text-sm text-gray-700 dark:text-gray-200">
-              Equivale a R${{ yearlyMonthlyEquivalentLabel }}/mês · economize R${{ yearlySavingsLabel }} no ano
-            </p>
-            <p class="mt-1.5 text-sm text-gray-700 dark:text-gray-200">
-              Tudo que você precisa para crescer online.
-            </p>
-          </div>
+        <div class="px-6 pt-6">
+          <button
+            type="button"
+            class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 dark:bg-primary-400 dark:text-gray-950 dark:hover:bg-primary-300 disabled:cursor-not-allowed disabled:opacity-60"
+            :disabled="isPremium || billing.loading.value"
+            data-testid="buy-premium"
+            @click="billing.checkout(interval)"
+          >
+            <UIcon v-if="isPremium" name="i-lucide-check" class="size-4" />
+            <UIcon v-else-if="billing.loading.value" name="i-lucide-loader-circle" class="size-4 animate-spin" />
+            {{ isGamer ? 'Incluso no Gamer' : isPremium ? 'Plano atual' : ctaLabel }}
+          </button>
+        </div>
 
-          <div class="bg-white p-6 dark:bg-gray-900">
-            <button
-              type="button"
-              class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 dark:bg-primary-400 dark:text-gray-950 dark:hover:bg-primary-300 disabled:cursor-not-allowed disabled:opacity-60"
-              :disabled="isPremium || billing.loading.value"
-              data-testid="buy-premium"
-              @click="billing.checkout(interval)"
-            >
-              <UIcon v-if="isPremium" name="i-lucide-check" class="size-4" />
-              <UIcon v-else-if="billing.loading.value" name="i-lucide-loader-circle" class="size-4 animate-spin" />
-              {{ isGamer ? 'Incluso no Gamer' : isPremium ? 'Plano atual' : ctaLabel }}
-            </button>
-
-            <ul class="mt-6 space-y-3">
-              <li
-                v-for="f in PREMIUM_FEATURES"
-                :key="f.label"
-                class="flex items-start gap-3 text-sm"
-              >
-                <UIcon
-                  name="i-lucide-check"
-                  class="mt-0.5 size-4 shrink-0 text-primary-600 dark:text-primary-400"
-                />
-                <span>{{ f.label }}</span>
-              </li>
-            </ul>
-          </div>
+        <div class="p-6">
+          <p class="text-sm font-semibold">Tudo do Free, e mais:</p>
+          <ul class="mt-3 space-y-3">
+            <li v-for="f in PREMIUM_HIGHLIGHTS" :key="f" class="flex items-start gap-3 text-sm">
+              <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-primary-600 dark:text-primary-400" />
+              <span>{{ f }}</span>
+            </li>
+          </ul>
         </div>
       </div>
 
       <!-- Gamer: tudo do Premium + exclusivos -->
-      <div class="gamer-surface order-1 stage-bg overflow-hidden rounded-xl p-6 lg:order-none" data-testid="plan-gamer">
-        <p class="text-sm font-semibold text-white">Gamer</p>
-        <div class="mt-2 flex items-end gap-1">
-          <span class="font-display text-4xl font-bold tracking-tight">{{ gamerPriceLabel }}</span>
-          <span class="mb-1 text-sm text-white/90">{{ priceSuffix }}</span>
+      <div
+        class="gamer-surface stage-bg order-1 flex flex-col overflow-hidden rounded-xl lg:order-none lg:row-span-3 lg:grid lg:grid-rows-subgrid"
+        data-testid="plan-gamer"
+      >
+        <div class="px-6 pt-6">
+          <div class="flex items-center justify-between gap-2">
+            <p class="text-sm font-semibold text-white">Gamer</p>
+            <span class="rounded-full bg-(--stage-accent) px-2.5 py-0.5 text-xs font-semibold text-(--stage-accent-ink)">
+              Mais completo
+            </span>
+          </div>
+          <div class="mt-3 flex items-end gap-1">
+            <span class="font-display text-4xl font-bold tracking-tight">{{ gamerPriceLabel }}</span>
+            <span class="mb-1 text-sm text-white/90">{{ priceSuffix }}</span>
+          </div>
+          <p v-if="interval === 'yearly'" class="mt-1 text-sm text-white/95">
+            Equivale a R${{ gamerYearlyMonthlyEquivalentLabel }}/mês · economize R${{ gamerYearlySavingsLabel }} no ano
+          </p>
+          <p class="mt-1.5 text-sm text-white/95">
+            Tudo do Premium, mais o que um perfil de jogador precisa.
+          </p>
         </div>
-        <p class="mt-1.5 text-sm text-white/95">
-          Tudo do Premium, mais o que um perfil de jogador precisa.
-        </p>
 
-        <button
-          type="button"
-          class="mt-6 flex w-full items-center justify-center gap-2 btn-accent rounded-lg px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 disabled:cursor-not-allowed disabled:opacity-70"
-          :disabled="isGamer || !!auth.user?.is_superadmin || billing.loading.value"
-          data-testid="buy-gamer"
-          @click="chooseGamer"
-        >
-          <UIcon v-if="isGamer" name="i-lucide-check" class="size-4" />
-          <UIcon v-else-if="billing.loading.value" name="i-lucide-loader-circle" class="size-4 animate-spin" />
-          {{ isGamer ? 'Plano atual' : gamerCtaLabel }}
-        </button>
+        <div class="px-6 pt-6">
+          <button
+            type="button"
+            class="flex w-full items-center justify-center gap-2 btn-accent rounded-lg px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 disabled:cursor-not-allowed disabled:opacity-70"
+            :disabled="isGamer || !!auth.user?.is_superadmin || billing.loading.value"
+            data-testid="buy-gamer"
+            @click="chooseGamer"
+          >
+            <UIcon v-if="isGamer" name="i-lucide-check" class="size-4" />
+            <UIcon v-else-if="billing.loading.value" name="i-lucide-loader-circle" class="size-4 animate-spin" />
+            {{ isGamer ? 'Plano atual' : gamerCtaLabel }}
+          </button>
+        </div>
 
-        <ul class="mt-6 space-y-3">
-          <li class="flex items-start gap-3 text-sm font-medium">
-            <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 stage-check" />
-            Tudo do Premium
-          </li>
-          <li v-for="f in GAMER_EXCLUSIVE_FEATURES" :key="f" class="flex items-start gap-3 text-sm text-white">
-            <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 stage-check" />
-            {{ f }}
-          </li>
-        </ul>
+        <div class="p-6">
+          <p class="text-sm font-semibold text-white">Tudo do Premium, e mais:</p>
+          <ul class="mt-3 space-y-3">
+            <li v-for="f in GAMER_EXCLUSIVE_FEATURES" :key="f" class="flex items-start gap-3 text-sm text-white">
+              <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 stage-check" />
+              <span>{{ f }}</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
+
+    <!-- Comparação completa: o Gamer é a coluna que tem tudo. -->
+    <section class="mx-auto mt-16 max-w-5xl" aria-labelledby="compare-title" data-testid="plan-comparison">
+      <h2 id="compare-title" class="text-center font-display text-2xl font-bold tracking-tight">
+        Compare todos os recursos
+      </h2>
+      <p class="mt-2 text-center text-sm text-gray-500 dark:text-gray-400">
+        Cada plano inclui tudo do plano anterior.
+      </p>
+
+      <table class="mt-8 w-full table-fixed border-separate border-spacing-0 text-sm">
+        <thead class="sticky top-14 z-10">
+          <tr>
+            <th scope="col" class="w-[40%] border-b border-gray-200 bg-gray-50 sm:w-1/2 dark:border-gray-800 dark:bg-gray-950">
+              <span class="sr-only">Recurso</span>
+            </th>
+            <th
+              v-for="column in COMPARISON_COLUMNS"
+              :key="column.id"
+              scope="col"
+              class="border-b border-gray-200 px-0.5 py-3 text-center text-xs font-semibold sm:text-sm dark:border-gray-800"
+              :class="column.id === 'gamer'
+                ? 'rounded-t-lg bg-primary-100 text-primary-900 dark:bg-primary-950 dark:text-primary-100'
+                : 'bg-gray-50 dark:bg-gray-950'"
+            >
+              {{ column.name }}
+            </th>
+          </tr>
+        </thead>
+        <tbody v-for="group in PLAN_COMPARISON" :key="group.title">
+          <tr>
+            <th
+              colspan="4"
+              scope="rowgroup"
+              class="pb-2 pt-6 text-left font-display text-sm font-semibold"
+            >
+              {{ group.title }}
+            </th>
+          </tr>
+          <tr v-for="row in group.rows" :key="row.label" data-testid="comparison-row">
+            <th
+              scope="row"
+              class="border-t border-gray-200 py-3 pr-2 text-left font-normal text-gray-700 dark:border-gray-800 dark:text-gray-200"
+            >
+              {{ row.label }}
+            </th>
+            <td
+              v-for="column in COMPARISON_COLUMNS"
+              :key="column.id"
+              class="border-t border-gray-200 px-0.5 py-3 text-center align-middle dark:border-gray-800"
+              :class="column.id === 'gamer' ? 'bg-primary-50 dark:bg-primary-950/40' : ''"
+              :data-plan="column.id"
+            >
+              <span v-if="typeof row[column.id] === 'string'" class="text-xs font-semibold sm:text-sm">
+                {{ row[column.id] }}
+              </span>
+              <template v-else-if="row[column.id]">
+                <UIcon name="i-lucide-check" class="mx-auto block size-5 text-primary-600 dark:text-primary-400" />
+                <span class="sr-only">Incluso</span>
+              </template>
+              <template v-else>
+                <UIcon name="i-lucide-minus" class="mx-auto block size-4 text-gray-300 dark:text-gray-600" />
+                <span class="sr-only">Não incluso</span>
+              </template>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </section>
 
     <UModal v-model:open="confirmUpgrade" title="Trocar para o plano Gamer?">
       <template #body>

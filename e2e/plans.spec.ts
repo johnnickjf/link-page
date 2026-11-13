@@ -141,6 +141,61 @@ test('gamer: vê o plano atual e o Premium como incluso', async ({ page }) => {
   await expect(page.getByRole('button', { name: 'Gerenciar assinatura' })).toBeVisible()
 })
 
+test('comparação: o Gamer tem tudo, e cada plano inclui o anterior', async ({ page }) => {
+  await openPlans(page, 'free@example.com')
+  const missing = (plan: string) =>
+    page.getByTestId('plan-comparison').locator(`td[data-plan="${plan}"]`, { hasText: 'Não incluso' }).count()
+
+  expect(await page.getByTestId('comparison-row').count()).toBeGreaterThan(15)
+  const [free, premium, gamer] = [await missing('free'), await missing('premium'), await missing('gamer')]
+  expect(gamer).toBe(0)
+  expect(premium).toBeGreaterThan(0)
+  expect(free).toBeGreaterThan(premium)
+})
+
+test('comparação: limites iguais aos que o backend aplica', async ({ page }) => {
+  await openPlans(page, 'free@example.com')
+  const row = (label: string) => page.getByTestId('comparison-row').filter({ hasText: label })
+  const cells = (label: string) => row(label).locator('td').allInnerTexts()
+  expect(await cells('Blocos por página')).toEqual(['10', '100', '100'])
+  expect((await cells('Lista de jogos'))[2]).toBe('24 por bloco')
+  expect(await row('HUD, Esports e Cozy').locator('td', { hasText: 'Não incluso' }).count()).toBe(2)
+  await expect(page.getByTestId('comparison-row').filter({ hasText: /^Páginas/ }).locator('td').first()).toHaveText('1')
+})
+
+test('cartões do mesmo tamanho, com os botões alinhados', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.name !== 'desktop', 'só faz sentido com os cartões lado a lado')
+  await openPlans(page, 'free@example.com')
+  await page.getByRole('button', { name: /Anual/ }).click() // o caso com mais texto
+  const box = async (testId: string) => (await page.getByTestId(testId).boundingBox())!
+  const [free, premium, gamer] = [await box('plan-free'), await box('plan-premium'), await box('plan-gamer')]
+  expect(premium.height).toBe(free.height)
+  expect(gamer.height).toBe(free.height)
+  expect((await box('buy-gamer')).y).toBe((await box('buy-premium')).y)
+
+  for (const id of ['plan-free', 'plan-premium', 'plan-gamer']) {
+    await expect(page.getByTestId(id).getByRole('listitem')).toHaveCount(5)
+  }
+})
+
+test('anual: o Gamer mostra a economia, como o Premium', async ({ page }) => {
+  await openPlans(page, 'free@example.com')
+  await page.getByRole('button', { name: /Anual/ }).click()
+  await expect(page.getByTestId('plan-gamer')).toContainText('Equivale a R$24,99/mês')
+  await expect(page.getByTestId('plan-gamer')).toContainText('economize R$58,90 no ano')
+})
+
+test('a tabela cabe em celular pequeno, sem rolagem lateral', async ({ page }) => {
+  await page.setViewportSize({ width: 320, height: 640 })
+  await openPlans(page, 'free@example.com')
+  const overflow = await page.evaluate(() => document.documentElement.scrollWidth - document.documentElement.clientWidth)
+  expect(overflow).toBe(0)
+  for (const name of ['Free', 'Premium', 'Gamer']) {
+    const th = page.getByTestId('plan-comparison').getByRole('columnheader', { name, exact: true })
+    expect(await th.evaluate((el) => el.scrollWidth <= el.clientWidth)).toBe(true)
+  }
+})
+
 test('visual: tela de planos', async ({ page }) => {
   await disableTracking(page)
   await openPlans(page, 'free@example.com')
