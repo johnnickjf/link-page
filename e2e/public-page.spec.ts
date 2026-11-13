@@ -74,6 +74,33 @@ test('SEO / Open Graph da página pública', async ({ page }) => {
   await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', /\/tpl-dark$/)
 })
 
+test('SEO: canônico sem parâmetros de campanha e dados estruturados de perfil', async ({ page }) => {
+  await page.goto('/tpl-dark?utm_source=instagram&utm_medium=bio')
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute('href', 'http://127.0.0.1:3100/tpl-dark')
+  await expect(page.locator('meta[property="og:url"]')).toHaveAttribute('content', 'http://127.0.0.1:3100/tpl-dark')
+  await expect(page.locator('meta[property="og:type"]')).toHaveAttribute('content', 'profile')
+  // Foto quadrada: cartão pequeno, que não corta o rosto.
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary')
+
+  const raw = await page.locator('script[type="application/ld+json"]').first().textContent()
+  expect(raw).not.toContain('</')
+  const data = JSON.parse(raw!)
+  expect(data['@type']).toBe('ProfilePage')
+  expect(data.url).toBe('http://127.0.0.1:3100/tpl-dark')
+  expect(data.mainEntity).toMatchObject({ '@type': 'Person', name: 'Template Dark' })
+  expect(data.mainEntity.description.length).toBeGreaterThan(10)
+})
+
+test('SEO: página sem foto usa a imagem do LinkLand e sempre tem descrição', async ({ page }) => {
+  await page.goto('/sem-avatar') // sem foto e sem bio
+  await expect(page.locator('meta[property="og:image"]')).toHaveAttribute('content', 'http://127.0.0.1:3100/og-image.png')
+  await expect(page.locator('meta[name="twitter:card"]')).toHaveAttribute('content', 'summary_large_image')
+  const description = await page.locator('meta[name="description"]').getAttribute('content')
+  expect(description).toContain('Sem Avatar')
+  expect(description!.length).toBeLessThanOrEqual(160)
+  await expect(page.locator('meta[property="og:description"]')).toHaveAttribute('content', description!)
+})
+
 test('branding aparece por padrão e some com hide_branding', async ({ page }) => {
   await page.goto('/tpl-minimal')
   const badge = page.getByText(/LinkLand/i).last()

@@ -47,23 +47,34 @@ const activeBlocks = computed(() => {
 const { trackVisit, onClick: onTrackedClick } = usePublicTracking(slug)
 onMounted(trackVisit)
 
+// SEO e compartilhamento. Sem bio, a descrição é montada com o nome e as redes;
+// sem foto, a prévia usa a imagem do LinkLand em vez de ficar em branco.
+const canonical = computed(() => (page.value ? publicCanonical(url.origin, page.value) : url.href))
+const description = computed(() => (page.value ? publicDescription(page.value) : undefined))
+const shareImage = computed(() => page.value?.avatar_url || `${url.origin}/og-image.png`)
+
 useHead(() => ({
-  link: [{ rel: 'canonical', href: url.href }],
+  link: [{ rel: 'canonical', href: canonical.value }],
+  script: page.value
+    ? [{ key: 'profile-jsonld', type: 'application/ld+json', innerHTML: profileJsonLd(page.value, canonical.value) }]
+    : [],
 }))
 
-// SEO / Open Graph (bonito ao compartilhar em rede social).
 useSeoMeta({
   title: () => page.value?.title,
-  description: () => page.value?.bio || undefined,
+  description,
   ogTitle: () => page.value?.title,
-  ogDescription: () => page.value?.bio || undefined,
-  ogImage: () => page.value?.avatar_url || undefined,
-  ogType: 'website',
-  ogUrl: url.href,
-  twitterCard: 'summary_large_image',
+  ogDescription: description,
+  ogImage: shareImage,
+  ogType: 'profile',
+  ogUrl: canonical,
+  ogLocale: 'pt_BR',
+  // Foto de perfil é quadrada: o cartão pequeno não a corta. Sem foto, a imagem
+  // do LinkLand é larga e vai no cartão grande.
+  twitterCard: () => (page.value?.avatar_url ? 'summary' : 'summary_large_image'),
   twitterTitle: () => page.value?.title,
-  twitterDescription: () => page.value?.bio || undefined,
-  twitterImage: () => page.value?.avatar_url || undefined,
+  twitterDescription: description,
+  twitterImage: shareImage,
 })
 </script>
 

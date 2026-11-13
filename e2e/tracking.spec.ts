@@ -113,6 +113,41 @@ test('o dono vendo a própria página não conta', async ({ page, request }) => 
   expect((await statsOf(request, 'free@example.com', 'free-page')).views).toBe(before)
 })
 
+test('dono que sai da conta passa a contar no mesmo navegador', async ({ page, context, request }, testInfo) => {
+  // IP próprio: o servidor já deduplicou o IP padrão nos testes acima.
+  await page.setExtraHTTPHeaders({ 'X-Forwarded-For': `10.254.${testInfo.project.name === 'mobile' ? 1 : 2}.11` })
+  await skipOnboarding(page)
+  await login(page, 'free@example.com')
+  await expect(page).toHaveURL(/\/dashboard$/)
+  const before = (await statsOf(request, 'free@example.com', 'free-page')).views
+  const ownerHit = page.waitForResponse((r) => isHit(r.url()) && r.request().method() === 'POST')
+  await page.goto('/free-page')
+  expect((await ownerHit).status()).toBe(204)
+  expect((await statsOf(request, 'free@example.com', 'free-page')).views).toBe(before)
+
+  await context.clearCookies({ name: 'll_token' })
+  const visitorHit = page.waitForResponse((r) => isHit(r.url()) && r.request().method() === 'POST')
+  await page.reload()
+  expect((await visitorHit).request().headers().authorization).toBeUndefined()
+  await expect.poll(async () => (await statsOf(request, 'free@example.com', 'free-page')).views).toBe(before + 1)
+})
+
+test('envio que falhou não impede contar na próxima visita', async ({ page, request }, testInfo) => {
+  await page.setExtraHTTPHeaders({ 'X-Forwarded-For': `10.254.${testInfo.project.name === 'mobile' ? 1 : 2}.12` })
+  const before = (await statsOf(request, 'free@example.com', 'free-page')).views
+  await page.route(/\/public\/[^/]+\/hit$/, (route) => route.abort())
+  const failed = page.waitForEvent('requestfailed', (r) => isHit(r.url()))
+  await page.goto('/free-page')
+  await failed
+  expect((await statsOf(request, 'free@example.com', 'free-page')).views).toBe(before)
+
+  await page.unroute(/\/public\/[^/]+\/hit$/)
+  const hit = page.waitForResponse((r) => isHit(r.url()))
+  await page.reload()
+  expect((await hit).status()).toBe(204)
+  await expect.poll(async () => (await statsOf(request, 'free@example.com', 'free-page')).views).toBe(before + 1)
+})
+
 test('robô que executa JS não conta', async ({ browser, request }) => {
   const ctx = await browser.newContext({
     userAgent: 'Mozilla/5.0 (compatible; Googlebot/2.1; +http://www.google.com/bot.html)',
