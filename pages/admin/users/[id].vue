@@ -27,8 +27,8 @@ useHead(() => ({
 
 const planChips: { value: Plan; label: string }[] = [
   { value: 'free', label: 'Free' },
-  { value: 'premium', label: 'Premium' },
   { value: 'gamer', label: 'Gamer' },
+  { value: 'premium', label: 'Premium' },
   { value: 'custom', label: 'Personalizado' },
 ]
 

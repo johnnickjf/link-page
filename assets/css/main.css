@@ -101,6 +101,11 @@ body {
 .lp-root .font-display {
   word-spacing: normal;
 }
+/* Texto comum dentro de um título (ex.: "no primeiro mês" ao lado do preço). */
+.app-surface .font-headline .font-sans,
+.app-surface .font-display .font-sans {
+  word-spacing: normal;
+}
 
 /* ---------------------------------------------------------------------------
    Perfil gamer: preto azulado, neon ciano e magenta, destaque verde. Identidade

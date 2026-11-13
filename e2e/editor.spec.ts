@@ -14,7 +14,8 @@ async function token(request: APIRequestContext, email: string, ip: string): Pro
 
 test('link colado no bloco errado vira rede social ou WhatsApp com um clique', async ({ page, request, consoleErrors }, testInfo) => {
   const ip = `10.250.${testInfo.project.name === 'mobile' ? 1 : 2}.${testInfo.retry + 1}`
-  const headers = { Authorization: `Bearer ${await token(request, 'gamer@example.com', ip)}` }
+  // Premium: o Gamer só tem 1 página, e ela já existe no seed.
+  const headers = { Authorization: `Bearer ${await token(request, 'premium@example.com', ip)}` }
   const slug = `editor-${testInfo.project.name}-${Date.now() % 1_000_000}`
   const created = await request.post(`${API}/page`, { headers, data: { title: 'Teste do editor', slug } })
   expect(created.status()).toBe(201)
@@ -22,7 +23,7 @@ test('link colado no bloco errado vira rede social ou WhatsApp com um clique', a
 
   try {
     await skipOnboarding(page)
-    await login(page, 'gamer@example.com')
+    await login(page, 'premium@example.com')
     await expect(page).toHaveURL(/\/dashboard$/)
     await page.goto(`/editor/${pageId}`)
     await page.waitForLoadState('networkidle')

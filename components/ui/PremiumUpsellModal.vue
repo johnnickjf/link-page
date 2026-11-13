@@ -1,9 +1,10 @@
 <script setup lang="ts">
 // Aparece quando a pessoa toca num recurso bloqueado. É o melhor momento para
 // comparar: mostra o que aquele plano soma, quanto custa, e leva à tabela completa.
+// Recurso gamer abre o Gamer (o plano mais barato que libera); o resto, o Premium.
 const { isOpen, plan, close } = usePremiumUpsell()
 
-const features = computed(() => (plan.value === 'gamer' ? GAMER_EXCLUSIVE_FEATURES : PREMIUM_HIGHLIGHTS))
+const features = computed(() => (plan.value === 'gamer' ? GAMER_HIGHLIGHTS : PREMIUM_HIGHLIGHTS))
 const price = computed(() => brl(plan.value === 'gamer' ? GAMER_PRICE_MONTHLY : PREMIUM_PRICE_MONTHLY))
 
 function goToPlans(): void {
@@ -27,10 +28,10 @@ function goToPlans(): void {
             <UIcon name="i-lucide-crown" class="size-6" />
           </div>
           <p v-if="plan === 'gamer'" class="text-sm text-gray-700 dark:text-gray-200">
-            O plano Gamer tem tudo do Premium e soma o que um perfil de jogador precisa:
+            O plano Gamer soma ao Free o que um perfil de jogador precisa:
           </p>
           <p v-else class="text-sm text-gray-700 dark:text-gray-200">
-            O Premium tem tudo do plano Free e soma:
+            O Premium é o plano completo: tem tudo do Gamer e ainda soma:
           </p>
         </div>
 
@@ -44,6 +45,9 @@ function goToPlans(): void {
         <p class="text-center text-sm text-gray-700 dark:text-gray-200">
           <strong class="text-gray-950 dark:text-white">R${{ price }}/mês</strong>
           · cancele quando quiser
+        </p>
+        <p v-if="plan === 'gamer'" class="-mt-2 text-center text-xs text-gray-600 dark:text-gray-300">
+          Também incluso no Premium.
         </p>
       </div>
     </template>

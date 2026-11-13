@@ -75,7 +75,7 @@ const stats = computed(() => {
   ]
 })
 
-const planOrder: Plan[] = ['free', 'premium', 'gamer', 'custom']
+const planOrder: Plan[] = ['free', 'gamer', 'premium', 'custom']
 const planColor: Record<Plan, string> = {
   free: 'bg-gray-400 dark:bg-gray-500',
   premium: 'bg-primary-500 dark:bg-primary-400',

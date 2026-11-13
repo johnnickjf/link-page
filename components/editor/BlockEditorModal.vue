@@ -144,7 +144,8 @@ const EMBED_OPTIONS = (Object.keys(EMBED_PROVIDERS) as EmbedProvider[]).map((val
 const maxGames = computed(() => (auth.hasFeature('games_unlimited') ? 24 : 3))
 function addGame(): void {
   if (form.games.items.length >= maxGames.value) {
-    openPremiumUpsell(maxGames.value === 3 ? 'gamer' : 'premium')
+    // Com 24 já é o máximo de qualquer plano: não há o que oferecer.
+    if (maxGames.value === 3) openPremiumUpsell('gamer')
     return
   }
   form.games.items.push(blankGame())
@@ -632,6 +633,7 @@ async function submit(): Promise<void> {
             size="sm"
             icon="i-lucide-plus"
             data-testid="add-game"
+            :disabled="maxGames > 3 && form.games.items.length >= maxGames"
             @click="addGame"
           >
             Adicionar jogo

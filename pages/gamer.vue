@@ -25,8 +25,11 @@ useHead({
 })
 
 // Quem já tem conta vai direto para os planos; quem não tem, cria o perfil.
+// O botão do plano leva o cupom do primeiro mês, como o "Experimentar o Premium" da home.
 const signupTo = computed(() => (auth.isAuthenticated ? '/dashboard' : '/register?kind=gamer'))
-const gamerPlanTo = computed(() => (auth.isAuthenticated ? '/settings' : '/register?kind=gamer'))
+const gamerPlanTo = computed(() =>
+  auth.isAuthenticated ? '/settings' : `/register?kind=gamer&referral_code=${FIRST_MONTH_COUPON}`,
+)
 
 const PLATFORM_ICONS = [
   { icon: 'i-simple-icons-steam', name: 'Steam' },
@@ -268,15 +271,13 @@ useHead({
           <div v-reveal class="stage-bg order-1 flex flex-col rounded-3xl p-8 lg:order-none" data-testid="gamer-plan-card">
             <p class="font-medium text-white/95">Gamer</p>
             <p class="mt-1 font-headline text-5xl font-bold tracking-tight">
-              R${{ brl(GAMER_PRICE_MONTHLY) }}<span class="font-sans text-base font-normal tracking-normal text-white/90">/mês</span>
+              R${{ brl(GAMER_PRICE_FIRST_MONTH) }}<span class="font-sans text-base font-normal tracking-normal text-white/90"> no primeiro mês</span>
             </p>
-            <p class="mt-2 text-sm text-white/90">ou R${{ brl(GAMER_PRICE_YEARLY) }}/ano · cancele quando quiser</p>
+            <p class="mt-2 text-sm text-white/90">
+              Depois, R${{ brl(GAMER_PRICE_MONTHLY) }}/mês ou R${{ brl(GAMER_PRICE_YEARLY) }}/ano · cancele quando quiser
+            </p>
             <ul class="mt-6 flex-1 space-y-3">
-              <li class="flex items-start gap-2.5 font-medium">
-                <UIcon name="i-lucide-check" class="mt-1 size-4 shrink-0 stage-check" aria-hidden="true" />
-                Tudo do plano Premium
-              </li>
-              <li v-for="f in GAMER_EXCLUSIVE_FEATURES" :key="f" class="flex items-start gap-2.5">
+              <li v-for="f in GAMER_HIGHLIGHTS" :key="f" class="flex items-start gap-2.5">
                 <UIcon name="i-lucide-check" class="mt-1 size-4 shrink-0 stage-check" aria-hidden="true" />
                 <span class="text-white">{{ f }}</span>
               </li>

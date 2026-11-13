@@ -135,7 +135,7 @@ test('free: Conquistas e Stream pedem o plano Gamer', async ({ page }) => {
   await openNewBlock(page)
   const types = page.getByRole('dialog').first()
   await types.getByRole('radio', { name: /Conquistas/ }).click()
-  await expect(page.getByText('O plano Gamer tem tudo do Premium')).toBeVisible()
+  await expect(page.getByText('O plano Gamer soma ao Free')).toBeVisible()
 })
 
 test('free: quarto jogo pede o plano Gamer', async ({ page }) => {
@@ -148,7 +148,7 @@ test('free: quarto jogo pede o plano Gamer', async ({ page }) => {
   await dialog.getByTestId('add-game').click()
   await expect(dialog.getByTestId('game-row')).toHaveCount(3)
   await dialog.getByTestId('add-game').click()
-  await expect(page.getByText('O plano Gamer tem tudo do Premium')).toBeVisible()
+  await expect(page.getByText('O plano Gamer soma ao Free')).toBeVisible()
 })
 
 test('free: cabeçalho gamer bloqueado, modo gamer liberado', async ({ page }) => {
@@ -158,7 +158,7 @@ test('free: cabeçalho gamer bloqueado, modo gamer liberado', async ({ page }) =
   await form.getByRole('switch').first().click()
   expect((await toggled).status()).toBe(200)
   await page.getByTestId('gamer-header-locked').click()
-  await expect(page.getByText('O plano Gamer tem tudo do Premium')).toBeVisible()
+  await expect(page.getByText('O plano Gamer soma ao Free')).toBeVisible()
   await page.keyboard.press('Escape')
   // Volta ao normal (testes independentes da ordem).
   const back = page.waitForResponse((r) => /\/page\/[^/]+$/.test(r.url()) && r.request().method() === 'PUT')
@@ -227,7 +227,7 @@ test('free: tema Arcade liberado, demais temas gamer pedem o plano Gamer', async
   const hud = page.getByRole('radio', { name: /HUD/ })
   await expect(hud).toContainText('Gamer')
   await hud.click()
-  await expect(page.getByText('O plano Gamer tem tudo do Premium')).toBeVisible()
+  await expect(page.getByText('O plano Gamer soma ao Free')).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(hud).toHaveAttribute('aria-checked', 'false')
 
@@ -243,11 +243,42 @@ test('free: tema Arcade liberado, demais temas gamer pedem o plano Gamer', async
   await back
 })
 
-test('premium não recebe temas gamer exclusivos', async ({ page }) => {
+test('premium tem todos os temas, inclusive os gamer', async ({ page }) => {
   await openEditor(page, 'premium@example.com')
   await page.getByRole('tab', { name: 'Visual' }).click()
   await expect(page.getByRole('radio', { name: /Neon/ })).not.toContainText('Premium')
-  await expect(page.getByRole('radio', { name: /Esports/ })).toContainText('Gamer')
+  await expect(page.getByRole('radio', { name: /Esports/ })).not.toContainText('Gamer')
+})
+
+test('premium: blocos gamer sem bloqueio', async ({ page }) => {
+  await openEditor(page, 'premium@example.com')
+  await openNewBlock(page)
+  const dialog = page.getByRole('dialog').first()
+  await expect(dialog.getByRole('radio', { name: /Conquistas/ })).not.toContainText('Gamer')
+  await dialog.getByRole('radio', { name: /Conquistas/ }).click()
+  await expect(dialog.getByPlaceholder('Top 500')).toBeVisible()
+  await expect(page.getByTestId('upsell-body')).toHaveCount(0)
+})
+
+test('gamer: bloco de Texto pede o Premium', async ({ page }) => {
+  await openEditor(page, 'gamer@example.com')
+  await openNewBlock(page)
+  await page.getByRole('dialog').first().getByRole('radio', { name: /Texto/ }).click()
+  const upsell = page.getByTestId('upsell-body')
+  await expect(upsell).toContainText('O Premium é o plano completo')
+  await expect(upsell).toContainText('R$19,90/mês')
+  await expect(page.getByText('Também incluso no Premium')).toHaveCount(0)
+})
+
+test('gamer: tema Neon pede o Premium', async ({ page }) => {
+  await openEditor(page, 'gamer@example.com')
+  await page.getByRole('tab', { name: 'Visual' }).click()
+  const neon = page.getByRole('radio', { name: /Neon/ })
+  await expect(neon).toContainText('Premium')
+  await neon.click()
+  await expect(page.getByTestId('upsell-body')).toContainText('O Premium é o plano completo')
+  await page.keyboard.press('Escape')
+  await expect(neon).toHaveAttribute('aria-checked', 'false')
 })
 
 test('perfil gamer vê os temas gamer primeiro', async ({ page }) => {
@@ -292,7 +323,7 @@ test('free: recurso bloqueado mostra o que o plano soma, o preço e leva à comp
   await openNewBlock(page)
   await page.getByRole('dialog').first().getByRole('radio', { name: /Texto/ }).click()
   const upsell = page.getByTestId('upsell-body')
-  await expect(upsell).toContainText('O Premium tem tudo do plano Free')
+  await expect(upsell).toContainText('O Premium é o plano completo')
   await expect(upsell).toContainText('Templates Gradient, Neon, Pixel, Aurora e Noir')
   await expect(upsell).toContainText('R$19,90/mês')
   await page.getByRole('button', { name: 'Comparar planos e assinar' }).click()
@@ -306,5 +337,7 @@ test('free: o aviso do plano Gamer mostra o preço do Gamer', async ({ page }) =
   await page.getByRole('dialog').first().getByRole('radio', { name: /Stream/ }).click()
   const upsell = page.getByTestId('upsell-body')
   await expect(upsell).toContainText('Temas gamer HUD, Esports, Cozy, Terminal e Quest')
-  await expect(upsell).toContainText('R$29,90/mês')
+  await expect(upsell).toContainText('R$9,90/mês')
+  await expect(upsell).toContainText('Sem o "Criado por LinkLand"')
+  await expect(page.getByText('Também incluso no Premium')).toBeVisible()
 })

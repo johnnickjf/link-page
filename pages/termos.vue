@@ -90,16 +90,17 @@ useHead({ title: 'Termos de Uso · LinkLand' })
 
         <h3>5.2 Plano Premium</h3>
         <ul>
-          <li><strong>Valor:</strong> R$ 19,90 por mês;</li>
-          <li><strong>Cobrança:</strong> mensal, via cartão de crédito, processada pela <strong>Stripe Payments</strong>;</li>
-          <li><strong>Renovação:</strong> automática a cada ciclo mensal;</li>
+          <li><strong>Recursos:</strong> todos os recursos pagos da plataforma, inclusive os do Plano Gamer;</li>
+          <li><strong>Valor:</strong> R$ {{ brl(PREMIUM_PRICE_MONTHLY) }} por mês ou R$ {{ brl(PREMIUM_PRICE_YEARLY) }} por ano;</li>
+          <li><strong>Cobrança:</strong> mensal ou anual, conforme o período escolhido, via cartão de crédito, processada pela <strong>Stripe Payments</strong>;</li>
+          <li><strong>Renovação:</strong> automática ao fim de cada ciclo;</li>
           <li><strong>Acesso:</strong> imediato após confirmação do pagamento.</li>
         </ul>
 
         <h3>5.2.1 Plano Gamer</h3>
         <p>
-          Inclui tudo do Plano Premium e os recursos exclusivos para perfis gamer descritos na plataforma.
-          Valor de R$ {{ brl(GAMER_PRICE_MONTHLY) }} por mês ou R$ {{ brl(GAMER_PRICE_YEARLY) }} por ano,
+          Inclui os recursos para perfis gamer descritos na plataforma. Não inclui os demais recursos do
+          Plano Premium. Valor de R$ {{ brl(GAMER_PRICE_MONTHLY) }} por mês ou R$ {{ brl(GAMER_PRICE_YEARLY) }} por ano,
           com as mesmas condições de cobrança, renovação e acesso. As seções seguintes valem para todos
           os planos pagos.
         </p>

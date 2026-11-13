@@ -179,31 +179,34 @@ test('premium: preview do editor renderiza o template', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'Página Premium' })).toBeVisible()
 })
 
-test('gamer: tem tudo do premium no painel e no editor', async ({ page, consoleErrors }) => {
+test('gamer: temas gamer liberados no painel e no editor', async ({ page, consoleErrors }) => {
   await skipOnboarding(page)
   await login(page, 'gamer@example.com')
   await expect(page).toHaveURL(/\/dashboard$/)
   await expect(page.getByText('Plano Gamer')).toBeVisible()
   await page.getByRole('link', { name: /Editar/ }).first().click()
 
-  // Template premium: nenhum bloqueio nem upsell.
+  // Tema gamer: nenhum bloqueio nem upsell.
   await page.getByRole('tab', { name: 'Visual' }).click()
-  const neon = page.getByRole('radio', { name: /Neon/ })
-  await expect(neon).toBeVisible()
-  await expect(neon).not.toContainText('Premium')
+  const esports = page.getByRole('radio', { name: /Esports/ })
+  await expect(esports).toBeVisible()
+  await expect(esports).not.toContainText('Gamer')
   const saved = page.waitForResponse(
     (r) => /\/page\/[^/]+$/.test(r.url()) && r.request().method() === 'PUT',
   )
-  await neon.click()
+  await esports.click()
   expect((await saved).status()).toBe(200)
-  await expect(neon).toHaveAttribute('aria-checked', 'true')
+  await expect(esports).toHaveAttribute('aria-checked', 'true')
   await expect(page.getByRole('dialog')).toHaveCount(0)
+
+  // Tema do Premium continua bloqueado.
+  await expect(page.getByRole('radio', { name: /Neon/ })).toContainText('Premium')
 
   // Volta ao template original (testes independentes da ordem).
   const back = page.waitForResponse(
     (r) => /\/page\/[^/]+$/.test(r.url()) && r.request().method() === 'PUT',
   )
-  await page.getByRole('radio', { name: /Pixel/ }).click()
+  await page.getByRole('radio', { name: /HUD/ }).click()
   await back
   expect(consoleErrors).toEqual([])
 })

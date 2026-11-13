@@ -1,22 +1,22 @@
 <script setup lang="ts">
 // Tabela "Compare todos os recursos", com uma coluna em destaque. Os dados vêm de PLAN_COMPARISON (utils/plans.ts).
 withDefaults(defineProps<{
-  /** Coluna em destaque: o Gamer na área logada, o Premium na home de negócios. */
+  /** Coluna em destaque: o Premium (plano completo), ou o Gamer na home gamer. */
   highlight?: 'premium' | 'gamer'
   /** Distância do topo do cabeçalho fixo da tabela (altura do menu da página). */
   stickyClass?: string
   /** Fundo do cabeçalho: igual ao da seção, para cobrir as linhas ao rolar. */
   headBgClass?: string
 }>(), {
-  highlight: 'gamer',
+  highlight: 'premium',
   stickyClass: 'top-0',
   headBgClass: 'bg-gray-50 dark:bg-gray-950',
 })
 
 const COMPARISON_COLUMNS = [
   { id: 'free', name: 'Free' },
-  { id: 'premium', name: 'Premium' },
   { id: 'gamer', name: 'Gamer' },
+  { id: 'premium', name: 'Premium' },
 ] as const
 </script>
 

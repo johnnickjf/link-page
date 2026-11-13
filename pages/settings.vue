@@ -9,52 +9,53 @@ const auth = useAuthStore()
 const billing = useBilling()
 
 const currentPlan = computed(() => auth.user?.plan ?? 'free')
-const isGamer = computed(() => currentPlan.value === 'gamer')
-const isPremium = computed(() => currentPlan.value === 'premium' || isGamer.value || !!auth.user?.is_superadmin)
 const isFree = computed(() => currentPlan.value === 'free')
+const isGamer = computed(() => currentPlan.value === 'gamer')
+// Premium é o plano completo (o superadmin também tem tudo).
+const hasPremium = computed(() => currentPlan.value === 'premium' || !!auth.user?.is_superadmin)
+const hasPaidPlan = computed(() => hasPremium.value || isGamer.value)
 const showManage = computed(() => currentPlan.value === 'premium' || isGamer.value)
+const paidPlanName = computed(() => (isGamer.value ? 'Gamer' : 'Premium'))
 
 // ---- Mensal / Anual ----
-const MONTHLY_PRICE = PREMIUM_PRICE_MONTHLY
-const YEARLY_PRICE = 199.9
-
-const yearlySavingsLabel = brl(MONTHLY_PRICE * 12 - YEARLY_PRICE)
-const yearlyMonthlyEquivalentLabel = brl(YEARLY_PRICE / 12)
-const yearlyDiscountPct = Math.round(
-  ((MONTHLY_PRICE * 12 - YEARLY_PRICE) / (MONTHLY_PRICE * 12)) * 100,
-)
-
 const interval = ref<'monthly' | 'yearly'>('monthly')
-const priceLabel = computed(() => (interval.value === 'monthly' ? 'R$19,90' : 'R$199,90'))
 const priceSuffix = computed(() => (interval.value === 'monthly' ? '/mês' : '/ano'))
-const ctaLabel = computed(() =>
-  interval.value === 'monthly' ? 'Assinar por R$19,90/mês' : 'Assinar por R$199,90/ano',
+
+/** Preço, equivalente mensal e economia do plano no intervalo escolhido. */
+function pricing(monthly: number, yearly: number) {
+  return {
+    label: computed(() => `R$${brl(interval.value === 'monthly' ? monthly : yearly)}`),
+    yearlyMonthly: brl(yearly / 12),
+    yearlySavings: brl(monthly * 12 - yearly),
+  }
+}
+const premium = pricing(PREMIUM_PRICE_MONTHLY, PREMIUM_PRICE_YEARLY)
+const gamer = pricing(GAMER_PRICE_MONTHLY, GAMER_PRICE_YEARLY)
+
+const yearlyDiscountPct = Math.round(
+  ((PREMIUM_PRICE_MONTHLY * 12 - PREMIUM_PRICE_YEARLY) / (PREMIUM_PRICE_MONTHLY * 12)) * 100,
 )
 
-const gamerPriceLabel = computed(() =>
-  `R$${brl(interval.value === 'monthly' ? GAMER_PRICE_MONTHLY : GAMER_PRICE_YEARLY)}`,
-)
-const gamerYearlySavingsLabel = brl(GAMER_PRICE_MONTHLY * 12 - GAMER_PRICE_YEARLY)
-const gamerYearlyMonthlyEquivalentLabel = brl(GAMER_PRICE_YEARLY / 12)
-const gamerCtaLabel = computed(() =>
-  currentPlan.value === 'premium'
-    ? 'Fazer upgrade para o Gamer'
-    : `Assinar por ${gamerPriceLabel.value}${priceSuffix.value}`,
+const gamerCtaLabel = computed(() => `Assinar por ${gamer.label.value}${priceSuffix.value}`)
+const premiumCtaLabel = computed(() =>
+  isGamer.value
+    ? 'Fazer upgrade para o Premium'
+    : `Assinar por ${premium.label.value}${priceSuffix.value}`,
 )
 
-// O upgrade de quem já assina cobra a diferença na hora, sem passar pelo
-// checkout do Stripe: por isso pede confirmação antes.
+// O upgrade de quem já assina o Gamer cobra a diferença na hora, sem passar
+// pelo checkout do Stripe: por isso pede confirmação antes.
 const confirmUpgrade = ref(false)
-function chooseGamer(): void {
-  if (currentPlan.value === 'premium') {
+function choosePremium(): void {
+  if (isGamer.value) {
     confirmUpgrade.value = true
     return
   }
-  billing.checkout(interval.value, 'gamer')
+  billing.checkout(interval.value, 'premium')
 }
 function runUpgrade(): void {
   confirmUpgrade.value = false
-  billing.checkout(interval.value, 'gamer')
+  billing.checkout(interval.value, 'premium')
 }
 
 </script>
@@ -77,12 +78,12 @@ function runUpgrade(): void {
     </div>
 
     <UAlert
-      v-if="isPremium"
+      v-if="hasPaidPlan"
       class="mx-auto mb-8 max-w-3xl"
       color="success"
       variant="soft"
       icon="i-lucide-crown"
-      :title="`Você já tem o plano ${isGamer ? 'Gamer' : 'Premium'}`"
+      :title="`Você já tem o plano ${paidPlanName}`"
       description="Aproveite os recursos do seu plano. Obrigado por apoiar o LinkLand!"
     >
       <template v-if="showManage" #actions>
@@ -135,7 +136,7 @@ function runUpgrade(): void {
 
       <!-- Free (no celular vem depois dos pagos; no desktop mantém a ordem natural) -->
       <div
-        class="order-2 flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 lg:order-none lg:row-span-3 lg:grid lg:grid-rows-subgrid"
+        class="order-3 flex flex-col overflow-hidden rounded-xl border border-gray-200 bg-white dark:border-gray-800 dark:bg-gray-900 lg:order-none lg:row-span-3 lg:grid lg:grid-rows-subgrid"
         data-testid="plan-free"
       >
         <div class="px-6 pt-6">
@@ -171,7 +172,56 @@ function runUpgrade(): void {
         </div>
       </div>
 
-      <!-- Premium (aparece primeiro no celular, sem precisar rolar) -->
+      <!-- Gamer: o pacote gamer, sem os recursos do Premium -->
+      <div
+        class="gamer-surface stage-bg order-2 flex flex-col overflow-hidden rounded-xl lg:order-none lg:row-span-3 lg:grid lg:grid-rows-subgrid"
+        data-testid="plan-gamer"
+      >
+        <div class="px-6 pt-6">
+          <div class="flex items-center justify-between gap-2">
+            <p class="text-sm font-semibold text-white">Gamer</p>
+            <span class="rounded-full bg-(--stage-accent) px-2.5 py-0.5 text-xs font-semibold text-(--stage-accent-ink)">
+              Para jogadores
+            </span>
+          </div>
+          <div class="mt-3 flex items-end gap-1">
+            <span class="font-display text-4xl font-bold tracking-tight">{{ gamer.label.value }}</span>
+            <span class="mb-1 text-sm text-white/90">{{ priceSuffix }}</span>
+          </div>
+          <p v-if="interval === 'yearly'" class="mt-1 text-sm text-white/95">
+            Equivale a R${{ gamer.yearlyMonthly }}/mês · economize R${{ gamer.yearlySavings }} no ano
+          </p>
+          <p class="mt-1.5 text-sm text-white/95">
+            O que um perfil de jogador precisa.
+          </p>
+        </div>
+
+        <div class="px-6 pt-6">
+          <button
+            type="button"
+            class="flex w-full items-center justify-center gap-2 btn-accent rounded-lg px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 disabled:cursor-not-allowed disabled:opacity-70"
+            :disabled="hasPaidPlan || billing.loading.value"
+            data-testid="buy-gamer"
+            @click="billing.checkout(interval, 'gamer')"
+          >
+            <UIcon v-if="hasPaidPlan" name="i-lucide-check" class="size-4" />
+            <UIcon v-else-if="billing.loading.value" name="i-lucide-loader-circle" class="size-4 animate-spin" />
+            {{ isGamer ? 'Plano atual' : hasPremium ? 'Incluso no Premium' : gamerCtaLabel }}
+          </button>
+        </div>
+
+        <div class="p-6">
+          <p class="text-sm font-semibold text-white">Tudo do Free, e mais:</p>
+          <ul class="mt-3 space-y-3">
+            <li v-for="f in GAMER_HIGHLIGHTS" :key="f" class="flex items-start gap-3 text-sm text-white">
+              <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 stage-check" />
+              <span>{{ f }}</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Premium: o plano completo (aparece primeiro no celular, sem precisar rolar) -->
       <div
         class="order-1 flex flex-col overflow-hidden rounded-xl bg-white ring-2 ring-primary-600 dark:bg-gray-900 dark:ring-primary-400 lg:order-none lg:row-span-3 lg:grid lg:grid-rows-subgrid"
         data-testid="plan-premium"
@@ -180,18 +230,18 @@ function runUpgrade(): void {
           <div class="flex items-center justify-between gap-2">
             <p class="text-sm font-semibold text-primary-800 dark:text-primary-200">Premium</p>
             <span class="rounded-full bg-primary-600 px-2.5 py-0.5 text-xs font-semibold text-white dark:bg-primary-400 dark:text-gray-950">
-              Mais popular
+              Mais completo
             </span>
           </div>
           <div class="mt-3 flex items-end gap-1">
-            <span class="font-display text-4xl font-bold tracking-tight text-gray-950 dark:text-white">{{ priceLabel }}</span>
+            <span class="font-display text-4xl font-bold tracking-tight text-gray-950 dark:text-white">{{ premium.label.value }}</span>
             <span class="mb-1 text-sm text-gray-700 dark:text-gray-200">{{ priceSuffix }}</span>
           </div>
           <p v-if="interval === 'yearly'" class="mt-1 text-sm text-gray-700 dark:text-gray-200">
-            Equivale a R${{ yearlyMonthlyEquivalentLabel }}/mês · economize R${{ yearlySavingsLabel }} no ano
+            Equivale a R${{ premium.yearlyMonthly }}/mês · economize R${{ premium.yearlySavings }} no ano
           </p>
           <p class="mt-1.5 text-sm text-gray-700 dark:text-gray-200">
-            Tudo que você precisa para crescer online.
+            Todos os recursos do LinkLand, inclusive os gamer.
           </p>
         </div>
 
@@ -199,18 +249,18 @@ function runUpgrade(): void {
           <button
             type="button"
             class="flex w-full items-center justify-center gap-2 rounded-lg bg-primary-600 px-4 py-2.5 text-sm font-semibold text-white transition hover:bg-primary-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 dark:bg-primary-400 dark:text-gray-950 dark:hover:bg-primary-300 disabled:cursor-not-allowed disabled:opacity-60"
-            :disabled="isPremium || billing.loading.value"
+            :disabled="hasPremium || billing.loading.value"
             data-testid="buy-premium"
-            @click="billing.checkout(interval)"
+            @click="choosePremium"
           >
-            <UIcon v-if="isPremium" name="i-lucide-check" class="size-4" />
+            <UIcon v-if="hasPremium" name="i-lucide-check" class="size-4" />
             <UIcon v-else-if="billing.loading.value" name="i-lucide-loader-circle" class="size-4 animate-spin" />
-            {{ isGamer ? 'Incluso no Gamer' : isPremium ? 'Plano atual' : ctaLabel }}
+            {{ hasPremium ? 'Plano atual' : premiumCtaLabel }}
           </button>
         </div>
 
         <div class="p-6">
-          <p class="text-sm font-semibold">Tudo do Free, e mais:</p>
+          <p class="text-sm font-semibold">Tudo do Gamer, e mais:</p>
           <ul class="mt-3 space-y-3">
             <li v-for="f in PREMIUM_HIGHLIGHTS" :key="f" class="flex items-start gap-3 text-sm">
               <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 text-primary-600 dark:text-primary-400" />
@@ -219,58 +269,9 @@ function runUpgrade(): void {
           </ul>
         </div>
       </div>
-
-      <!-- Gamer: tudo do Premium + exclusivos -->
-      <div
-        class="gamer-surface stage-bg order-1 flex flex-col overflow-hidden rounded-xl lg:order-none lg:row-span-3 lg:grid lg:grid-rows-subgrid"
-        data-testid="plan-gamer"
-      >
-        <div class="px-6 pt-6">
-          <div class="flex items-center justify-between gap-2">
-            <p class="text-sm font-semibold text-white">Gamer</p>
-            <span class="rounded-full bg-(--stage-accent) px-2.5 py-0.5 text-xs font-semibold text-(--stage-accent-ink)">
-              Mais completo
-            </span>
-          </div>
-          <div class="mt-3 flex items-end gap-1">
-            <span class="font-display text-4xl font-bold tracking-tight">{{ gamerPriceLabel }}</span>
-            <span class="mb-1 text-sm text-white/90">{{ priceSuffix }}</span>
-          </div>
-          <p v-if="interval === 'yearly'" class="mt-1 text-sm text-white/95">
-            Equivale a R${{ gamerYearlyMonthlyEquivalentLabel }}/mês · economize R${{ gamerYearlySavingsLabel }} no ano
-          </p>
-          <p class="mt-1.5 text-sm text-white/95">
-            Tudo do Premium, mais o que um perfil de jogador precisa.
-          </p>
-        </div>
-
-        <div class="px-6 pt-6">
-          <button
-            type="button"
-            class="flex w-full items-center justify-center gap-2 btn-accent rounded-lg px-4 py-2.5 text-sm font-semibold transition focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 disabled:cursor-not-allowed disabled:opacity-70"
-            :disabled="isGamer || !!auth.user?.is_superadmin || billing.loading.value"
-            data-testid="buy-gamer"
-            @click="chooseGamer"
-          >
-            <UIcon v-if="isGamer" name="i-lucide-check" class="size-4" />
-            <UIcon v-else-if="billing.loading.value" name="i-lucide-loader-circle" class="size-4 animate-spin" />
-            {{ isGamer ? 'Plano atual' : gamerCtaLabel }}
-          </button>
-        </div>
-
-        <div class="p-6">
-          <p class="text-sm font-semibold text-white">Tudo do Premium, e mais:</p>
-          <ul class="mt-3 space-y-3">
-            <li v-for="f in GAMER_EXCLUSIVE_FEATURES" :key="f" class="flex items-start gap-3 text-sm text-white">
-              <UIcon name="i-lucide-check" class="mt-0.5 size-4 shrink-0 stage-check" />
-              <span>{{ f }}</span>
-            </li>
-          </ul>
-        </div>
-      </div>
     </div>
 
-    <!-- Comparação completa: o Gamer é a coluna que tem tudo. -->
+    <!-- Comparação completa: o Premium é a coluna que tem tudo. -->
     <section class="mx-auto mt-16 max-w-5xl" aria-labelledby="compare-title">
       <h2 id="compare-title" class="text-center font-display text-2xl font-bold tracking-tight">
         Compare todos os recursos
@@ -281,10 +282,10 @@ function runUpgrade(): void {
       <PlanComparisonTable class="mt-8" sticky-class="top-14" />
     </section>
 
-    <UModal v-model:open="confirmUpgrade" title="Trocar para o plano Gamer?">
+    <UModal v-model:open="confirmUpgrade" title="Trocar para o plano Premium?">
       <template #body>
         <p class="text-sm text-gray-600 dark:text-gray-300">
-          Sua assinatura passa para o plano Gamer agora. A diferença proporcional ao
+          Sua assinatura passa para o plano Premium agora. A diferença proporcional ao
           tempo restante é cobrada no cartão da assinatura atual, e as próximas
           renovações seguem o valor do novo plano.
         </p>
